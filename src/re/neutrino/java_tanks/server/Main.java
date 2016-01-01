@@ -15,7 +15,7 @@ public class Main {
 		//initGame();
 		
 		Server server = new Server(config);
-		server.start();
+		server.listen();
 	}
 
 	private static void parseCommandLine(String[] args) {
