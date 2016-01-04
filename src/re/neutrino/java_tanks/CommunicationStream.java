@@ -1,13 +1,8 @@
 package re.neutrino.java_tanks;
 
-import java.io.BufferedReader;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Reader;
-import java.util.function.Function;
-import java.util.function.ToIntBiFunction;
 
 public class CommunicationStream {
 	private InputStream in;
@@ -53,7 +48,7 @@ public class CommunicationStream {
 	}
 	*/
 	
-	public int readAll(byte[] data, int len) throws IOException {
+	public int recvAll(byte[] data, int len) throws IOException {
 		int processed = 0;
 	    int bytesleft = len; // how many we have left to send/receive
 	    int n = -1;
@@ -68,13 +63,5 @@ public class CommunicationStream {
 	    }
 
 	    return processed;
-	}
-	
-	public byte readInt8() throws IOException {
-		byte[] data = new byte[1];
-		
-		readAll(data, 1);
-		
-		return data[0];
 	}
 }

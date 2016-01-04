@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 import re.neutrino.java_tanks.CommunicationStream;
+import re.neutrino.java_tanks.Int8;
 
 public class ConnectionThread implements Runnable {
 	Socket socket;
@@ -24,7 +25,7 @@ public class ConnectionThread implements Runnable {
 			while (true) {
 				char command;
 				try {
-					command = (char)comm.readInt8();
+					command = (char)Int8.recv(comm).getSimpleValue();
 				} catch (EOFException e) {
 					break;
 				}
