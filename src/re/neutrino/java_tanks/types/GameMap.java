@@ -1,11 +1,13 @@
 package re.neutrino.java_tanks.types;
 
 import java.io.IOException;
+import java.util.Random;
 
 import re.neutrino.java_tanks.types.basic.*;
 
 public class GameMap {
 	public static class Info implements Communicable {
+		// TODO Change to UInt32
 		final Int32 seed;
 		final UInt16 length;
 		final UInt16 height;
@@ -48,13 +50,35 @@ public class GameMap {
 		}
 	}
 
-	public static GameMap generate(Info mapInfo) {
-		// TODO Auto-generated method stub
-		return null;
+	Info info;
+	short[] content;
+
+	public GameMap(Info info) {
+		this.info = info;
+
+		content = new short[info.getLength()];
+
+		generate();
+	}
+
+	private void generate() {
+		// TODO map terrain types, for now just flat terrain
+	    int cur_height = info.getHeight() / 2;
+
+	    Random rand = new Random(info.getSeed());
+
+	    for (int i=0; i < info.getLength(); i++)
+	    {
+	        if (rand.nextInt() % 2 == 1)
+	            content[i] = (short) (cur_height - (rand.nextInt() % 2));
+	        else
+	            content[i] = (short) (cur_height + (rand.nextInt() % 2));
+	        cur_height = content[i];
+	    }
 	}
 
 	public MapPosition newPlayerPos() {
 		// TODO Auto-generated method stub
-		return null;
+		return new MapPosition((short)0, (short)0);
 	}
 }

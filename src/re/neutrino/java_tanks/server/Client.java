@@ -1,12 +1,11 @@
 package re.neutrino.java_tanks.server;
 
-import java.util.Queue;
-
+import java.util.LinkedList;
 import re.neutrino.java_tanks.types.*;
 
 public class Client {
 	final Player player;
-    Queue<Update> updates;
+    LinkedList<Update> updates = new LinkedList<>();
 
 	//pthread_mutex_t updates_mutex;
 
@@ -18,19 +17,18 @@ public class Client {
 	}
 
     public Client(String nickname, Game game) {
-    	this.player = game.newPlayer(nickname);
-    	this.game = game;
+    	this(game.newPlayer(nickname), game);
     }
 
     public Player getPlayer() {
 		return player;
 	}
 
-    public Queue<Update> getUpdates() {
+    public LinkedList<Update> getUpdates() {
 		return updates;
 	}
 
-	public void setUpdates(Queue<Update> updates) {
+	public void setUpdates(LinkedList<Update> updates) {
 		this.updates = updates;
 	}
 

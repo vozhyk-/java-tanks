@@ -18,7 +18,7 @@ public class Main {
 			return;
 		}
 
-		Config config = new Config();
+		Config config = new Config(debug);
 		//config.read();
 		//readAbilities();
 

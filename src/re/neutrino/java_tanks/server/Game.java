@@ -11,7 +11,6 @@ import re.neutrino.java_tanks.debug.*;
 public class Game {
 	ArrayList<Client> clients = new ArrayList<>();
 	GameMap map;
-	GameMap.Info mapInfo;
 	boolean started;
 
 	Config config;
@@ -37,11 +36,11 @@ public class Game {
 		this.debug = debug;
 
 		rand = new Random();
-		mapInfo = new GameMap.Info(
+		GameMap.Info mapInfo = new GameMap.Info(
 				rand.nextInt(),
 				config.get("map_width"),
 				config.get("map_height"));
-		map = GameMap.generate(mapInfo);
+		map = new GameMap(mapInfo);
 		started = false;
 	}
 
