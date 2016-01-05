@@ -30,7 +30,7 @@ public class MapPosition implements Communicable {
 		x.send(comm);
 		y.send(comm);
 	}
-	
+
 	public static MapPosition recv(CommunicationStream comm) throws IOException {
 		return new MapPosition(Int16.recv(comm), Int16.recv(comm));
 	}

@@ -9,7 +9,7 @@ public class Ability {
     Int16 cooldown;
     Int8 params_count;
     Int32[] params;
-    
+
 	public enum Type {
 		None, DoubleShot, Move, Snipe
 	}

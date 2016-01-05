@@ -1,10 +1,12 @@
 package re.neutrino.java_tanks.server;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import re.neutrino.java_tanks.Config;
 import re.neutrino.java_tanks.debug.*;
 
 public class Server {
@@ -18,18 +20,23 @@ public class Server {
 	}
 
 	public void listen() {
-		games.add(new Game(config));
+		Game game = new Game(config, debug);
+		games.add(game);
 
 		// TODO specify port
 		int port = 7979;
-		
+
 		try (
 			/* start listening, allowing a queue of up to 50 pending connections */
-		    ServerSocket serverSocket = new ServerSocket(port);
+		    ServerSocket serverSocket = new ServerSocket();
 		) {
+			serverSocket.setReuseAddress(true);
+			serverSocket.bind(new InetSocketAddress(port));
+
 		    debug.print(DebugLevel.Info, "listen", "Server started listening");
 		    debug.print(DebugLevel.Info,
 		    		"listen port", serverSocket.getLocalPort());
+
 		    while (true) {
 		    	Socket socket = null;
 		    	try {
@@ -37,11 +44,11 @@ public class Server {
 		    	} catch (IOException e) {
 		    		continue;
 		    	}
-		    	
+
 		    	debug.print(DebugLevel.Info,
 		    			"incoming connection", socket.getInetAddress());
-		    	
-		    	new Thread(new ConnectionThread(socket, debug)).start();
+
+		    	new Thread(new ConnectionThread(game, socket, debug)).start();
 		    }
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

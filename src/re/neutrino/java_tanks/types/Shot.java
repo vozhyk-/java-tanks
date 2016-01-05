@@ -7,7 +7,7 @@ import re.neutrino.java_tanks.types.basic.*;
 public class Shot implements Communicable {
 	final Int16 angle; /* in degrees, can be 0..359 */
 	final Int16 power;
-	
+
 	public Shot(Int16 angle, Int16 power) {
 		this.angle = angle;
 		this.power = power;
@@ -20,7 +20,7 @@ public class Shot implements Communicable {
 	public short getAngle() {
 		return angle.getSimpleValue();
 	}
-	
+
 	public short getPower() {
 		return power.getSimpleValue();
 	}
@@ -29,7 +29,7 @@ public class Shot implements Communicable {
 		angle.send(comm);
 		power.send(comm);
 	}
-	
+
 	public static Shot recv(CommunicationStream comm) throws IOException {
 		return new Shot(Int16.recv(comm), Int16.recv(comm));
 	}

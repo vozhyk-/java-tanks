@@ -12,4 +12,8 @@ public abstract class CommandWithArgument<T extends Communicable> extends Comman
 	public void sendRest(CommunicationStream comm) throws IOException {
 		arg.send(comm);
 	}
+
+	public String toString() {
+		return getType() + "(" + arg + ")";
+	}
 }

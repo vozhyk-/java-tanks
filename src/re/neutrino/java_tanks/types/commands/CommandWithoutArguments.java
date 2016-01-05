@@ -10,4 +10,8 @@ public abstract class CommandWithoutArguments extends Command {
 	public void sendRest(CommunicationStream comm) throws IOException {
 		// Do nothing
 	}
+
+	public String toString() {
+		return getType().toString();
+	}
 }

@@ -9,15 +9,15 @@ public class SetAbilityCommand extends CommandWithArgument<Int16> {
 	public SetAbilityCommand(Int16 abilityId) {
 		arg = abilityId;
 	}
-	
+
 	public Type getType() {
 		return Type.SetAbility;
 	}
-	
+
 	public short getAbilityId() {
 		return arg.getValue();
 	}
-	
+
 	public static SetAbilityCommand recvRest(CommunicationStream comm) throws IOException {
 		return new SetAbilityCommand(Int16.recv(comm));
 	}

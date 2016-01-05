@@ -1,30 +1,50 @@
 package re.neutrino.java_tanks.server;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Random;
 
-import re.neutrino.java_tanks.*;
-import re.neutrino.java_tanks.types.GameMap;
-import re.neutrino.java_tanks.types.Player;
-import re.neutrino.java_tanks.types.Update;
+import re.neutrino.java_tanks.types.*;
+import re.neutrino.java_tanks.types.Player.State;
+import re.neutrino.java_tanks.Config;
+import re.neutrino.java_tanks.debug.*;
 
 public class Game {
-	List<Client> clients;
+	ArrayList<Client> clients = new ArrayList<>();
 	GameMap map;
 	GameMap.Info mapInfo;
 	boolean started;
-	
+
+	Config config;
+	DebugStream debug;
+
 	Random rand;
-	
-	public Game(Config config) {
+	short playerIdCounter = 0;
+
+	public ArrayList<Client> getClients() {
+		return clients;
+	}
+
+	public Config getConfig() {
+		return config;
+	}
+
+	public boolean isStarted() {
+		return started;
+	}
+
+	public Game(Config config, DebugStream debug) {
+		this.config = config;
+		this.debug = debug;
+
 		rand = new Random();
 		mapInfo = new GameMap.Info(
 				rand.nextInt(),
 				config.get("map_width"),
 				config.get("map_height"));
 		map = GameMap.generate(mapInfo);
+		started = false;
 	}
-	
+
 	void start() {
 		/* TODO move tanks_map creation to process_shoot_command? */
 	    //tanks_map = map_with_tanks();
@@ -44,7 +64,7 @@ public class Game {
 	     */
 		Client cl = clients.get(0);
 //	    unlock_clients_array();                                      /* }}} */
-		
+
 		cl.changeState(Player.State.Active);
 
 	    started = true;
@@ -54,5 +74,28 @@ public class Game {
 		// TODO lock clients
 		for (Client cl : clients)
 			cl.getUpdates().add(upd);
+	}
+
+	public short nextPlayerId() {
+		short result = ++playerIdCounter;
+
+		// TODO Fix this somehow
+		if (result == 0)
+			debug.print(DebugLevel.Err, "player id",
+"Player ID counter overflowed to 0 (\"empty\" value)! Expect breakage!");
+
+		return result;
+	}
+
+	public Player newPlayer(String nickname) {
+		return new Player(
+				State.Joined,
+				true,
+				nextPlayerId(),
+				nickname,
+				(short)config.get("tank_hp"),
+				map.newPlayerPos(),
+				(short)0,
+				(short)0);
 	}
 }

@@ -6,7 +6,7 @@ public class ReadyCommand extends CommandWithoutArguments {
 	public Type getType() {
 		return Type.Ready;
 	}
-	
+
 	public static ReadyCommand recvRest(CommunicationStream comm) {
 		return new ReadyCommand();
 	}

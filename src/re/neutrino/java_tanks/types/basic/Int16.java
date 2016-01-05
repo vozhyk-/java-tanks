@@ -16,15 +16,15 @@ public class Int16 extends WrappedType<Short> implements Communicable {
 
 	public void send(CommunicationStream comm) throws IOException {
 		byte[] buf = ByteBuffer.allocate(Short.BYTES).putShort(value).array();
-		
+
 		comm.sendAll(buf);
 	}
-	
+
 	public static Int16 recv(CommunicationStream comm) throws IOException {
 		byte[] buf = new byte[Short.BYTES];
-		
+
 		comm.recvAll(buf);
-		
+
 		return new Int16(ByteBuffer.wrap(buf).getShort());
 	}
 }

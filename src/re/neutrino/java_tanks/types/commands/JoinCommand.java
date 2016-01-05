@@ -13,11 +13,11 @@ public class JoinCommand extends CommandWithArgument<NetString> {
 	public Type getType() {
 		return Type.Join;
 	}
-	
+
 	public String getNick() {
 		return arg.getValue();
 	}
-	
+
 	public static JoinCommand recvRest(CommunicationStream comm) throws IOException {
 		return new JoinCommand(NetString.recv(comm));
 	}

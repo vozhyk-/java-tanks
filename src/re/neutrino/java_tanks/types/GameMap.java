@@ -9,7 +9,7 @@ public class GameMap {
 		final Int32 seed;
 		final UInt16 length;
 		final UInt16 height;
-		
+
 		public Info(Int32 seed, UInt16 length, UInt16 height) {
 			this.seed = seed;
 			this.length = length;
@@ -39,16 +39,21 @@ public class GameMap {
 			length.send(comm);
 			height.send(comm);
 		}
-		
+
 		public static Info recv(CommunicationStream comm) throws IOException {
 			return new Info(
-					Int32.recv(comm), 
-					UInt16.recv(comm), 
+					Int32.recv(comm),
+					UInt16.recv(comm),
 					UInt16.recv(comm));
 		}
 	}
 
 	public static GameMap generate(Info mapInfo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public MapPosition newPlayerPos() {
 		// TODO Auto-generated method stub
 		return null;
 	}

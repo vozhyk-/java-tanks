@@ -1,7 +1,7 @@
 package re.neutrino.java_tanks.types;
 
-import re.neutrino.java_tanks.types.basic.Int16;
-import re.neutrino.java_tanks.types.basic.NetString;
+import re.neutrino.java_tanks.types.Player.State;
+import re.neutrino.java_tanks.types.basic.*;
 
 public class Player {
 	State state;
@@ -30,6 +30,42 @@ public class Player {
 		this.pos = pos;
 		this.abilityId = abilityId;
 		this.abilityCooldown = abilityCooldown;
+	}
+
+	public Player(
+			State state,
+			boolean isConnected,
+			short id,
+			String nickname,
+			short hitpoints,
+			MapPosition pos,
+			short abilityId,
+			short abilityCooldown) {
+		this(
+			state,
+			isConnected,
+			new Int16(id),
+			new NetString(nickname),
+			new Int16(hitpoints),
+			pos,
+			new Int16(abilityId),
+			new Int16(abilityCooldown));
+	}
+
+	public boolean isConnected() {
+		return isConnected;
+	}
+
+	public void setConnected(boolean isConnected) {
+		this.isConnected = isConnected;
+	}
+
+	public Int16 getId() {
+		return id;
+	}
+
+	public String getNickname() {
+		return nickname.getValue();
 	}
 
 	public State getState() {
