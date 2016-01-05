@@ -6,6 +6,8 @@ import java.net.Socket;
 
 import re.neutrino.java_tanks.*;
 import re.neutrino.java_tanks.debug.*;
+import re.neutrino.java_tanks.types.*;
+import re.neutrino.java_tanks.types.commands.*;
 
 public class ConnectionThread implements Runnable {
 	Socket socket;
@@ -22,17 +24,17 @@ public class ConnectionThread implements Runnable {
 					socket.getInputStream(),
 					socket.getOutputStream());
 			
-			/* receive command - 1 char */
+			/* receive command */
 			/* process commands until disconnect */
 			while (true) {
-				char command;
+				Command cmd;
 				try {
-					command = (char)Int8.recv(comm).getSimpleValue();
+					cmd = Command.recv(comm);
 				} catch (EOFException e) {
 					break;
 				}
-			    debug.print(DebugLevel.Debug, "received command", command);
-			    processCommand(command);
+			    debug.print(DebugLevel.Debug, "received command", cmd);
+			    processCommand(cmd);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -52,10 +54,11 @@ public class ConnectionThread implements Runnable {
 	    disconnectClient();
 	}
 
-	private void processCommand(char cmd) {
-		switch (cmd) {
-		default:
-			debug.print(DebugLevel.Err, "unrecognized command", cmd);
+	private void processCommand(Command cmd) {
+		switch (cmd.getType()) {
+		// TODO access real value
+		case Unknown: default:
+			debug.print(DebugLevel.Err, "unrecognized command", cmd.getType());
 		}
 	}
 

@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Random;
 
 import re.neutrino.java_tanks.*;
+import re.neutrino.java_tanks.types.GameMap;
+import re.neutrino.java_tanks.types.Player;
+import re.neutrino.java_tanks.types.Update;
 
 public class Game {
 	List<Client> clients;

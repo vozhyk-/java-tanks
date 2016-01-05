@@ -1,4 +1,4 @@
-package re.neutrino.java_tanks;
+package re.neutrino.java_tanks.types;
 
 public class MapPosition {
 	//int16_t

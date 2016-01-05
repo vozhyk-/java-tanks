@@ -1,9 +1,11 @@
-package re.neutrino.java_tanks;
+package re.neutrino.java_tanks.types;
+
+import re.neutrino.java_tanks.types.basic.NetString;
 
 public class Ability {
 	//int16_t
 	short id;
-	String name;
+	NetString name;
     Type type;
     //int16_t
     short cooldown;

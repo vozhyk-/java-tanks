@@ -1,11 +1,13 @@
-package re.neutrino.java_tanks;
+package re.neutrino.java_tanks.types;
+
+import re.neutrino.java_tanks.types.basic.NetString;
 
 public class Player {
 	State state;
 	boolean isConnected;
 	//int16_t
 	final short id;
-	String nickname;
+	NetString nickname;
 	//int16_t
 	short hitpoints;
 	MapPosition pos;
@@ -14,7 +16,7 @@ public class Player {
 	//int16_t
 	short abilityCooldown;
 	
-	public Player(short id, String nickname, short hitpoints, MapPosition pos, Ability ability) {
+	public Player(short id, NetString nickname, short hitpoints, MapPosition pos, Ability ability) {
 		this.id = id;
 		this.nickname = nickname;
 		this.hitpoints = hitpoints;

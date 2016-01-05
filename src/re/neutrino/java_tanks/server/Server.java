@@ -19,12 +19,14 @@ public class Server {
 
 	public void listen() {
 		games.add(new Game(config));
+
+		// TODO specify port
+		int port = 7979;
 		
 		try (
-			// TODO fix comment or socket options
-			// TODO specify port
 			/* start listening, allowing a queue of up to 16 pending connection */
-		    ServerSocket serverSocket = new ServerSocket();
+			// TODO fix comment or socket options
+		    ServerSocket serverSocket = new ServerSocket(port);
 		) {
 		    debug.print(DebugLevel.Info, "listen", "Server started listening");
 		    debug.print(DebugLevel.Info,

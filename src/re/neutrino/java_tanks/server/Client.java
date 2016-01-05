@@ -3,6 +3,9 @@ package re.neutrino.java_tanks.server;
 import java.util.Queue;
 
 import re.neutrino.java_tanks.*;
+import re.neutrino.java_tanks.types.Player;
+import re.neutrino.java_tanks.types.PlayerUpdate;
+import re.neutrino.java_tanks.types.Update;
 
 public class Client {
 	final ID id;
