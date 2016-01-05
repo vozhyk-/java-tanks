@@ -1,21 +1,37 @@
 package re.neutrino.java_tanks.types;
 
-public class MapPosition {
-	//int16_t
-	final short x;
-	//int16_t
-	final short y;
+import java.io.IOException;
 
-	public MapPosition(short x, short y) {
+import re.neutrino.java_tanks.types.basic.*;
+
+public class MapPosition implements Communicable {
+	final Int16 x;
+	final Int16 y;
+
+	public MapPosition(Int16 x, Int16 y) {
 		this.x = x;
 		this.y = y;
 	}
 
+	public MapPosition(short x, short y) {
+		this.x = new Int16(x);
+		this.y = new Int16(y);
+	}
+
 	public short getX() {
-		return x;
+		return x.getSimpleValue();
 	}
 
 	public short getY() {
-		return y;
+		return y.getSimpleValue();
+	}
+
+	public void send(CommunicationStream comm) throws IOException {
+		x.send(comm);
+		y.send(comm);
+	}
+	
+	public static MapPosition recv(CommunicationStream comm) throws IOException {
+		return new MapPosition(Int16.recv(comm), Int16.recv(comm));
 	}
 }

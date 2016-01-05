@@ -3,7 +3,7 @@ package re.neutrino.java_tanks.types.basic;
 public class WrappedType<T> {
 	protected T value;
 	
-	WrappedType(T value) {
+	public WrappedType(T value) {
 		this.value = value;
 	}
 	

@@ -24,8 +24,7 @@ public class Server {
 		int port = 7979;
 		
 		try (
-			/* start listening, allowing a queue of up to 16 pending connection */
-			// TODO fix comment or socket options
+			/* start listening, allowing a queue of up to 50 pending connections */
 		    ServerSocket serverSocket = new ServerSocket(port);
 		) {
 		    debug.print(DebugLevel.Info, "listen", "Server started listening");

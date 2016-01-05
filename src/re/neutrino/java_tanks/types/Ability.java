@@ -1,18 +1,14 @@
 package re.neutrino.java_tanks.types;
 
-import re.neutrino.java_tanks.types.basic.NetString;
+import re.neutrino.java_tanks.types.basic.*;
 
 public class Ability {
-	//int16_t
-	short id;
+	Int16 id;
 	NetString name;
     Type type;
-    //int16_t
-    short cooldown;
-    //int8_t
-    byte params_count;
-    //int32_t[]
-    int[] params;
+    Int16 cooldown;
+    Int8 params_count;
+    Int32[] params;
     
 	public enum Type {
 		None, DoubleShot, Move, Snipe
