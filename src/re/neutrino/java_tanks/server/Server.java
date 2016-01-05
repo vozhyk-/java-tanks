@@ -5,12 +5,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import re.neutrino.java_tanks.debug.*;
+
 public class Server {
 	ArrayList<Game> games = new ArrayList<Game>();
 	private Config config;
+	private DebugStream debug;
 
-	public Server(Config config) {
+	public Server(Config config, DebugStream debug) {
 		this.config = config;
+		this.debug = debug;
 	}
 
 	public void listen() {
@@ -18,11 +22,13 @@ public class Server {
 		
 		try (
 			// TODO fix comment or socket options
+			// TODO specify port
 			/* start listening, allowing a queue of up to 16 pending connection */
 		    ServerSocket serverSocket = new ServerSocket();
-		    //debug_s( 3, "listen", "Server started listening");
-		    //debug_d( 3, "listen port", server_port);
 		) {
+		    debug.print(DebugLevel.Info, "listen", "Server started listening");
+		    debug.print(DebugLevel.Info,
+		    		"listen port", serverSocket.getLocalPort());
 		    while (true) {
 		    	Socket socket = null;
 		    	try {
@@ -31,9 +37,10 @@ public class Server {
 		    		continue;
 		    	}
 		    	
-		    	//debug_s( 3, "incoming connection", inet_ntoa(client_sa.sin_addr));
+		    	debug.print(DebugLevel.Info,
+		    			"incoming connection", socket.getInetAddress());
 		    	
-		    	new Thread(new ConnectionThread(socket)).start();
+		    	new Thread(new ConnectionThread(socket, debug)).start();
 		    }
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -3,9 +3,7 @@ package re.neutrino.java_tanks.server;
 import java.util.List;
 import java.util.Random;
 
-import re.neutrino.java_tanks.GameMap;
-import re.neutrino.java_tanks.Player;
-import re.neutrino.java_tanks.Update;
+import re.neutrino.java_tanks.*;
 
 public class Game {
 	List<Client> clients;

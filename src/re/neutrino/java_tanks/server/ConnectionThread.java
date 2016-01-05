@@ -4,14 +4,16 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 
-import re.neutrino.java_tanks.CommunicationStream;
-import re.neutrino.java_tanks.Int8;
+import re.neutrino.java_tanks.*;
+import re.neutrino.java_tanks.debug.*;
 
 public class ConnectionThread implements Runnable {
 	Socket socket;
+	DebugStream debug;
 	
-	public ConnectionThread(Socket socket) {
+	public ConnectionThread(Socket socket, DebugStream debug) {
 		this.socket = socket;
+		this.debug = debug;
 	}
 
 	public void run() {
@@ -19,7 +21,7 @@ public class ConnectionThread implements Runnable {
 			CommunicationStream comm = new CommunicationStream(
 					socket.getInputStream(),
 					socket.getOutputStream());
-					
+			
 			/* receive command - 1 char */
 			/* process commands until disconnect */
 			while (true) {
@@ -29,7 +31,7 @@ public class ConnectionThread implements Runnable {
 				} catch (EOFException e) {
 					break;
 				}
-			    //debug_c( 0, "received command", command);
+			    debug.print(DebugLevel.Debug, "received command", command);
 			    processCommand(command);
 			}
 		} catch (IOException e) {
@@ -45,14 +47,16 @@ public class ConnectionThread implements Runnable {
 		}
 
 	    /* TODO print (stored) client IP */
-	    //debug_s( 3, "client closed connection", "");
+	    debug.print(DebugLevel.Info, "client closed connection");
 
 	    disconnectClient();
 	}
 
-	private void processCommand(char command) {
-		// TODO Auto-generated method stub
-		
+	private void processCommand(char cmd) {
+		switch (cmd) {
+		default:
+			debug.print(DebugLevel.Err, "unrecognized command", cmd);
+		}
 	}
 
 	private void disconnectClient() {

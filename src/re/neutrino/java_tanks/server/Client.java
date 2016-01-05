@@ -2,10 +2,7 @@ package re.neutrino.java_tanks.server;
 
 import java.util.Queue;
 
-import re.neutrino.java_tanks.Player;
-import re.neutrino.java_tanks.PlayerUpdate;
-import re.neutrino.java_tanks.Update;
-import re.neutrino.java_tanks.Player.State;
+import re.neutrino.java_tanks.*;
 
 public class Client {
 	final ID id;
@@ -51,7 +48,7 @@ public class Client {
 		}
 	}
 
-	public void changeState(State state) {
+	public void changeState(Player.State state) {
 		player.setState(state);
 		
 		game.allAddUpdate(new PlayerUpdate(Update.Type.Player, player));
