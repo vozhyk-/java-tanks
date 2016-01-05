@@ -4,12 +4,13 @@ import java.io.PrintWriter;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class DebugStream {
 	// TODO Make configurable
 	DebugLevel minDebugLevel = DebugLevel.Info;
+	DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	
 	PrintWriter out;
 	
@@ -37,8 +38,7 @@ public class DebugStream {
 	}
 	
 	void printTitle(DebugLevel level, String title) {
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String date = format.format(LocalDateTime.now());
+		String date = LocalDateTime.now().format(dateFormat);
 		
 		out.print(date + " [" + title + "]");
 	}
