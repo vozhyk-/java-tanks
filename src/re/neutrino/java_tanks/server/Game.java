@@ -19,7 +19,7 @@ public class Game {
 	public Game(Config config) {
 		rand = new Random();
 		mapInfo = new GameMap.Info(
-				rand.nextLong(),
+				rand.nextInt(),
 				config.get("map_width"),
 				config.get("map_height"));
 		map = GameMap.generate(mapInfo);
