@@ -118,7 +118,7 @@ public class Game {
 
 	public JoinReply tryJoin(String nickname) {
 		Optional<Client> found = clients.stream()
-				.filter(c -> c.getPlayer().getNickname() == nickname)
+				.filter(c -> c.getPlayer().getNickname().equals(nickname))
 				.findAny();
 		boolean nicknameFound = found.isPresent();
 		Client cl = nicknameFound ? found.get() : null;
