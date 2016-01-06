@@ -5,14 +5,9 @@ import java.util.Optional;
 import java.util.Random;
 
 import re.neutrino.java_tanks.Config;
-import re.neutrino.java_tanks.debug.DebugLevel;
-import re.neutrino.java_tanks.debug.DebugStream;
-import re.neutrino.java_tanks.types.GameMap;
-import re.neutrino.java_tanks.types.JoinReply;
-import re.neutrino.java_tanks.types.Player;
-import re.neutrino.java_tanks.types.Player.State;
-import re.neutrino.java_tanks.types.PlayerUpdate;
-import re.neutrino.java_tanks.types.Update;
+import re.neutrino.java_tanks.debug.*;
+import re.neutrino.java_tanks.types.*;
+import re.neutrino.java_tanks.types.updates.*;
 
 public class Game {
 	ArrayList<Client> clients = new ArrayList<>();
@@ -98,7 +93,7 @@ public class Game {
 
 	public Player newPlayer(String nickname) {
 		return new Player(
-				State.Joined,
+				Player.State.Joined,
 				true,
 				nextPlayerId(),
 				nickname,

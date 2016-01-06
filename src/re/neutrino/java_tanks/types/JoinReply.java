@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import re.neutrino.java_tanks.server.Client;
 import re.neutrino.java_tanks.types.basic.Int16;
-import re.neutrino.java_tanks.types.basic.Int8;
 
 /**
  * Used for two purposes:
@@ -77,18 +76,13 @@ public class JoinReply implements Communicable {
 			return new JoinReply(t);
 	}
 
-	public enum Type implements Communicable {
+	public enum Type implements CommunicableEnum<Type> {
 		Ok, GameInProgress, NicknameTaken;
 
 		static Type[] values = values();
 
-		@Override
-		public void send(CommunicationStream comm) throws IOException {
-			new Int8((byte)ordinal()).send(comm);
-		}
-
 		public static Type recv(CommunicationStream comm) throws IOException {
-			return values[Int8.recv(comm).getValue()];
+			return CommunicableEnum.recv(comm, values);
 		}
 	}
 }

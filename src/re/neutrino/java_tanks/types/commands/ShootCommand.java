@@ -5,12 +5,13 @@ import java.io.IOException;
 import re.neutrino.java_tanks.types.*;
 
 public class ShootCommand extends CommandWithArgument<Shot> {
+	@Override
 	public Type getType() {
 		return Type.Shoot;
 	}
 
 	public ShootCommand(Shot shot) {
-		arg = shot;
+		super(shot);
 	}
 
 	public static ShootCommand recvRest(CommunicationStream comm) throws IOException {

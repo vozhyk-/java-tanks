@@ -7,9 +7,10 @@ import re.neutrino.java_tanks.types.basic.*;
 
 public class SetAbilityCommand extends CommandWithArgument<Int16> {
 	public SetAbilityCommand(Int16 abilityId) {
-		arg = abilityId;
+		super(abilityId);
 	}
 
+	@Override
 	public Type getType() {
 		return Type.SetAbility;
 	}

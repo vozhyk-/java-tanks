@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Random;
 
 import re.neutrino.java_tanks.types.basic.Int32;
+import re.neutrino.java_tanks.types.basic.UInt16;
 
 public class GameMap implements Communicable {
 	public static class Info implements Communicable {

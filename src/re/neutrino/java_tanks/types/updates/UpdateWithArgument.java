@@ -1,13 +1,14 @@
-package re.neutrino.java_tanks.types.commands;
+package re.neutrino.java_tanks.types.updates;
 
 import java.io.IOException;
 
-import re.neutrino.java_tanks.types.*;
+import re.neutrino.java_tanks.types.Communicable;
+import re.neutrino.java_tanks.types.CommunicationStream;
 
-public abstract class CommandWithArgument<T extends Communicable> extends Command {
+public abstract class UpdateWithArgument<T extends Communicable> extends Update {
 	T arg;
 
-	public CommandWithArgument(T arg) {
+	public UpdateWithArgument(T arg) {
 		this.arg = arg;
 	}
 

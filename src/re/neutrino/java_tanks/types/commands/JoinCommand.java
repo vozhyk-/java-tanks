@@ -6,15 +6,16 @@ import re.neutrino.java_tanks.types.CommunicationStream;
 import re.neutrino.java_tanks.types.basic.NetString;
 
 public class JoinCommand extends CommandWithArgument<NetString> {
-	public JoinCommand(NetString nick) {
-		arg = nick;
+	public JoinCommand(NetString nickname) {
+		super(nickname);
 	}
 
+	@Override
 	public Type getType() {
 		return Type.Join;
 	}
 
-	public String getNick() {
+	public String getNickname() {
 		return arg.getValue();
 	}
 

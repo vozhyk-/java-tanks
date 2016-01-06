@@ -46,7 +46,7 @@ public class Server {
 		    	}
 
 		    	debug.print(DebugLevel.Info,
-		    			"incoming connection", socket.getInetAddress());
+		    			"incoming connection", socket.getRemoteSocketAddress());
 
 		    	new Thread(new ConnectionThread(game, socket, debug)).start();
 		    }

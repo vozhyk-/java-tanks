@@ -1,9 +1,11 @@
-package re.neutrino.java_tanks.types;
+package re.neutrino.java_tanks.types.basic;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
-import re.neutrino.java_tanks.types.basic.*;
+import re.neutrino.java_tanks.types.Communicable;
+import re.neutrino.java_tanks.types.CommunicationStream;
 
 public class UInt16 extends WrappedType<Integer> implements Communicable {
 	public UInt16(Integer value) {
@@ -14,10 +16,11 @@ public class UInt16 extends WrappedType<Integer> implements Communicable {
 		return value;
 	}
 
+	@Override
 	public void send(CommunicationStream comm) throws IOException {
-		ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES).putInt(value);
+		byte[] buf = ByteBuffer.allocate(Integer.BYTES).putInt(value).array();
 		// Take 2 least-significant bytes
-		byte[] truncated = ByteBuffer.wrap(buf.array(), 2, 2).array();
+		byte[] truncated = Arrays.copyOfRange(buf, 2, 4);
 
 		comm.sendAll(truncated);
 	}
@@ -30,7 +33,7 @@ public class UInt16 extends WrappedType<Integer> implements Communicable {
 		short signed = ByteBuffer.wrap(buf).getShort();
 		int result = signed > 0 ?
 				signed :
-				(int)-signed + 2 << 16;
+				-signed + (2 << 16);
 
 		return new UInt16(result);
 	}

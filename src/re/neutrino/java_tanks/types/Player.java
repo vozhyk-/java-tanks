@@ -1,11 +1,12 @@
 package re.neutrino.java_tanks.types;
 
-import re.neutrino.java_tanks.types.Player.State;
+import java.io.IOException;
+
 import re.neutrino.java_tanks.types.basic.*;
 
-public class Player {
+public class Player implements Communicable {
 	State state;
-	boolean isConnected;
+	Bool isConnected;
 	final Int16 id;
 	NetString nickname;
 	Int16 hitpoints;
@@ -15,7 +16,7 @@ public class Player {
 
 	public Player(
 			State state,
-			boolean isConnected,
+			Bool isConnected,
 			Int16 id,
 			NetString nickname,
 			Int16 hitpoints,
@@ -43,7 +44,7 @@ public class Player {
 			short abilityCooldown) {
 		this(
 			state,
-			isConnected,
+			new Bool(isConnected),
 			new Int16(id),
 			new NetString(nickname),
 			new Int16(hitpoints),
@@ -52,12 +53,36 @@ public class Player {
 			new Int16(abilityCooldown));
 	}
 
+	@Override
+	public void send(CommunicationStream comm) throws IOException {
+		state.send(comm);
+		isConnected.send(comm);
+		id.send(comm);
+		nickname.send(comm);
+		hitpoints.send(comm);
+		pos.send(comm);
+		abilityId.send(comm);
+		abilityCooldown.send(comm);
+	}
+
+	public static Player recv(CommunicationStream comm) throws IOException {
+		return new Player(
+				State.recv(comm),
+				Bool.recv(comm),
+				Int16.recv(comm),
+				NetString.recv(comm),
+				Int16.recv(comm),
+				MapPosition.recv(comm),
+				Int16.recv(comm),
+				Int16.recv(comm));
+	}
+
 	public boolean isConnected() {
-		return isConnected;
+		return isConnected.getValue();
 	}
 
 	public void setConnected(boolean isConnected) {
-		this.isConnected = isConnected;
+		this.isConnected = new Bool(isConnected);
 	}
 
 	public Int16 getId() {
@@ -76,8 +101,14 @@ public class Player {
 		this.state = state;
 	}
 
-	public enum State {
+	public enum State implements CommunicableEnum<State> {
 		NoPlayer, Joined, Ready, Waiting, Active, Dead,
-		Winner, Loser
+		Winner, Loser;
+
+		static State[] values = values();
+
+		public static State recv(CommunicationStream comm) throws IOException {
+			return CommunicableEnum.recv(comm, values);
+		}
 	}
 }

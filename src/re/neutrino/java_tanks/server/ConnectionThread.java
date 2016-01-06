@@ -4,13 +4,9 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 
-import re.neutrino.java_tanks.debug.DebugLevel;
-import re.neutrino.java_tanks.debug.DebugStream;
-import re.neutrino.java_tanks.types.CommunicationStream;
-import re.neutrino.java_tanks.types.JoinReply;
-import re.neutrino.java_tanks.types.commands.Command;
-import re.neutrino.java_tanks.types.commands.GetMapCommand;
-import re.neutrino.java_tanks.types.commands.JoinCommand;
+import re.neutrino.java_tanks.debug.*;
+import re.neutrino.java_tanks.types.*;
+import re.neutrino.java_tanks.types.commands.*;
 
 public class ConnectionThread implements Runnable {
 	Game game;
@@ -70,6 +66,10 @@ public class ConnectionThread implements Runnable {
 			processCommand((JoinCommand)cmd);
 			break;
 
+		case GetChanges:
+			processCommand((GetChangesCommand)cmd);
+			break;
+
 		case GetMap:
 			processCommand((GetMapCommand)cmd);
 			break;
@@ -81,7 +81,7 @@ public class ConnectionThread implements Runnable {
 	}
 
 	private void processCommand(JoinCommand cmd) throws IOException {
-		String nickname = cmd.getNick();
+		String nickname = cmd.getNickname();
 		JoinReply jr = game.tryJoin(nickname);
 
 		if (jr.getType() == JoinReply.Type.Ok)
@@ -94,6 +94,10 @@ public class ConnectionThread implements Runnable {
 		debug.print(DebugLevel.Info,
 				"send map", "Received GetMap. Sending map...");
 		game.getMap().send(comm);
+	}
+
+	private void processCommand(GetChangesCommand cmd) throws IOException {
+		client.getUpdates().sendAndClear(comm);
 	}
 
 	private void disconnectClient() {

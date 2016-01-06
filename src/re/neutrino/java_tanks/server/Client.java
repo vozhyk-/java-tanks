@@ -1,11 +1,11 @@
 package re.neutrino.java_tanks.server;
 
-import java.util.LinkedList;
 import re.neutrino.java_tanks.types.*;
+import re.neutrino.java_tanks.types.updates.*;
 
 public class Client {
 	final Player player;
-    LinkedList<Update> updates = new LinkedList<>();
+    final UpdateQueue updates = new UpdateQueue();
 
 	//pthread_mutex_t updates_mutex;
 
@@ -24,12 +24,8 @@ public class Client {
 		return player;
 	}
 
-    public LinkedList<Update> getUpdates() {
+    public UpdateQueue getUpdates() {
 		return updates;
-	}
-
-	public void setUpdates(LinkedList<Update> updates) {
-		this.updates = updates;
 	}
 
 	public void changeState(Player.State state) {
