@@ -5,9 +5,9 @@ public class Main {
 		parseCommandLine(args);
 		GUI GUIframe = new GUI();
 	}
-	
+
 	private static void parseCommandLine(String[] args) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

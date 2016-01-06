@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 
 public class GUI extends JFrame {
 	JPanel cur_panel;
-	
+
 	public GUI() throws HeadlessException {
 		// TODO Auto-generated constructor stub
 		super();
@@ -25,7 +25,7 @@ public class GUI extends JFrame {
 		setSize(320, 240);
 		setVisible(true);
 	}
-	
+
 	public GUI(GraphicsConfiguration arg0) {
 		super(arg0);
 		// TODO Auto-generated constructor stub

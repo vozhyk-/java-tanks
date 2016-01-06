@@ -3,9 +3,9 @@ package re.neutrino.java_tanks.types;
 import java.io.IOException;
 import java.util.Random;
 
-import re.neutrino.java_tanks.types.basic.*;
+import re.neutrino.java_tanks.types.basic.Int32;
 
-public class GameMap {
+public class GameMap implements Communicable {
 	public static class Info implements Communicable {
 		// TODO Change to UInt32
 		final Int32 seed;
@@ -36,6 +36,7 @@ public class GameMap {
 			return height.getSimpleValue();
 		}
 
+		@Override
 		public void send(CommunicationStream comm) throws IOException {
 			seed.send(comm);
 			length.send(comm);
@@ -75,6 +76,15 @@ public class GameMap {
 	            content[i] = (short) (cur_height + (rand.nextInt() % 2));
 	        cur_height = content[i];
 	    }
+	}
+
+	@Override
+	public void send(CommunicationStream comm) throws IOException {
+		info.send(comm);
+	}
+
+	public static GameMap recv(CommunicationStream comm) throws IOException {
+		return new GameMap(Info.recv(comm));
 	}
 
 	public MapPosition newPlayerPos() {

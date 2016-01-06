@@ -17,7 +17,7 @@ public class MainMenuPanel extends JPanel implements ActionListener, ItemListene
 	JTextField name_entry;
 	JButton new_game;
 	JButton random_game;
-	
+
 	public MainMenuPanel() {
 		GridLayout layout = new GridLayout(4,1);
 		layout.setVgap(20);
@@ -43,7 +43,7 @@ public class MainMenuPanel extends JPanel implements ActionListener, ItemListene
 		random_game.addActionListener(this);
 		add(random_game);
 
-        setBorder(BorderFactory.createEmptyBorder(20,20,20,20));        
+        setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 	}
 
 	public MainMenuPanel(LayoutManager arg0) {
