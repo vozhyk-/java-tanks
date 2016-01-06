@@ -127,8 +127,9 @@ public class Game {
 			debug.print(DebugLevel.Info, "join", "Game already in progress");
 
 			if (nicknameFound) {
-				if (cl.getPlayer().isConnected()) {
-					debug.print(DebugLevel.Info, "join", "Player rejoins");
+				if (!cl.getPlayer().isConnected()) {
+					debug.print(DebugLevel.Info,
+							"join", cl.getPlayer() + " rejoins");
 					cl.getPlayer().setConnected(true);
 
 					return joinOk(cl);
@@ -145,8 +146,9 @@ public class Game {
 			if (nicknameFound) {
 				return joinNicknameTaken(nickname);
 			} else {
-				debug.print(DebugLevel.Info, "join", "New player: " + nickname);
 				cl = new Client(nickname, this);
+				debug.print(DebugLevel.Info,
+						"join", "New player: " + cl.getPlayer());
 
 				/* Notify all other clients of the new player
 	             * and then add the new client to the array */
@@ -213,5 +215,43 @@ public class Game {
 		cl.changeState(Player.State.Active);
 
 	    started = true;
+	}
+
+	/**
+	 * Marks the player as disconnected
+	 * or removes it if the game hasn't started yet
+	 */
+	public void disconnectClient(Client cl)
+	{
+		/* calling thread has no client, nothing to do */
+	    if (cl == null)
+	        return;
+
+	    if (!started) // still in lobby, can delete players
+	    {
+	        deleteClient(cl);
+	    }
+	    else
+	    {
+	        /* Mark current player as disconnected and add an update about it */
+	        Player player = cl.getPlayer();
+
+	        debug.print(DebugLevel.Info,
+	        		"player disconnected", player.getNickname());
+
+	        player.setConnected(false);
+	    }
+	}
+
+	private void deleteClient(Client cl) {
+		// TODO locking
+		/* Notify clients of the player being deleted */
+        debug.print(DebugLevel.Info,
+        		"removing player", cl.getPlayer());
+        allAddUpdate(new PlayerUpdate(
+        		Update.Type.DelPlayer, cl.getPlayer()));
+
+		clients.removeIf(c ->
+			c.getPlayer().equals(cl.getPlayer()));
 	}
 }

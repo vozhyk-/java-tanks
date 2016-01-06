@@ -57,7 +57,7 @@ public class ConnectionThread implements Runnable {
 	    /* TODO print (stored) client IP */
 	    debug.print(DebugLevel.Info, "client closed connection");
 
-	    disconnectClient();
+	    game.disconnectClient(client);
 	}
 
 	private void processCommand(Command cmd) throws IOException {
@@ -108,10 +108,5 @@ public class ConnectionThread implements Runnable {
 
 	private void processCommand(GetChangesCommand cmd) throws IOException {
 		client.getUpdates().sendAndClear(comm);
-	}
-
-	private void disconnectClient() {
-		// TODO Auto-generated method stub
-
 	}
 }

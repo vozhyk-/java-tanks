@@ -53,6 +53,15 @@ public class Player implements Communicable {
 			new Int16(abilityCooldown));
 	}
 
+	public boolean equals(Player other) {
+		return id.getSimpleValue() == other.id.getSimpleValue();
+	}
+
+	@Override
+	public String toString() {
+		return "Player#" + id + "(" + nickname + ")";
+	}
+
 	@Override
 	public void send(CommunicationStream comm) throws IOException {
 		state.send(comm);
