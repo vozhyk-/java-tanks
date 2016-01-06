@@ -49,31 +49,6 @@ public class Game {
 		started = false;
 	}
 
-	void start() {
-		/* TODO move tanks_map creation to process_shoot_command? */
-	    //tanks_map = map_with_tanks();
-
-//		lock_clients_array();                                        /* {{{ */
-//	    /* Mark all players as waiting for their turns */
-//	    for (int i = 1; i < clients.count; i++)
-//	    {
-//	        struct client *cl = p_dyn_arr_get(&clients, i);
-//
-//	        player_change_state(cl->player, PS_WAITING);
-//	    }
-
-	    /* Give turn to the first player */
-	    /* Assume the first player is the first client.
-	     * May become not true in the future?
-	     */
-		Client cl = clients.get(0);
-//	    unlock_clients_array();                                      /* }}} */
-
-		cl.changeState(Player.State.Active);
-
-	    started = true;
-	}
-
 	public void allAddUpdate(Update upd) {
 		// TODO lock clients
 		for (Client cl : clients)
@@ -158,16 +133,47 @@ public class Game {
 		/* Tell the new/returning client about
 		 * all existing clients,
 		 * current config,
-		 * possible abilities
+		 * available abilities
 		 */
 		// TODO locking
+		UpdateQueue uq = cl.getUpdates();
 		for (Client other : clients)
-			cl.getUpdates().add(
+			uq.add(
 					new PlayerUpdate(Update.Type.AddPlayer,
 							other.getPlayer()));
-		// TODO add config updates
+
+		for (Config.Item i : config.getItems())
+			uq.add(i.toUpdate());
+
 		// TODO add ability updates
 
 		return JoinReply.ok(cl);
+	}
+
+	public void tryStart() {
+		if (clients.stream().allMatch(cl ->
+				cl.getPlayer().getState() == Player.State.Ready))
+			start();
+	}
+
+	void start() {
+		/* TODO move tanks_map creation to process_shoot_command? */
+	    //tanks_map = map_with_tanks();
+
+//		lock_clients_array();                                        /* {{{ */
+	    /* Mark all players as waiting for their turns */
+	    for (Client cl : clients)
+	    	cl.changeState(Player.State.Waiting);
+
+	    /* Give turn to the first player */
+	    /* Assume the first player is the first client.
+	     * May become not true in the future?
+	     */
+		Client cl = clients.get(0);
+//	    unlock_clients_array();                                      /* }}} */
+
+		cl.changeState(Player.State.Active);
+
+	    started = true;
 	}
 }

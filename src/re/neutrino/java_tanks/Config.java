@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import re.neutrino.java_tanks.debug.*;
+import re.neutrino.java_tanks.types.updates.ConfigUpdate;
 
 public class Config {
 	List<Item> items = Arrays.asList(
@@ -53,7 +54,15 @@ public class Config {
 					"config_set", "No option found in config: " + name);
 	}
 
-	class Item {
+	public List<Item> getItems() {
+		return items;
+	}
+
+	public void update(ConfigUpdate u) {
+		set(u.getOptionName(), u.getOptionValue());
+	}
+
+	public class Item {
 		final String name;
 		int value;
 		final int min;
@@ -84,6 +93,10 @@ public class Config {
 
 		public int getMax() {
 			return max;
+		}
+
+		public ConfigUpdate toUpdate() {
+			return new ConfigUpdate(name, value);
 		}
 	}
 }

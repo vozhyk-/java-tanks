@@ -2,9 +2,7 @@ package re.neutrino.java_tanks.types.updates;
 
 import java.io.IOException;
 
-import re.neutrino.java_tanks.types.Communicable;
-import re.neutrino.java_tanks.types.CommunicableEnum;
-import re.neutrino.java_tanks.types.CommunicationStream;
+import re.neutrino.java_tanks.types.*;
 
 public abstract class Update implements Communicable {
 	public abstract Type getType();
@@ -22,7 +20,7 @@ public abstract class Update implements Communicable {
 
 		switch(type) {
 		case Empty: return EmptyUpdate.recvRest(comm);
-	    //case Config: return ConfigUpdate.recvRest(comm);
+	    case Config: return ConfigUpdate.recvRest(comm);
 	    //case Ability: return AbilityUpdate.recvRest(comm);
 	    //case Shot: case AbilityUse:
 	    //	return ShotUpdate.recvRest(comm, type);
