@@ -66,6 +66,44 @@ public class Game {
 		return result;
 	}
 
+	/**
+	 * Helper for newPlayerX()
+	 * @return true if there is a player
+	 * 	       that is too close to x.
+	 */
+	boolean playerXTooClose(short x) {
+	    int tankDistance = config.get("tank_distance");
+
+	    // TODO locking
+	    return clients.stream().anyMatch(cl ->
+	    	Math.abs(cl.getPlayer().getPos().getX() - x)
+	    	< tankDistance);
+	}
+
+	short newPlayerX() {
+	    int notank_margin = config.get("map_margin");
+	    short x;
+
+	    /* Generate position until it isn't too close to other tanks */
+	    do
+	        x = (short) (notank_margin
+	            + Math.abs(rand.nextInt()) %
+	            (map.getInfo().getLength() - 2 * notank_margin));
+	    while (playerXTooClose(x));
+
+	    return x;
+	}
+
+	short newPlayerY(short x) {
+		return (short) (map.get(x) - 1);
+	}
+
+	MapPosition newPlayerPos() {
+		short x = newPlayerX();
+
+		return new MapPosition(x, newPlayerY(x));
+	}
+
 	public Player newPlayer(String nickname) {
 		return new Player(
 				Player.State.Joined,
@@ -73,7 +111,7 @@ public class Game {
 				nextPlayerId(),
 				nickname,
 				(short)config.get("tank_hp"),
-				map.newPlayerPos(),
+				newPlayerPos(),
 				(short)0,
 				(short)0);
 	}

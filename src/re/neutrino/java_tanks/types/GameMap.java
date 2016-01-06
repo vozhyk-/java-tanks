@@ -52,7 +52,7 @@ public class GameMap implements Communicable {
 		}
 	}
 
-	Info info;
+	final Info info;
 	short[] content;
 
 	public GameMap(Info info) {
@@ -63,18 +63,23 @@ public class GameMap implements Communicable {
 		generate();
 	}
 
+	public Info getInfo() {
+		return info;
+	}
+
+	public short get(short x) {
+		return content[x];
+	}
+
 	private void generate() {
 		// TODO map terrain types, for now just flat terrain
 	    int cur_height = info.getHeight() / 2;
 
 	    Random rand = new Random(info.getSeed());
 
-	    for (int i=0; i < info.getLength(); i++)
+	    for (int i = 0; i < info.getLength(); i++)
 	    {
-	        if (rand.nextInt() % 2 == 1)
-	            content[i] = (short) (cur_height - (rand.nextInt() % 2));
-	        else
-	            content[i] = (short) (cur_height + (rand.nextInt() % 2));
+	        content[i] = (short) (cur_height + (rand.nextInt() % 2));
 	        cur_height = content[i];
 	    }
 	}
@@ -86,10 +91,5 @@ public class GameMap implements Communicable {
 
 	public static GameMap recv(CommunicationStream comm) throws IOException {
 		return new GameMap(Info.recv(comm));
-	}
-
-	public MapPosition newPlayerPos() {
-		// TODO Auto-generated method stub
-		return new MapPosition((short)0, (short)0);
 	}
 }

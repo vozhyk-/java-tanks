@@ -77,6 +77,14 @@ public class Player implements Communicable {
 				Int16.recv(comm));
 	}
 
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
+	}
+
 	public boolean isConnected() {
 		return isConnected.getValue();
 	}
@@ -93,12 +101,8 @@ public class Player implements Communicable {
 		return nickname.getValue();
 	}
 
-	public State getState() {
-		return state;
-	}
-
-	public void setState(State state) {
-		this.state = state;
+	public MapPosition getPos() {
+		return pos;
 	}
 
 	public enum State implements CommunicableEnum<State> {
