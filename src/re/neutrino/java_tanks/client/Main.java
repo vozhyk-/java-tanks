@@ -12,6 +12,7 @@ public class Main {
 	public static DebugStream debug;
 	public static GameMap map;
 	public static Int16 PlayerID;
+	public static UpdateQueue updates;
 	public static void main(String[] args) {
 		try {
 			debug = new DebugStream("client.debug");
