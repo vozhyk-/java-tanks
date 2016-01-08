@@ -6,7 +6,10 @@ import java.net.UnknownHostException;
 
 import re.neutrino.java_tanks.debug.DebugLevel;
 import re.neutrino.java_tanks.types.*;
+import re.neutrino.java_tanks.types.basic.Bool;
 import re.neutrino.java_tanks.types.commands.*;
+import re.neutrino.java_tanks.types.updates.ConfigUpdate;
+import re.neutrino.java_tanks.types.updates.PlayerUpdate;
 import re.neutrino.java_tanks.types.updates.Update;
 
 public class ClientConnection {
@@ -40,8 +43,9 @@ public class ClientConnection {
 		}
 	}
 
-	void joinServer(String nick) {
+	Boolean joinServer(String nick) {
 		send_command(new JoinCommand(nick));
+		Boolean ret=true;
 		try {
 			JoinReply jr = JoinReply.recv(comm);
 			switch (jr.getType()) {
@@ -50,18 +54,23 @@ public class ClientConnection {
 				Main.debug.print(DebugLevel.Debug, "Join");
 				break;
 			case GameInProgress:
+				ret=false;
 				Main.debug.print(DebugLevel.Debug, "Game in progress");
 				break;
 			case NicknameTaken:
 				Main.debug.print(DebugLevel.Debug, "Nickname is taken");
+				ret=false;
 				break;
 			default:
 				Main.debug.print(DebugLevel.Warn, "Invalid JoinReply");
+				ret=false;
 				break;
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			return ret;
 		}
 	}
 
@@ -85,11 +94,16 @@ public class ClientConnection {
 					case Empty:
 						break;
 					case Config:
+						Game.conf.update((ConfigUpdate) i);
+						break;
+					case AddPlayer:
+						Game.players.add((PlayerUpdate) i);
 						break;
 					case Player:
+						Game.players.update((PlayerUpdate) i);
 						break;
 					default:
-						Main.debug.print(DebugLevel.Warn, "Received unknown update");
+						Main.debug.print(DebugLevel.Warn, "Received unknown update", i.getType());
 				}
 			}
 		} catch (IOException e) {

@@ -1,16 +1,20 @@
 package re.neutrino.java_tanks.client;
 
+import re.neutrino.java_tanks.Config;
 import re.neutrino.java_tanks.types.GameMap;
 import re.neutrino.java_tanks.types.basic.Int16;
 
 public class Game {
 	public static GameMap map;
 	public static Int16 PlayerID;
+	public static Config conf = new Config(Main.debug);
+	public static PlayersList players = new PlayersList();
 	
 	Game(String nick) {
-		Main.con.joinServer(nick);
-		Main.con.fetch_map();
-		Main.con.fetch_changes();
-		Main.GUIframe.changePane(Main.GUIframe.Lobby);
+		if (Main.con.joinServer(nick)) {
+			Main.con.fetch_map();
+			Main.con.fetch_changes();
+			Main.GUIframe.changePane(Main.GUIframe.Lobby);
+		}
 	}
 }
