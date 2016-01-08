@@ -3,16 +3,12 @@ package re.neutrino.java_tanks.client;
 import java.io.IOException;
 
 import re.neutrino.java_tanks.debug.*;
-import re.neutrino.java_tanks.types.*;
-import re.neutrino.java_tanks.types.basic.*;
 
 public class Main {
 	public static GUI GUIframe;
 	public static ClientConnection con = null;
 	public static DebugStream debug;
-	public static GameMap map;
-	public static Int16 PlayerID;
-	public static UpdateQueue updates;
+	public static Game game;
 	public static void main(String[] args) {
 		try {
 			debug = new DebugStream("client.debug");

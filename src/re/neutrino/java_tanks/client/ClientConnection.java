@@ -2,6 +2,7 @@ package re.neutrino.java_tanks.client;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import re.neutrino.java_tanks.debug.DebugLevel;
 import re.neutrino.java_tanks.types.*;
@@ -12,17 +13,24 @@ import re.neutrino.java_tanks.types.updates.Update;
 public class ClientConnection {
 	Socket socket;
 	CommunicationStream comm;
+	private Exception iOException;
 	
-	public ClientConnection(Socket socket) {
-		this.socket = socket;
+	public ClientConnection(String ip) throws Exception {
+		iOException = null;
 		try {
+			Main.debug.print(DebugLevel.Debug, "Try to connect");
+			socket = new Socket(ip, 7979);
 			comm = new CommunicationStream(
 					socket.getInputStream(),
 					socket.getOutputStream());
+		} catch (UnknownHostException e) {
+			Main.debug.print(DebugLevel.Debug, "Host unknown");
+			throw iOException;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Main.debug.print(DebugLevel.Debug, "Can't open socket");
+			throw iOException;
 		}
+		Main.debug.print(DebugLevel.Debug, "Connected");
 	}
 
 	void joinServer(String nick) {
@@ -37,7 +45,7 @@ public class ClientConnection {
 			JoinReply jr = JoinReply.recv(comm);
 			switch (jr.getType()) {
 			case Ok:
-				//Main.PlayerID=jr.getClient().getPlayer().getId();
+				Game.PlayerID = jr.getPlayerId();
 				Main.debug.print(DebugLevel.Debug, "Join");
 				break;
 			case GameInProgress:
@@ -60,7 +68,7 @@ public class ClientConnection {
 		GetMapCommand gm = new GetMapCommand();
 		try {
 			gm.send(comm);
-			Main.map = GameMap.recv(comm);
+			Game.map = GameMap.recv(comm);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -69,8 +77,8 @@ public class ClientConnection {
 
 	void fetch_changes() {
 		try {
-			Main.updates = UpdateQueue.recv(comm);
-			for (Update i:Main.updates) {
+			UpdateQueue uq = UpdateQueue.recv(comm);
+			for (Update i:uq) {
 				switch (i.getType()) {
 					case Empty:
 						Main.debug.print(DebugLevel.Debug, "Received empty update");

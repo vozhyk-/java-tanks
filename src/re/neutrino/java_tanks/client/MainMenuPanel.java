@@ -6,16 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
-import re.neutrino.java_tanks.debug.DebugLevel;
 
 public class MainMenuPanel extends JPanel implements ActionListener, ItemListener {
 	JTextField ip_entry;
@@ -77,7 +72,7 @@ public class MainMenuPanel extends JPanel implements ActionListener, ItemListene
 		if (ip_entry == arg0.getSource()) {
 			tryConnect(ip_entry.getText());
 		} else if (new_game == arg0.getSource()) {
-			newGame(name_entry.getText());
+			Main.game = new Game(name_entry.getText());
 		}
 	}
 
@@ -86,28 +81,12 @@ public class MainMenuPanel extends JPanel implements ActionListener, ItemListene
 			if (Main.con != null) {
 				Main.con.socket.close();
 			}
+			Main.con = new ClientConnection(ip);
 			new_game.setEnabled(true);
-			Main.debug.print(DebugLevel.Debug, "Try to connect");
-			Socket s = new Socket(ip, 7979);
-			Main.con = new ClientConnection(s);
-			Main.debug.print(DebugLevel.Debug, "Connected");
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			Main.debug.print(DebugLevel.Debug, "Host unknown");
-			new_game.setEnabled(false);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			Main.debug.print(DebugLevel.Debug, "Can't open socket");
+		} catch (Exception e) {
 			new_game.setEnabled(false);
 		}
 	}
 
-	void newGame(String nick) {
-		Main.con.joinServer(nick);
-		//Main.con.fetch_map();
-		//Main.con.fetch_changes();
-		Main.GUIframe.changePane(Main.GUIframe.Lobby);
-	}
+	
 }
