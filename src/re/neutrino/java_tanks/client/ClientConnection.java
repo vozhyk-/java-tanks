@@ -33,14 +33,16 @@ public class ClientConnection {
 		Main.debug.print(DebugLevel.Debug, "Connected");
 	}
 
-	void joinServer(String nick) {
-		JoinCommand jc = new JoinCommand(new NetString(nick));
+	void close() {
 		try {
-			jc.send(comm);
+			socket.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Main.debug.print(DebugLevel.Err, "socket close");
 		}
+	}
+
+	void joinServer(String nick) {
+		send_command(new JoinCommand(new NetString(nick)));
 		try {
 			JoinReply jr = JoinReply.recv(comm);
 			switch (jr.getType()) {
@@ -55,7 +57,7 @@ public class ClientConnection {
 				Main.debug.print(DebugLevel.Debug, "Nickname is taken");
 				break;
 			default:
-				Main.debug.print(DebugLevel.Debug, "Invalid JoinReply");
+				Main.debug.print(DebugLevel.Warn, "Invalid JoinReply");
 				break;
 			}
 		} catch (IOException e) {
@@ -65,9 +67,8 @@ public class ClientConnection {
 	}
 	
 	void fetch_map() {
-		GetMapCommand gm = new GetMapCommand();
+		send_command(new GetMapCommand());
 		try {
-			gm.send(comm);
 			Game.map = GameMap.recv(comm);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -76,26 +77,38 @@ public class ClientConnection {
 	}
 
 	void fetch_changes() {
+		send_command(new GetChangesCommand());
 		try {
 			UpdateQueue uq = UpdateQueue.recv(comm);
 			for (Update i:uq) {
+				Main.debug.print(DebugLevel.Debug, "recv update", i);
 				switch (i.getType()) {
 					case Empty:
-						Main.debug.print(DebugLevel.Debug, "Received empty update");
 						break;
 					case Config:
-						Main.debug.print(DebugLevel.Debug, "Received config update");
 						break;
 					case Player:
-						Main.debug.print(DebugLevel.Debug, "Received player update");
 						break;
 					default:
-						Main.debug.print(DebugLevel.Debug, "Received unknown update");
+						Main.debug.print(DebugLevel.Warn, "Received unknown update");
 				}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+
+	void send_ready() {
+		send_command(new ReadyCommand());
+	}
+
+	void send_command(Command cmd) {
+		try {
+			Main.debug.print(DebugLevel.Debug, "send cmd", cmd);
+			cmd.send(comm);
+		} catch (IOException e) {
+			Main.debug.print(DebugLevel.Err, "cmd send err", cmd);
 		}
 	}
 }

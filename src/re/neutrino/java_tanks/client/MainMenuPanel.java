@@ -44,6 +44,8 @@ public class MainMenuPanel extends JPanel implements ActionListener, ItemListene
 		add(random_game);
 
         setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
+
+        tryConnect("127.0.0.1");
 	}
 
 	public MainMenuPanel(LayoutManager arg0) {
@@ -79,7 +81,7 @@ public class MainMenuPanel extends JPanel implements ActionListener, ItemListene
 	void tryConnect(String ip) {
 		try {
 			if (Main.con != null) {
-				Main.con.socket.close();
+				Main.con.close();
 			}
 			Main.con = new ClientConnection(ip);
 			new_game.setEnabled(true);
@@ -87,6 +89,4 @@ public class MainMenuPanel extends JPanel implements ActionListener, ItemListene
 			new_game.setEnabled(false);
 		}
 	}
-
-	
 }

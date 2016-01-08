@@ -8,14 +8,27 @@ import java.awt.event.ItemListener;
 
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 
 public class LobbyPanel extends JPanel implements ActionListener, ItemListener {
+	JButton return_b;
+	JButton ready_b;
 
 	public LobbyPanel() {
-		GridLayout layout = new GridLayout(1,1);
+		GridLayout layout = new GridLayout(1,2);
 		layout.setVgap(20);
 		setLayout(layout);
 		
+		return_b = new JButton("return");
+		return_b.setEnabled(true);
+		return_b.addActionListener(this);
+		add(return_b);
+
+		ready_b = new JButton("ready");
+		ready_b.setEnabled(true);
+		ready_b.addActionListener(this);
+		add(ready_b);
+
 		setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 	}
 	
@@ -27,8 +40,12 @@ public class LobbyPanel extends JPanel implements ActionListener, ItemListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-
+		if (ready_b == e.getSource()) {
+			Main.con.send_ready();
+			ready_b.setEnabled(false);
+		} else if (return_b == e.getSource()) {
+			Main.GUIframe.changePane(Main.GUIframe.MainMenu);
+		}
 	}
 
 }

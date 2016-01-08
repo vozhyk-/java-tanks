@@ -9,8 +9,8 @@ public class Game {
 	
 	Game(String nick) {
 		Main.con.joinServer(nick);
-		//Main.con.fetch_map();
-		//Main.con.fetch_changes();
+		Main.con.fetch_map();
+		Main.con.fetch_changes();
 		Main.GUIframe.changePane(Main.GUIframe.Lobby);
 	}
 }
