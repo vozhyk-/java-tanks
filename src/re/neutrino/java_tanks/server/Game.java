@@ -237,7 +237,7 @@ public class Game {
 	        Player player = cl.getPlayer();
 
 	        debug.print(DebugLevel.Info,
-	        		"player disconnected", player.getNickname());
+	        		"player disconnected", player);
 
 	        player.setConnected(false);
 	    }

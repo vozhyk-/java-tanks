@@ -54,7 +54,7 @@ public class Player implements Communicable {
 	}
 
 	public boolean equals(Player other) {
-		return id.getSimpleValue() == other.id.getSimpleValue();
+		return id.equals(other.id);
 	}
 
 	@Override
