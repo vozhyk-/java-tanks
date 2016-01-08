@@ -1,9 +1,9 @@
 package re.neutrino.java_tanks.client;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 
+import re.neutrino.java_tanks.debug.DebugLevel;
 import re.neutrino.java_tanks.types.*;
 import re.neutrino.java_tanks.types.basic.*;
 import re.neutrino.java_tanks.types.commands.*;
@@ -32,9 +32,36 @@ public class ClientConnection {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		try {
+			JoinReply jr = JoinReply.recv(comm);
+			switch (jr.getType()) {
+			case Ok:
+				//Main.PlayerID=jr.getClient().getPlayer().getId();
+				Main.debug.print(DebugLevel.Debug, "Join");
+				break;
+			case GameInProgress:
+				Main.debug.print(DebugLevel.Debug, "Game in progress");
+				break;
+			case NicknameTaken:
+				Main.debug.print(DebugLevel.Debug, "Nickname is taken");
+				break;
+			default:
+				Main.debug.print(DebugLevel.Debug, "Invalid JoinReply");
+				break;
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
-	private void sendCommand(char command) {
-		//comm.sendInt8(command);
+	void fetch_map() {
+		GetMapCommand gm = new GetMapCommand();
+		try {
+			gm.send(comm);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

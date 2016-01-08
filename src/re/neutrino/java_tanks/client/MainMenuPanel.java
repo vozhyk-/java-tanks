@@ -106,5 +106,6 @@ public class MainMenuPanel extends JPanel implements ActionListener, ItemListene
 
 	void newGame(String nick) {
 		Main.con.joinServer(nick);
+		Main.GUIframe.changePane(Main.GUIframe.Lobby);
 	}
 }

@@ -8,11 +8,14 @@ import javax.swing.JPanel;
 
 public class GUI extends JFrame {
 	JPanel cur_panel;
+	JPanel MainMenu;
+	JPanel Lobby;
 
 	public GUI() throws HeadlessException {
 		// TODO Auto-generated constructor stub
 		super();
-		MainMenuPanel MainMenu = new MainMenuPanel();
+		MainMenu = new MainMenuPanel();
+		Lobby = new LobbyPanel();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		changePane(MainMenu);
 	}
