@@ -28,7 +28,7 @@ public class Config {
 	}
 
 	private Optional<Item> find(String name) {
-		return items.stream().filter(i -> i.name == name).findAny();
+		return items.stream().filter(i -> i.name.equals(name)).findAny();
 	}
 
 	public int get(String name) {
@@ -51,7 +51,7 @@ public class Config {
 		else
 			/* No such name found. Doing nothing about it for now. */
 			debug.print(DebugLevel.Err,
-					"config_set", "No option found in config: " + name);
+					"config.set", "No option found in config: " + name);
 	}
 
 	public List<Item> getItems() {

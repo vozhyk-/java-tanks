@@ -10,6 +10,10 @@ public class JoinCommand extends CommandWithArgument<NetString> {
 		super(nickname);
 	}
 
+	public JoinCommand(String nickname) {
+		super(new NetString(nickname));
+	}
+
 	@Override
 	public Type getType() {
 		return Type.Join;

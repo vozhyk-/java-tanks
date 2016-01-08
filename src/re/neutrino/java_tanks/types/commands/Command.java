@@ -7,11 +7,14 @@ import re.neutrino.java_tanks.types.basic.*;
 
 public abstract class Command implements Communicable {
 	public abstract Type getType();
+	@Override
+	public abstract String toString();
 
 	public abstract void sendRest(CommunicationStream comm) throws IOException;
 	// Subclasses must also implement:
 	// public static T recvRest(CommunicationStream comm) throws IOException
 
+	@Override
 	public void send(CommunicationStream comm) throws IOException {
 		getType().send(comm);
 		sendRest(comm);
@@ -91,6 +94,7 @@ public abstract class Command implements Communicable {
 			}
 		}
 
+		@Override
 		public void send(CommunicationStream comm) throws IOException {
 			realValue.send(comm);
 		}

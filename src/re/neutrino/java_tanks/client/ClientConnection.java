@@ -6,7 +6,6 @@ import java.net.UnknownHostException;
 
 import re.neutrino.java_tanks.debug.DebugLevel;
 import re.neutrino.java_tanks.types.*;
-import re.neutrino.java_tanks.types.basic.*;
 import re.neutrino.java_tanks.types.commands.*;
 import re.neutrino.java_tanks.types.updates.Update;
 
@@ -14,7 +13,7 @@ public class ClientConnection {
 	Socket socket;
 	CommunicationStream comm;
 	private Exception iOException;
-	
+
 	public ClientConnection(String ip) throws Exception {
 		iOException = null;
 		try {
@@ -42,7 +41,7 @@ public class ClientConnection {
 	}
 
 	void joinServer(String nick) {
-		send_command(new JoinCommand(new NetString(nick)));
+		send_command(new JoinCommand(nick));
 		try {
 			JoinReply jr = JoinReply.recv(comm);
 			switch (jr.getType()) {
@@ -65,7 +64,7 @@ public class ClientConnection {
 			e.printStackTrace();
 		}
 	}
-	
+
 	void fetch_map() {
 		send_command(new GetMapCommand());
 		try {

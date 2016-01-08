@@ -6,6 +6,8 @@ import re.neutrino.java_tanks.types.*;
 
 public abstract class Update implements Communicable {
 	public abstract Type getType();
+	@Override
+	public abstract String toString();
 
 	public abstract void sendRest(CommunicationStream comm) throws IOException;
 
