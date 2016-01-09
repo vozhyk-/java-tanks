@@ -51,7 +51,7 @@ public class LobbyPanel extends JPanel implements ActionListener, ItemListener {
 				   			.addComponent(ready_b))
 				   	);
 	}
-	
+
 	@Override
 	public void itemStateChanged(ItemEvent arg0) {
 		// TODO Auto-generated method stub
@@ -74,7 +74,7 @@ public class LobbyPanel extends JPanel implements ActionListener, ItemListener {
 	public void update_player_list() {
 		p_listModel.removeAllElements();
 		for (Player i:Game.players.getL()) {
-			p_listModel.addElement(i.getNickname().trim() + ", state: " + i.getState());
+			p_listModel.addElement(i.getNickname() + ", state: " + i.getState());
 		}
 		p_list = new JList<String>(p_listModel);
 		p_list.setPreferredSize(new Dimension(100, 40*Game.players.getL().size()));
