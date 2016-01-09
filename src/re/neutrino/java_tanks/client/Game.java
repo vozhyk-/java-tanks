@@ -9,11 +9,13 @@ public class Game {
 	public static Int16 PlayerID;
 	public static Config conf = new Config(Main.debug);
 	public static PlayersList players = new PlayersList();
-	
+	Thread changesThread;
+
 	Game(String nick) {
 		if (Main.con.joinServer(nick)) {
 			Main.con.fetch_map();
-			Main.con.fetch_changes();
+			changesThread = new Thread(Main.con.ct, "");
+			changesThread.start();
 			Main.GUIframe.changePane(Main.GUIframe.Lobby);
 		}
 	}

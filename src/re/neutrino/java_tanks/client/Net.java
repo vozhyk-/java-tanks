@@ -6,18 +6,18 @@ import java.net.UnknownHostException;
 
 import re.neutrino.java_tanks.debug.DebugLevel;
 import re.neutrino.java_tanks.types.*;
-import re.neutrino.java_tanks.types.basic.Bool;
 import re.neutrino.java_tanks.types.commands.*;
 import re.neutrino.java_tanks.types.updates.ConfigUpdate;
 import re.neutrino.java_tanks.types.updates.PlayerUpdate;
 import re.neutrino.java_tanks.types.updates.Update;
 
-public class ClientConnection {
+public class Net {
 	Socket socket;
 	CommunicationStream comm;
 	private Exception iOException;
+	ChangesThread ct = new ChangesThread();
 
-	public ClientConnection(String ip) throws Exception {
+	public Net(String ip) throws Exception {
 		iOException = null;
 		try {
 			Main.debug.print(DebugLevel.Debug, "Try to connect");
@@ -43,7 +43,8 @@ public class ClientConnection {
 		}
 	}
 
-	Boolean joinServer(String nick) {
+	@SuppressWarnings("finally")
+	boolean joinServer(String nick) {
 		send_command(new JoinCommand(nick));
 		Boolean ret=true;
 		try {
@@ -84,44 +85,76 @@ public class ClientConnection {
 		}
 	}
 
-	void fetch_changes() {
-		send_command(new GetChangesCommand());
-		try {
-			UpdateQueue uq = UpdateQueue.recv(comm);
-			for (Update i:uq) {
-				Main.debug.print(DebugLevel.Debug, "recv update", i);
-				switch (i.getType()) {
-					case Empty:
-						break;
-					case Config:
-						Game.conf.update((ConfigUpdate) i);
-						break;
-					case AddPlayer:
-						Game.players.add((PlayerUpdate) i);
-						break;
-					case Player:
-						Game.players.update((PlayerUpdate) i);
-						break;
-					default:
-						Main.debug.print(DebugLevel.Warn, "Received unknown update", i.getType());
-				}
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	void send_ready() {
 		send_command(new ReadyCommand());
 	}
 
-	void send_command(Command cmd) {
+	synchronized void send_command(Command cmd) {
 		try {
 			Main.debug.print(DebugLevel.Debug, "send cmd", cmd);
 			cmd.send(comm);
 		} catch (IOException e) {
 			Main.debug.print(DebugLevel.Err, "cmd send err", cmd);
+		}
+	}
+
+	public class ChangesThread implements Runnable {
+		private volatile boolean running = true;
+
+		void terminate() {
+			running=false;
+		}
+
+		void fetch_changes() {
+			send_command(new GetChangesCommand());
+			try {
+				UpdateQueue uq = UpdateQueue.recv(comm);
+				for (Update i:uq) {
+					Main.debug.print(DebugLevel.Debug, "recv update", i);
+					switch (i.getType()) {
+						case Empty:
+							break;
+						case Config:
+							synchronized (Game.conf) {
+								Game.conf.update((ConfigUpdate) i);
+							}
+							break;
+						case AddPlayer:
+							synchronized (Game.players) {
+								Game.players.add((PlayerUpdate) i);
+							}
+							break;
+						case Player:
+							synchronized (Game.players) {
+								Game.players.update((PlayerUpdate) i);
+							}
+							break;
+						default:
+							Main.debug.print(DebugLevel.Warn, "Received unknown update", i.getType());
+					}
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void run() {
+			while (running) {
+				synchronized (socket) {
+					if (!socket.isConnected() || socket.isClosed())
+						break;
+				}
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					running=false;
+				}
+				fetch_changes();
+			}
 		}
 	}
 }

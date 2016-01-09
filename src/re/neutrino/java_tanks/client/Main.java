@@ -6,9 +6,10 @@ import re.neutrino.java_tanks.debug.*;
 
 public class Main {
 	public static GUI GUIframe;
-	public static ClientConnection con = null;
+	public static Net con = null;
 	public static DebugStream debug;
 	public static Game game;
+
 	public static void main(String[] args) {
 		try {
 			debug = new DebugStream("client.debug");
@@ -24,6 +25,5 @@ public class Main {
 
 	private static void parseCommandLine(String[] args) {
 		// TODO Auto-generated method stub
-
 	}
 }

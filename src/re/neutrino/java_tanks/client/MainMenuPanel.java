@@ -83,7 +83,7 @@ public class MainMenuPanel extends JPanel implements ActionListener, ItemListene
 			if (Main.con != null) {
 				Main.con.close();
 			}
-			Main.con = new ClientConnection(ip);
+			Main.con = new Net(ip);
 			new_game.setEnabled(true);
 		} catch (Exception e) {
 			new_game.setEnabled(false);

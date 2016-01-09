@@ -16,7 +16,7 @@ public class GUI extends JFrame {
 		super();
 		MainMenu = new MainMenuPanel();
 		Lobby = new LobbyPanel();
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		changePane(MainMenu);
 	}
 
