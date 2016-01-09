@@ -25,7 +25,6 @@ public class GUI extends JFrame {
 		setContentPane(new_panel);
 		pack();
 		setLocationRelativeTo( null );
-		setSize(320, 240);
 		setVisible(true);
 	}
 

@@ -1,13 +1,13 @@
 package re.neutrino.java_tanks.client;
 
-import java.awt.GridLayout;
+import java.awt.Dimension;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-import javax.swing.BorderFactory;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -19,31 +19,46 @@ public class MainMenuPanel extends JPanel implements ActionListener, ItemListene
 	JButton random_game;
 
 	public MainMenuPanel() {
-		GridLayout layout = new GridLayout(4,1);
-		layout.setVgap(20);
+		GroupLayout layout = new GroupLayout(this);
 		setLayout(layout);
+		layout.setAutoCreateGaps(true);
+		layout.setAutoCreateContainerGaps(true);
 
 		ip_entry = new JTextField("127.0.0.1");
 		ip_entry.addActionListener(this);
 		ip_entry.setHorizontalAlignment(JTextField.CENTER);
-		add(ip_entry);
+		ip_entry.setPreferredSize(new Dimension(80,40));
 
 		name_entry = new JTextField(System.getProperty("user.name"));
 		name_entry.addActionListener(this);
 		name_entry.setHorizontalAlignment(JTextField.CENTER);
-		add(name_entry);
+		name_entry.setPreferredSize(new Dimension(80,40));
 
 		new_game = new JButton("New game");
 		new_game.setEnabled(false);
 		new_game.addActionListener(this);
-		add(new_game);
 
 		random_game = new JButton("Random game");
 		random_game.setEnabled(false);
 		random_game.addActionListener(this);
-		add(random_game);
 
-        setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
+		layout.setHorizontalGroup(
+				   layout.createSequentialGroup()
+				   	.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+					   	.addComponent(ip_entry)
+					   	.addComponent(name_entry)
+					   	.addGroup(layout.createSequentialGroup()
+					   			.addComponent(new_game)
+					   			.addComponent(random_game)))
+				   	);
+		layout.setVerticalGroup(
+				   layout.createSequentialGroup()
+				   	.addComponent(ip_entry)
+				   	.addComponent(name_entry)
+				   	.addGroup(layout.createParallelGroup()
+				   			.addComponent(new_game)
+				   			.addComponent(random_game))
+				   	);
 
         tryConnect();
 	}
