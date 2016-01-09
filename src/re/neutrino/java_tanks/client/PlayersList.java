@@ -9,32 +9,32 @@ import re.neutrino.java_tanks.types.updates.PlayerUpdate;
 
 public class PlayersList {
 	private static ArrayList<Player> l = new ArrayList<Player>();
-
-	synchronized void add(PlayerUpdate p) {
-		Player pp = p.getPlayer();
-		//Main.debug.print(DebugLevel.Debug, "Find", pp.getId());
-		int index = find(pp.getId());
-		if (index < 0) {
-			Main.debug.print(DebugLevel.Debug, "Add player", pp);
-			getL().add(pp);
-			Main.debug.print(DebugLevel.Debug, "ListSize", getL().size());
-		} else {
-			Main.debug.print(DebugLevel.Warn, "Player exists, updating");
-			getL().set(index, pp);
-		}
-		((LobbyPanel) Main.GUIframe.Lobby).update_player_list();
-	}
+	Player loc_player = null;
 
 	synchronized void update(PlayerUpdate p) {
 		Player pp = p.getPlayer();
 		int index = find(pp.getId());
 		if (index < 0) {
-			Main.debug.print(DebugLevel.Warn, "Player does not exist, adding", pp);
+			Main.debug.print(DebugLevel.Debug, "Add player", pp);
 			getL().add(pp);
+			if (pp.getId().equals(Game.PlayerID)) {
+				loc_player = getL().get(getL().size()-1);
+			}
 			Main.debug.print(DebugLevel.Debug, "ListSize", getL().size());
 		} else {
 			Main.debug.print(DebugLevel.Debug, "Update player", pp);
-			getL().set(index, pp);
+			if (loc_player == getL().get(index)) {
+				getL().set(index, pp);
+				loc_player = getL().get(index);
+			} else {
+				getL().set(index, pp);
+			}
+		}
+		Main.debug.print(DebugLevel.Debug, "State", loc_player.getState());
+		if (Main.GUIframe.cur_panel == Main.GUIframe.Lobby &&
+				(loc_player.getState().equals(Player.State.Waiting) || loc_player.getState().equals(Player.State.Active))) {
+			Main.debug.print(DebugLevel.Debug, "Game start");
+			Main.GUIframe.changePane(Main.GUIframe.Game);
 		}
 		((LobbyPanel) Main.GUIframe.Lobby).update_player_list();
 	}

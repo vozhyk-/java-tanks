@@ -7,20 +7,23 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class GUI extends JFrame {
-	JPanel cur_panel;
+	JPanel cur_panel = null;
 	JPanel MainMenu;
 	JPanel Lobby;
+	JPanel Game;
 
 	public GUI() throws HeadlessException {
 		// TODO Auto-generated constructor stub
 		super();
 		MainMenu = new MainMenuPanel();
 		Lobby = new LobbyPanel();
+		Game = new GamePanel();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		changePane(MainMenu);
 	}
 
 	void changePane(JPanel new_panel) {
+		cur_panel = new_panel;
 		dispose();
 		setContentPane(new_panel);
 		pack();

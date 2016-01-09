@@ -126,9 +126,8 @@ public class Net {
 							Game.conf.update((ConfigUpdate) i);
 							break;
 						case AddPlayer:
-							Game.players.add((PlayerUpdate) i);
-							break;
 						case Player:
+							Main.debug.print(DebugLevel.Debug, "u_state", ((PlayerUpdate) i).getPlayer().getState());
 							Game.players.update((PlayerUpdate) i);
 							break;
 						default:
