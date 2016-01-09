@@ -65,6 +65,7 @@ public class LobbyPanel extends JPanel implements ActionListener, ItemListener {
 			ready_b.setEnabled(false);
 		} else if (return_b == e.getSource()) {
 			Main.con.close();
+			Game.players.clear_l();
 			Main.GUIframe.changePane(Main.GUIframe.MainMenu);
 			((MainMenuPanel) Main.GUIframe.MainMenu).tryConnect();
 		}

@@ -30,13 +30,15 @@ public class PlayersList {
 				getL().set(index, pp);
 			}
 		}
-		Main.debug.print(DebugLevel.Debug, "State", loc_player.getState());
-		if (Main.GUIframe.cur_panel == Main.GUIframe.Lobby &&
-				(loc_player.getState().equals(Player.State.Waiting) || loc_player.getState().equals(Player.State.Active))) {
-			Main.debug.print(DebugLevel.Debug, "Game start");
-			Main.GUIframe.changePane(Main.GUIframe.Game);
+		if (loc_player != null) {
+			Main.debug.print(DebugLevel.Debug, "State", loc_player.getState());
+			if (Main.GUIframe.cur_panel == Main.GUIframe.Lobby &&
+					(loc_player.getState().equals(Player.State.Waiting) || loc_player.getState().equals(Player.State.Active))) {
+				Main.debug.print(DebugLevel.Debug, "Game start");
+				Main.GUIframe.changePane(Main.GUIframe.Game);
+			}
+			((LobbyPanel) Main.GUIframe.Lobby).update_player_list();
 		}
-		((LobbyPanel) Main.GUIframe.Lobby).update_player_list();
 	}
 
 	int find(Int16 id) {
