@@ -193,7 +193,11 @@ public class Game {
 	public void tryStart() {
 		if (clients.stream().allMatch(cl ->
 				cl.getPlayer().getState() == Player.State.Ready))
+		{
+			debug.print(DebugLevel.Info,
+					"starting game", "All players ready");
 			start();
+		}
 	}
 
 	void start() {
