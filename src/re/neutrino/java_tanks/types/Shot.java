@@ -25,6 +25,7 @@ public class Shot implements Communicable {
 		return power.getSimpleValue();
 	}
 
+	@Override
 	public void send(CommunicationStream comm) throws IOException {
 		angle.send(comm);
 		power.send(comm);
@@ -32,5 +33,10 @@ public class Shot implements Communicable {
 
 	public static Shot recv(CommunicationStream comm) throws IOException {
 		return new Shot(Int16.recv(comm), Int16.recv(comm));
+	}
+
+	@Override
+	public String toString() {
+		return "Shot(angle = " + angle + ", power = " + power + ")";
 	}
 }

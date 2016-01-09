@@ -26,6 +26,7 @@ public class MapPosition implements Communicable {
 		return y.getSimpleValue();
 	}
 
+	@Override
 	public void send(CommunicationStream comm) throws IOException {
 		x.send(comm);
 		y.send(comm);
@@ -33,5 +34,9 @@ public class MapPosition implements Communicable {
 
 	public static MapPosition recv(CommunicationStream comm) throws IOException {
 		return new MapPosition(Int16.recv(comm), Int16.recv(comm));
+	}
+
+	public FloatPair toFloatPair() {
+		return new FloatPair(this);
 	}
 }

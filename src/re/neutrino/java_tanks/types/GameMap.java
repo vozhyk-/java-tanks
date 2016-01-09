@@ -52,7 +52,7 @@ public class GameMap implements Communicable {
 		}
 	}
 
-	final Info info;
+	protected final Info info;
 	short[] content;
 
 	public GameMap(Info info) {
@@ -71,8 +71,17 @@ public class GameMap implements Communicable {
 		return content[x];
 	}
 
+	/**
+	 * @deprecated
+	 */
+	@Deprecated
 	public short[] get() {
 		return content;
+	}
+
+	public boolean isInside(MapPosition pos) {
+		short x = pos.getX();
+		return x >= 0 && x < info.getLength();
 	}
 
 	private void generate() {

@@ -14,6 +14,10 @@ public class ShootCommand extends CommandWithArgument<Shot> {
 		super(shot);
 	}
 
+	public Shot getShot() {
+		return arg;
+	}
+
 	public static ShootCommand recvRest(CommunicationStream comm) throws IOException {
 		return new ShootCommand(Shot.recv(comm));
 	}

@@ -70,6 +70,10 @@ public class ConnectionThread implements Runnable {
 			processCommand((ReadyCommand)cmd);
 			break;
 
+		case Shoot:
+			processCommand((ShootCommand)cmd);
+			break;
+
 		case GetChanges:
 			processCommand((GetChangesCommand)cmd);
 			break;
@@ -98,6 +102,10 @@ public class ConnectionThread implements Runnable {
 		client.changeState(Player.State.Ready);
 
 		game.tryStart();
+	}
+
+	private void processCommand(ShootCommand cmd) {
+		game.shoot(client, cmd.getShot());
 	}
 
 	private void processCommand(GetMapCommand cmd) throws IOException {

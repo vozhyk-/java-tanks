@@ -11,7 +11,7 @@ import re.neutrino.java_tanks.types.updates.*;
 
 public class Game {
 	ArrayList<Client> clients = new ArrayList<>();
-	GameMap map;
+	ServerGameMap map;
 	boolean started;
 
 	Config config;
@@ -24,7 +24,7 @@ public class Game {
 		return clients;
 	}
 
-	public GameMap getMap() {
+	public ServerGameMap getMap() {
 		return map;
 	}
 
@@ -45,7 +45,7 @@ public class Game {
 				rand.nextInt(),
 				config.get("map_width"),
 				config.get("map_height"));
-		map = new GameMap(mapInfo);
+		map = new ServerGameMap(mapInfo);
 		started = false;
 	}
 
@@ -257,5 +257,36 @@ public class Game {
 
 		clients.removeIf(c ->
 			c.getPlayer().equals(cl.getPlayer()));
+	}
+
+	public void shoot(Client client, Shot shot) {
+		debug.print(DebugLevel.Info, "shot", client.getPlayer());
+		debug.print(DebugLevel.Debug, "shot", shot);
+
+		allAddUpdate(new ShotUpdate(client.getPlayer(), shot));
+
+		processImpact(shotWithoutDamage(client.getPlayer(), shot));
+	}
+
+	private MapPosition shotWithoutDamage(Player player, Shot shot) {
+		Impact i = map.shotWithoutDamage(player, shot);
+
+	    allAddUpdate(new ShotImpactUpdate(i.getTime()));
+	    return i.getPos();
+	}
+
+	private void processImpact(MapPosition impactPos) {
+		/*
+		shot_deal_damage(impact_pos);
+
+	    shot_update_map(impact_pos);
+
+	    if (!end_game_if_needed())
+	    {
+	        tanks_map = map_with_tanks();
+
+	        next_turn();
+	    }
+		*/
 	}
 }
