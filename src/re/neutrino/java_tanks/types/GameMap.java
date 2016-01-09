@@ -71,6 +71,10 @@ public class GameMap implements Communicable {
 		return content[x];
 	}
 
+	public short[] get() {
+		return content;
+	}
+
 	private void generate() {
 		// TODO map terrain types, for now just flat terrain
 	    int cur_height = info.getHeight() / 2;
