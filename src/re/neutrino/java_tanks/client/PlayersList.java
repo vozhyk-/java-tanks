@@ -10,7 +10,7 @@ import re.neutrino.java_tanks.types.updates.PlayerUpdate;
 public class PlayersList {
 	public static ArrayList<Player> l = new ArrayList<Player>();
 
-	void add(PlayerUpdate p) {
+	synchronized void add(PlayerUpdate p) {
 		Player pp = p.getPlayer();
 		//Main.debug.print(DebugLevel.Debug, "Find", pp.getId());
 		int index = find(pp.getId());
@@ -24,7 +24,7 @@ public class PlayersList {
 		}
 	}
 
-	void update(PlayerUpdate p) {
+	synchronized void update(PlayerUpdate p) {
 		Player pp = p.getPlayer();
 		int index = find(pp.getId());
 		if (index < 0) {
@@ -46,7 +46,7 @@ public class PlayersList {
 		return -1;
 	}
 
-	void clear_l() {
+	synchronized void clear_l() {
 		l.clear();
 	}
 }

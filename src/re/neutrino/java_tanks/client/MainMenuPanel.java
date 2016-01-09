@@ -45,7 +45,7 @@ public class MainMenuPanel extends JPanel implements ActionListener, ItemListene
 
         setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 
-        tryConnect("127.0.0.1");
+        tryConnect();
 	}
 
 	public MainMenuPanel(LayoutManager arg0) {
@@ -72,18 +72,18 @@ public class MainMenuPanel extends JPanel implements ActionListener, ItemListene
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (ip_entry == arg0.getSource()) {
-			tryConnect(ip_entry.getText());
+			tryConnect();
 		} else if (new_game == arg0.getSource()) {
 			Main.game = new Game(name_entry.getText());
 		}
 	}
 
-	void tryConnect(String ip) {
+	public void tryConnect() {
 		try {
-			if (Main.con != null) {
+			if (Main.con != null && !Main.con.socket.isClosed()) {
 				Main.con.close();
 			}
-			Main.con = new Net(ip);
+			Main.con = new Net(ip_entry.getText());
 			new_game.setEnabled(true);
 		} catch (Exception e) {
 			new_game.setEnabled(false);

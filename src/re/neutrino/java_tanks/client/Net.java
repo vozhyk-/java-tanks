@@ -37,7 +37,9 @@ public class Net {
 
 	void close() {
 		try {
-			socket.close();
+			synchronized (comm) {
+				socket.close();
+			}
 		} catch (IOException e) {
 			Main.debug.print(DebugLevel.Err, "socket close");
 		}
@@ -45,51 +47,57 @@ public class Net {
 
 	@SuppressWarnings("finally")
 	boolean joinServer(String nick) {
-		send_command(new JoinCommand(nick));
-		Boolean ret=true;
-		try {
-			JoinReply jr = JoinReply.recv(comm);
-			switch (jr.getType()) {
-			case Ok:
-				Game.PlayerID = jr.getPlayerId();
-				Main.debug.print(DebugLevel.Debug, "Join");
-				break;
-			case GameInProgress:
-				ret=false;
-				Main.debug.print(DebugLevel.Debug, "Game in progress");
-				break;
-			case NicknameTaken:
-				Main.debug.print(DebugLevel.Debug, "Nickname is taken");
-				ret=false;
-				break;
-			default:
-				Main.debug.print(DebugLevel.Warn, "Invalid JoinReply");
-				ret=false;
-				break;
+		synchronized (comm) {
+			send_command(new JoinCommand(nick));
+			Boolean ret=true;
+			try {
+				JoinReply jr = JoinReply.recv(comm);
+				switch (jr.getType()) {
+				case Ok:
+					Game.PlayerID = jr.getPlayerId();
+					Main.debug.print(DebugLevel.Debug, "Join");
+					break;
+				case GameInProgress:
+					ret=false;
+					Main.debug.print(DebugLevel.Debug, "Game in progress");
+					break;
+				case NicknameTaken:
+					Main.debug.print(DebugLevel.Debug, "Nickname is taken");
+					ret=false;
+					break;
+				default:
+					Main.debug.print(DebugLevel.Warn, "Invalid JoinReply");
+					ret=false;
+					break;
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				return ret;
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			return ret;
 		}
 	}
 
 	void fetch_map() {
-		send_command(new GetMapCommand());
-		try {
-			Game.map = GameMap.recv(comm);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		synchronized (comm) {
+			send_command(new GetMapCommand());
+			try {
+				Game.map = GameMap.recv(comm);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
 	void send_ready() {
-		send_command(new ReadyCommand());
+		synchronized (comm) {
+			send_command(new ReadyCommand());
+		}
 	}
 
-	synchronized void send_command(Command cmd) {
+	void send_command(Command cmd) {
 		try {
 			Main.debug.print(DebugLevel.Debug, "send cmd", cmd);
 			cmd.send(comm);
@@ -115,19 +123,13 @@ public class Net {
 						case Empty:
 							break;
 						case Config:
-							synchronized (Game.conf) {
-								Game.conf.update((ConfigUpdate) i);
-							}
+							Game.conf.update((ConfigUpdate) i);
 							break;
 						case AddPlayer:
-							synchronized (Game.players) {
-								Game.players.add((PlayerUpdate) i);
-							}
+							Game.players.add((PlayerUpdate) i);
 							break;
 						case Player:
-							synchronized (Game.players) {
-								Game.players.update((PlayerUpdate) i);
-							}
+							Game.players.update((PlayerUpdate) i);
 							break;
 						default:
 							Main.debug.print(DebugLevel.Warn, "Received unknown update", i.getType());
@@ -142,10 +144,6 @@ public class Net {
 		@Override
 		public void run() {
 			while (running) {
-				synchronized (socket) {
-					if (!socket.isConnected() || socket.isClosed())
-						break;
-				}
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -153,7 +151,11 @@ public class Net {
 					e.printStackTrace();
 					running=false;
 				}
-				fetch_changes();
+				synchronized (comm) {
+					if (!socket.isConnected() || socket.isClosed() || !running)
+						break;
+					fetch_changes();
+				}
 			}
 		}
 	}

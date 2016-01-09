@@ -31,7 +31,7 @@ public class Config {
 		return items.stream().filter(i -> i.name.equals(name)).findAny();
 	}
 
-	public int get(String name) {
+	synchronized public int get(String name) {
 		/* TODO Do something about the search. Use a hash table? */
 		Optional<Item> found = find(name);
 
@@ -41,7 +41,7 @@ public class Config {
 			return 0; /* If nothing found. Not the best way to show it */
 	}
 
-	public void set(String name, int value) {
+	synchronized public void set(String name, int value) {
 		/* find a config item whose name matches this name
 	     * and place the value there */
 		Optional<Item> found = find(name);
@@ -54,7 +54,7 @@ public class Config {
 					"config.set", "No option found in config: " + name);
 	}
 
-	public List<Item> getItems() {
+	synchronized public List<Item> getItems() {
 		return items;
 	}
 

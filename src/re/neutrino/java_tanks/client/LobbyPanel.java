@@ -44,7 +44,9 @@ public class LobbyPanel extends JPanel implements ActionListener, ItemListener {
 			Main.con.send_ready();
 			ready_b.setEnabled(false);
 		} else if (return_b == e.getSource()) {
+			Main.con.close();
 			Main.GUIframe.changePane(Main.GUIframe.MainMenu);
+			((MainMenuPanel) Main.GUIframe.MainMenu).tryConnect();
 		}
 	}
 
