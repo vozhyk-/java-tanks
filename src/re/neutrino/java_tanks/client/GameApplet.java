@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 
@@ -14,7 +16,7 @@ import re.neutrino.java_tanks.debug.DebugLevel;
 import re.neutrino.java_tanks.types.GameMap;
 import re.neutrino.java_tanks.types.Player;
 
-public class GameApplet extends JApplet {
+public class GameApplet extends JApplet implements MouseListener {
 	final static Color bg = Color.white;
 	final static Color fg = Color.black;
 	final static int mul_h = 10;
@@ -29,6 +31,8 @@ public class GameApplet extends JApplet {
 	public GameApplet() {
 		setBackground(bg);
 		setForeground(fg);
+
+		addMouseListener(this);
 	}
 
 	private void draw_map(Graphics2D g, GameMap m) {
@@ -94,5 +98,43 @@ public class GameApplet extends JApplet {
 		ArrayList<Player> pl = Game.players.getL();
 		draw_map(g, m);
 		draw_tanks(g, pl);
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		int px = Game.players.loc_player.getPos().getX()*mul_h;
+		int py = Game.players.loc_player.getPos().getY()*mul_v-off_v;
+		int dx = px-e.getX();
+		int dy = py-e.getY();
+		Integer angl = ((GamePanel) Main.GUIframe.Game).s.angle;
+		angl = 90 + (int) Math.toDegrees(Math.atan2(dx, dy));
+		if (angl > 180) angl = 180;
+		else if (angl < 0) angl = 0;
+		((GamePanel) Main.GUIframe.Game).angle_l.setText("Angle: " + angl);
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
