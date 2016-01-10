@@ -36,6 +36,7 @@ public class PlayersList {
 					(loc_player.getState().equals(Player.State.Waiting) || loc_player.getState().equals(Player.State.Active))) {
 				Main.debug.print(DebugLevel.Debug, "Game start");
 				Main.GUIframe.changePane(Main.GUIframe.Game);
+				((GamePanel) Main.GUIframe.Game).timer.start();
 			}
 			((LobbyPanel) Main.GUIframe.Lobby).update_player_list();
 		}
