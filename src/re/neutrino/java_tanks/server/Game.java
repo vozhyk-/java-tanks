@@ -3,11 +3,14 @@ package re.neutrino.java_tanks.server;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 import re.neutrino.java_tanks.Config;
 import re.neutrino.java_tanks.debug.*;
 import re.neutrino.java_tanks.types.*;
 import re.neutrino.java_tanks.types.updates.*;
+
+import re.neutrino.java_tanks.types.Player.State;
 
 public class Game {
 	ArrayList<Client> clients = new ArrayList<>();
@@ -106,7 +109,7 @@ public class Game {
 
 	public Player newPlayer(String nickname) {
 		return new Player(
-				Player.State.Joined,
+				State.Joined,
 				true,
 				nextPlayerId(),
 				nickname,
@@ -115,6 +118,14 @@ public class Game {
 				(short)0,
 				(short)0);
 	}
+
+	/*
+	public void playerChangeState(Player player, Player.State state) {
+		player.setState(state);
+
+		allAddUpdate(new PlayerUpdate(Update.Type.Player, player));
+	}
+	*/
 
 	public JoinReply tryJoin(String nickname) {
 		Optional<Client> found = clients.stream()
@@ -192,12 +203,31 @@ public class Game {
 
 	public void tryStart() {
 		if (clients.stream().allMatch(cl ->
-				cl.getPlayer().getState() == Player.State.Ready))
+				cl.getPlayer().getState() == State.Ready))
 		{
 			debug.print(DebugLevel.Info,
 					"starting game", "All players ready");
 			start();
 		}
+	}
+
+	private boolean tryEnd() {
+		/* Check for end of game */
+	    long num_living_players = clients.stream().filter(
+	    		cl -> cl.getPlayer().getState() != State.Dead)
+	    		.count();
+	    if (num_living_players > 1)
+	    	return false;
+
+	    /* At this point, only one living player remains */
+
+	    /***** GAME OVER *****/
+	    debug.print(DebugLevel.Info,
+	    		"only one living player remains", "Game over");
+
+	    end();
+
+	    return true;
 	}
 
 	void start() {
@@ -207,7 +237,7 @@ public class Game {
 //		lock_clients_array();                                        /* {{{ */
 	    /* Mark all players as waiting for their turns */
 	    for (Client cl : clients)
-	    	cl.changeState(Player.State.Waiting);
+	    	cl.changeState(State.Waiting);
 
 	    /* Give turn to the first player */
 	    /* Assume the first player is the first client.
@@ -216,9 +246,40 @@ public class Game {
 		Client cl = clients.get(0);
 //	    unlock_clients_array();                                      /* }}} */
 
-		cl.changeState(Player.State.Active);
+		cl.changeState(State.Active);
 
 	    started = true;
+	}
+
+	void end() {
+		/* Mark dead players as PS_LOSER and living players as PS_WINNER */
+	    //lock_clients_array();                                        /* {{{ */
+	    for (Client cl : clients)
+	    {
+	        cl.changeState(cl.getPlayer().getState() != State.Dead ?
+	        		State.Winner : State.Loser);
+	    }
+	    //unlock_clients_array();                                      /* }}} 2 */
+
+	    //game_cleanup();
+	    //reset_game();
+	}
+
+	/* Advances turn to the next player */
+	void nextTurn()
+	{
+	    // TODO locking
+	    int activeI = IntStream.range(0, clients.size())
+	    		.filter(i -> clients.get(i).getPlayer().getState()
+	    				== State.Active)
+	    		.findAny().getAsInt();
+
+	    clients.get(activeI).changeState(State.Waiting);
+
+	    if (activeI == clients.size() - 1)
+	    	clients.get(0).changeState(State.Active);
+	    else
+	    	clients.get(activeI + 1).changeState(State.Active);
 	}
 
 	/**
@@ -276,17 +337,66 @@ public class Game {
 	}
 
 	private void processImpact(MapPosition impactPos) {
-		/*
-		shot_deal_damage(impact_pos);
+		shotDealDamage(impactPos);
+		map.shotUpdateMap(impactPos);
 
-	    shot_update_map(impact_pos);
+	    if (!tryEnd()) {
+	        //tanks_map = map_with_tanks();
 
-	    if (!end_game_if_needed())
-	    {
-	        tanks_map = map_with_tanks();
-
-	        next_turn();
+	        nextTurn();
 	    }
-		*/
+	}
+
+	private void shotDealDamage(MapPosition impact_pos) {
+		if (!map.isInside(impact_pos))
+	        return;
+
+	    FloatPair f_impact_pos = impact_pos.toFloatPair();
+
+	    //lock_clients_array();                                        /* {{{ */
+	    for (Client cl : clients) {
+	        Player player = cl.getPlayer();
+
+	        if (player.getState() != State.Dead)
+	        {
+	            FloatPair f_player_pos = player.getPos().toFloatPair();
+
+	            short damage = damage_to_player(f_impact_pos, f_player_pos);
+	            if (damage > 0)
+	                clientDealDamage(cl, damage);
+	        }
+	    }
+	    //unlock_clients_array();                                      /* }}} */
+	}
+
+	// Can be moved into ServerGameMap
+	private short damage_to_player(FloatPair impactPos, FloatPair playerPos)
+	{
+	    int damageCap = config.get("dmg_cap");
+	    int radius = config.get("dmg_radius");
+	    FloatPair diff = new FloatPair(
+	    		playerPos.x - impactPos.x,
+	    		playerPos.y - impactPos.y);
+	    double distance = Math.sqrt(diff.x*diff.x + diff.y*diff.y);
+	    if (distance > radius) return 0;
+	    if (distance <= 2) return (short) damageCap;
+	    return (short) (damageCap/(distance-1));
+	    /* damage in the impact point - damage_cap, on the edge of the radius - 0 */
+	    //return damage_cap - distance * ((double)damage_cap / radius);
+	}
+
+	void clientDealDamage(Client cl, short damage)
+	{
+		Player player = cl.getPlayer();
+
+	    player.dealDamage(damage);
+	    if (player.getHitpoints() <= 0)
+	        /* adds an update as well */
+	        cl.changeState(State.Dead);
+	    else
+	        allAddUpdate(
+	        		new PlayerUpdate(Update.Type.Player, player));
+	    debug.print(DebugLevel.Info,
+	    		"damage", player + " gets " + damage);
 	}
 }

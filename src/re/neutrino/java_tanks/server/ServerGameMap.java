@@ -41,6 +41,10 @@ public class ServerGameMap extends GameMap {
 	    return impact;
 	}
 
+	public void shotUpdateMap(MapPosition impactPos) {
+		// TODO implement
+	}
+
 	Impact getImpact(Player player, Shot shot)
 	{
 		FloatPair init_v = config.getInitialV(shot);

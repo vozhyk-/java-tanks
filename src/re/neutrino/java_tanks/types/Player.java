@@ -110,6 +110,15 @@ public class Player implements Communicable {
 		return nickname.getValue();
 	}
 
+	public short getHitpoints() {
+		return hitpoints.getValue();
+	}
+
+	public void dealDamage(short damage) {
+		hitpoints = new Int16(
+				(short) (hitpoints.getValue() - damage));
+	}
+
 	public MapPosition getPos() {
 		return pos;
 	}
