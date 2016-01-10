@@ -11,21 +11,31 @@ import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 public class GamePanel extends JPanel implements ActionListener, ItemListener {
 	final static int map_x = 127*GameApplet.mul_h;
 	final static int map_y = 32*GameApplet.mul_v;
 	JButton shoot_b = new JButton("shoot");
-	JButton inc_power_b = new JButton(">");
-	JButton dec_power_b = new JButton("<");
-	JButton inc_ang_b = new JButton(">");
-	JButton dec_ang_b = new JButton("<");
+	JButton inc_power_b = new JButton("^");
+	JButton dec_power_b = new JButton("v");
+	JButton inc_ang_b = new JButton("^");
+	JButton dec_ang_b = new JButton("v");
 	JApplet map;
 	Timer timer;
 	JLabel timer_l;
 	time t = new time();
 	JButton[] buttons = {shoot_b, inc_power_b, dec_power_b, inc_ang_b, dec_ang_b};
+	JLabel power_l = new JLabel();
+	JLabel angle_l = new JLabel();
+	shot s = new shot();
+
+	class shot {
+		Integer angle = 90;
+		Integer power = 50;
+	}
 
 	class time {
 		Integer seconds = 0;
@@ -39,7 +49,7 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 			if (seconds < 10) {
 				timer_l.setText(minutes + ":0" + seconds);
 			} else {
-				timer_l.setText(minutes + ":0" + seconds);
+				timer_l.setText(minutes + ":" + seconds);
 			}
 		}
 	}
@@ -60,6 +70,9 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 		timer = new Timer(1000, this);
 		timer_l = new JLabel("0:00");
 
+		power_l.setText("Power: " + s.power);
+		angle_l.setText("Angle: " + s.angle);
+
 		GroupLayout layout = new GroupLayout(this);
 		setLayout(layout);
 		layout.setAutoCreateGaps(true);
@@ -79,21 +92,29 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 						.addComponent(map)
 						.addGroup(layout.createSequentialGroup()
 								.addComponent(timer_l)
-								.addComponent(dec_power_b)
-								.addComponent(inc_power_b)
-								.addComponent(dec_ang_b)
-								.addComponent(inc_ang_b)
+								.addGroup(layout.createParallelGroup()
+									.addComponent(inc_power_b)
+									.addComponent(power_l)
+									.addComponent(dec_power_b))
+								.addGroup(layout.createParallelGroup()
+									.addComponent(inc_ang_b)
+									.addComponent(angle_l)
+									.addComponent(dec_ang_b))
 								.addComponent(shoot_b)))
 					);
 		layout.setVerticalGroup(
 					layout.createSequentialGroup()
 					.addComponent(map)
-					.addGroup(layout.createParallelGroup()
+					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 							.addComponent(timer_l)
-							.addComponent(dec_power_b)
-							.addComponent(inc_power_b)
-							.addComponent(dec_ang_b)
-							.addComponent(inc_ang_b)
+							.addGroup(layout.createSequentialGroup()
+								.addComponent(inc_power_b)
+								.addComponent(power_l)
+								.addComponent(dec_power_b))
+							.addGroup(layout.createSequentialGroup()
+								.addComponent(inc_ang_b)
+								.addComponent(angle_l)
+								.addComponent(dec_ang_b))
 							.addComponent(shoot_b))
 					);
 	}
@@ -110,6 +131,18 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 		if (timer == e.getSource()) {
 			t.seconds++;
 			t.update();
+		} else {
+			if (inc_power_b == e.getSource() && s.power < 100) {
+				s.power++;
+			} else if (dec_power_b == e.getSource() && s.power > 0) {
+				s.power--;
+			} else if (inc_ang_b == e.getSource() && s.angle < 180) {
+				s.angle++;
+			} else if (dec_ang_b == e.getSource() && s.angle > 0) {
+				s.angle--;
+			}
+			power_l.setText("Power: " + s.power);
+			angle_l.setText("Angle: " + s.angle);
 		}
 	}
 
