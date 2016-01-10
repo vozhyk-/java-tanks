@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.GeneralPath;
@@ -16,12 +18,12 @@ import re.neutrino.java_tanks.debug.DebugLevel;
 import re.neutrino.java_tanks.types.GameMap;
 import re.neutrino.java_tanks.types.Player;
 
-public class GameApplet extends JApplet implements MouseListener {
+public class GameApplet extends JApplet implements MouseListener, KeyListener {
 	final static Color bg = Color.white;
 	final static Color fg = Color.black;
 	final static int mul_h = 10;
 	final static int mul_v = 20;
-	final static int off_v = 10*mul_v;
+	final static int off_v = 14*mul_v;
 	final static int brush_width = 20;
 	Color grey = Color.lightGray;
 	Color idle_tank_colour = Color.BLUE;
@@ -33,6 +35,8 @@ public class GameApplet extends JApplet implements MouseListener {
 		setForeground(fg);
 
 		addMouseListener(this);
+		addKeyListener(this);
+		setFocusable(true);
 	}
 
 	private void draw_map(Graphics2D g, GameMap m) {
@@ -102,16 +106,16 @@ public class GameApplet extends JApplet implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
 		int px = Game.players.loc_player.getPos().getX()*mul_h;
 		int py = Game.players.loc_player.getPos().getY()*mul_v-off_v;
 		int dx = px-e.getX();
 		int dy = py-e.getY();
-		Integer angl = ((GamePanel) Main.GUIframe.Game).s.angle;
-		angl = 90 + (int) Math.toDegrees(Math.atan2(dx, dy));
+		Integer angl = 90 + (int) Math.toDegrees(Math.atan2(dx, dy));
 		if (angl > 180) angl = 180;
 		else if (angl < 0) angl = 0;
-		((GamePanel) Main.GUIframe.Game).angle_l.setText("Angle: " + angl);
+		((GamePanel) Main.GUIframe.Game).s.angle = angl;
+		((GamePanel) Main.GUIframe.Game).angle_l.setText("Angle: " + ((GamePanel) Main.GUIframe.Game).s.angle);
+		e.consume();
 	}
 
 	@Override
@@ -136,5 +140,52 @@ public class GameApplet extends JApplet implements MouseListener {
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+		Integer angl = ((GamePanel) Main.GUIframe.Game).s.angle;
+		Integer pwr = ((GamePanel) Main.GUIframe.Game).s.power;
+		switch (arg0.getKeyCode()) {
+			case KeyEvent.VK_RIGHT:
+				if (angl < 180) {
+					angl++;
+					((GamePanel) Main.GUIframe.Game).angle_l.setText("Angle: " + angl);
+					((GamePanel) Main.GUIframe.Game).s.angle = angl;
+				}
+				break;
+			case KeyEvent.VK_LEFT:
+				if (angl > 0) {
+					angl--;
+					((GamePanel) Main.GUIframe.Game).angle_l.setText("Angle: " + angl);
+					((GamePanel) Main.GUIframe.Game).s.angle = angl;
+				}
+				break;
+			case KeyEvent.VK_UP:
+				if (pwr < 100) {
+					pwr++;
+					((GamePanel) Main.GUIframe.Game).power_l.setText("Power: " + pwr);
+					((GamePanel) Main.GUIframe.Game).s.power = pwr;
+				}
+				break;
+			case KeyEvent.VK_DOWN:
+				if (pwr > 0) {
+					pwr--;
+					((GamePanel) Main.GUIframe.Game).power_l.setText("Power: " + pwr);
+					((GamePanel) Main.GUIframe.Game).s.power = pwr;
+				}
+				break;
+		}
+		arg0.consume();
+	}
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		// TODO Auto-generated method stub
 	}
 }

@@ -11,8 +11,6 @@ import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 public class GamePanel extends JPanel implements ActionListener, ItemListener {
