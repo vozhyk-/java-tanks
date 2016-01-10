@@ -42,6 +42,6 @@ public class MapPosition implements Communicable {
 	}
 
 	public FloatPair toFloatPair() {
-		return new FloatPair(this);
+		return new FloatPair(x.getValue() + 0.5, y.getValue() + 0.5);
 	}
 }

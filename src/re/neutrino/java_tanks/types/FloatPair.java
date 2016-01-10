@@ -10,10 +10,6 @@ public class FloatPair {
 		this.y = y;
 	}
 
-	public FloatPair(MapPosition intPos) {
-		this(intPos.getX(), intPos.getY());
-	}
-
 	public double getX() {
 		return x;
 	}

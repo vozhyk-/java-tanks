@@ -49,7 +49,7 @@ public class ServerGameMap extends GameMap {
 	{
 		FloatPair initV = config.getInitialV(shot);
 		FloatPair acc = config.getAcceleration();
-		short initDirection = (short) (Math.abs(initV.x) / initV.y);
+		short initDirection = (short) (Math.abs(initV.x) / initV.x);
 
 		FloatPair initPos = player.getPos().toFloatPair();
 		Mutable<Double> xStep =
@@ -82,8 +82,7 @@ public class ServerGameMap extends GameMap {
 			if (tStep != 0) {
 				curT += tStep;
 				FloatPair fPos = Shot.getShotPos(initPos, initV, acc, curT);
-				debug.print(DebugLevel.Debug, "current x", fPos.x);
-				debug.print(DebugLevel.Debug, "current y", fPos.y);
+				debug.print(DebugLevel.Debug, "current pos", fPos);
 				MapPosition mapPos = fPos.round();
 				int mapY;
 
@@ -109,7 +108,7 @@ public class ServerGameMap extends GameMap {
 	    double c1, c2;
 	    double tStep1, tStep2;
 
-	    if (acc.x != 0)
+	    if (acc.x != 0) // wind present
 	    {
 	        double D = Math.sqrt(initV.x*initV.x
 	                        + 2*acc.x*(prevDeltaX + xStep.get()));
