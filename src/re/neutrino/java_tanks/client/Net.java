@@ -127,8 +127,10 @@ public class Net {
 							break;
 						case AddPlayer:
 						case Player:
-							Main.debug.print(DebugLevel.Debug, "u_state", ((PlayerUpdate) i).getPlayer().getState());
 							Game.players.update((PlayerUpdate) i);
+							break;
+						case DelPlayer:
+							Game.players.delete((PlayerUpdate) i);
 							break;
 						default:
 							Main.debug.print(DebugLevel.Warn, "Received unknown update", i.getType());

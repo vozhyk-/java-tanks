@@ -41,6 +41,22 @@ public class PlayersList {
 		}
 	}
 
+	synchronized void delete(PlayerUpdate p) {
+		Player pp = p.getPlayer();
+		int index = find(pp.getId());
+		if (index < 0) {
+			Main.debug.print(DebugLevel.Warn, "DelPlayer not found", pp);
+		} else {
+			Main.debug.print(DebugLevel.Debug, "Delete player", pp);
+			if (loc_player == getL().get(index)) {
+				Main.debug.print(DebugLevel.Err, "Trying to delete loc_player");
+			} else {
+				getL().remove(index);
+				((LobbyPanel) Main.GUIframe.Lobby).update_player_list();
+			}
+		}
+	}
+
 	int find(Int16 id) {
 		for (Player i:getL()) {
 			if (i.getId().equals(id)) {
@@ -63,7 +79,7 @@ public class PlayersList {
 		getL().clear();
 	}
 
-	public ArrayList<Player> getL() {
+	synchronized public ArrayList<Player> getL() {
 		return l;
 	}
 }
