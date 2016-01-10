@@ -12,8 +12,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements ActionListener, ItemListener {
-	final static int map_x = 127*MapApplet.mul_h;
-	final static int map_y = 32*MapApplet.mul_v;
+	final static int map_x = 127*GameApplet.mul_h;
+	final static int map_y = 32*GameApplet.mul_v;
 	JButton shoot_b;
 	JApplet map; 
 
@@ -27,7 +27,7 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 		shoot_b.setEnabled(false);
 		shoot_b.addActionListener(this);
 
-		map = new MapApplet();
+		map = new GameApplet();
 		map.setPreferredSize(new Dimension(map_x, map_y));
 
 		layout.setHorizontalGroup(

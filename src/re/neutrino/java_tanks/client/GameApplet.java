@@ -2,19 +2,19 @@ package re.neutrino.java_tanks.client;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
-import java.awt.geom.QuadCurve2D;
+import java.util.ArrayList;
 
 import javax.swing.JApplet;
 
+import re.neutrino.java_tanks.debug.DebugLevel;
 import re.neutrino.java_tanks.types.GameMap;
+import re.neutrino.java_tanks.types.Player;
 
-public class MapApplet extends JApplet {
+public class GameApplet extends JApplet {
 	final static Color bg = Color.white;
 	final static Color fg = Color.black;
 	final static int mul_h = 10;
@@ -22,15 +22,16 @@ public class MapApplet extends JApplet {
 	final static int off_v = 10*mul_v;
 	final static int brush_width = 20;
 	Color grey = Color.lightGray;
+	Color idle_tank_colour = Color.BLUE;
+	Color active_tank_colour = Color.CYAN;
+	Color local_tank_colour = Color.ORANGE;
 
-	public MapApplet() {
+	public GameApplet() {
 		setBackground(bg);
 		setForeground(fg);
 	}
 
-	public void paint(Graphics gg) {
-		Graphics2D g = (Graphics2D) gg;
-		GameMap m = Game.map;
+	private void draw_map(Graphics2D g, GameMap m) {
 		double points[][] = new double[m.getInfo().getLength()][2];
 		for (short i=0; i<m.getInfo().getLength(); i++) {
 			points[i][0]=i*mul_h;
@@ -56,6 +57,42 @@ public class MapApplet extends JApplet {
 		terrain.lineTo(0, GamePanel.map_y);
 		terrain.closePath();
 		g.fill(terrain);
-		g.setPaint(fg);
+	}
+
+	private void draw_tanks(Graphics2D g, ArrayList<Player> pl) {
+		int width = 5*mul_h;
+		int height = mul_v;
+		for (Player i:pl) {
+			if (Game.players.loc_player == i) {
+				g.setPaint(local_tank_colour);
+			} else {
+				switch (i.getState()) {
+					case Waiting:
+					case Dead:
+						g.setPaint(idle_tank_colour);
+						break;
+					case Active:
+						g.setPaint(active_tank_colour);
+						break;
+					default:
+						Main.debug.print(DebugLevel.Warn, "Unknown state", i.getState());
+				}
+			}
+			int x = i.getPos().getX()*mul_h-width/2;
+			int y = i.getPos().getY()*mul_v-off_v;
+			g.fillRoundRect(x, y, width, height, width/2, height);
+			g.setStroke(new BasicStroke(mul_v/2));
+			g.drawLine(x, y-height/2, x+width/2, y+height/2);
+			g.setPaint(fg);
+			g.drawString(i.getNickname(), x, y-height);
+		}
+	}
+
+	public void paint(Graphics gg) {
+		Graphics2D g = (Graphics2D) gg;
+		GameMap m = Game.map;
+		ArrayList<Player> pl = Game.players.getL();
+		draw_map(g, m);
+		draw_tanks(g, pl);
 	}
 }
