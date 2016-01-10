@@ -160,4 +160,11 @@ public class Net {
 			}
 		}
 	}
+
+	public void send_shot(Integer power, Integer angle) {
+		Shot s = new Shot((short) power.intValue(), (short) angle.intValue());
+		synchronized (comm) {
+			send_command(new ShootCommand(s));
+		}
+	}
 }

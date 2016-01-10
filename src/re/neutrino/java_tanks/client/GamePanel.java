@@ -129,6 +129,8 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 		if (timer == e.getSource()) {
 			t.seconds++;
 			t.update();
+		} else if (shoot_b == e.getSource()){
+			Main.con.send_shot(s.power, s.angle);
 		} else {
 			if (inc_power_b == e.getSource() && s.power < 100) {
 				s.power++;
