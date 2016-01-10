@@ -84,14 +84,14 @@ public class Game {
 	}
 
 	short newPlayerX() {
-	    int notank_margin = config.get("map_margin");
+	    int notankMargin = config.get("map_margin");
 	    short x;
 
 	    /* Generate position until it isn't too close to other tanks */
 	    do
-	        x = (short) (notank_margin
+	        x = (short) (notankMargin
 	            + Math.abs(rand.nextInt()) %
-	            (map.getInfo().getLength() - 2 * notank_margin));
+	            (map.getInfo().getLength() - 2 * notankMargin));
 	    while (playerXTooClose(x));
 
 	    return x;
@@ -213,10 +213,10 @@ public class Game {
 
 	private boolean tryEnd() {
 		/* Check for end of game */
-	    long num_living_players = clients.stream().filter(
+	    long numLivingPlayers = clients.stream().filter(
 	    		cl -> cl.getPlayer().getState() != State.Dead)
 	    		.count();
-	    if (num_living_players > 1)
+	    if (numLivingPlayers > 1)
 	    	return false;
 
 	    /* At this point, only one living player remains */
@@ -252,7 +252,7 @@ public class Game {
 	}
 
 	void end() {
-		/* Mark dead players as PS_LOSER and living players as PS_WINNER */
+		/* Mark dead players as Loser and living players as Winner */
 	    //lock_clients_array();                                        /* {{{ */
 	    for (Client cl : clients)
 	    {
@@ -347,11 +347,11 @@ public class Game {
 	    }
 	}
 
-	private void shotDealDamage(MapPosition impact_pos) {
-		if (!map.isInside(impact_pos))
+	private void shotDealDamage(MapPosition impactPos) {
+		if (!map.isInside(impactPos))
 	        return;
 
-	    FloatPair f_impact_pos = impact_pos.toFloatPair();
+	    FloatPair impactPosF = impactPos.toFloatPair();
 
 	    //lock_clients_array();                                        /* {{{ */
 	    for (Client cl : clients) {
@@ -359,9 +359,9 @@ public class Game {
 
 	        if (player.getState() != State.Dead)
 	        {
-	            FloatPair f_player_pos = player.getPos().toFloatPair();
+	            FloatPair playerPosF = player.getPos().toFloatPair();
 
-	            short damage = damage_to_player(f_impact_pos, f_player_pos);
+	            short damage = damageToPlayer(impactPosF, playerPosF);
 	            if (damage > 0)
 	                clientDealDamage(cl, damage);
 	        }
@@ -370,7 +370,7 @@ public class Game {
 	}
 
 	// Can be moved into ServerGameMap
-	private short damage_to_player(FloatPair impactPos, FloatPair playerPos)
+	private short damageToPlayer(FloatPair impactPos, FloatPair playerPos)
 	{
 	    int damageCap = config.get("dmg_cap");
 	    int radius = config.get("dmg_radius");

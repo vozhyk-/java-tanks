@@ -22,6 +22,11 @@ public class FloatPair {
 		return y;
 	}
 
+	@Override
+	public String toString() {
+		return "(" + x + ", " + y + ")";
+	}
+
 	public MapPosition round() {
 		return new MapPosition(
 				(short)Math.round(x - 0.5),

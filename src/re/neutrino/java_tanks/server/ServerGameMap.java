@@ -21,16 +21,16 @@ public class ServerGameMap extends GameMap {
 		Impact impact = getImpact(player, shot);
 		double impactT = impact.getTime();
 		MapPosition impactPos = impact.getPos();
-	    debug.print(DebugLevel.Debug, "shot: impact t", impactT);
+	    debug.print(DebugLevel.Debug, "shot", "impact t: " + impactT);
 
-	    MapPosition d_pos =
+	    MapPosition dPos =
 	        Shot.getShotPos(
 	        		player.getPos().toFloatPair(),
 	        		config.getInitialV(shot),
 	        		config.getAcceleration(),
 	        		impactT).round();
-	    debug.print(DebugLevel.Debug, "shot", "pos @ impact t:" + d_pos);
-	    debug.print(DebugLevel.Debug, "shot", "impact pos:" + impactPos);
+	    debug.print(DebugLevel.Debug, "shot", "pos @ impact t: " + dPos);
+	    debug.print(DebugLevel.Debug, "shot", "impact pos: " + impactPos);
 	    if (isInside(impactPos))
 	        debug.print(DebugLevel.Debug,
 	        		"shot: map y @ impact pos", get(impactPos.getX()));
@@ -47,51 +47,57 @@ public class ServerGameMap extends GameMap {
 
 	Impact getImpact(Player player, Shot shot)
 	{
-		FloatPair init_v = config.getInitialV(shot);
+		FloatPair initV = config.getInitialV(shot);
 		FloatPair acc = config.getAcceleration();
-		short initDirection = (short) (Math.abs(init_v.x) / init_v.y);
+		short initDirection = (short) (Math.abs(initV.x) / initV.y);
 
-		FloatPair init_pos = player.getPos().toFloatPair();
-		Mutable<Double> x_step =
+		FloatPair initPos = player.getPos().toFloatPair();
+		Mutable<Double> xStep =
 				new Mutable<>((double)initDirection / collisionXPrecision);
 
-		Mutable<Boolean> one_side_clear = new Mutable<>(false);
-		double cur_delta_x = 0;
-		double cur_t = 0;
+		Mutable<Boolean> oneSideClear = new Mutable<>(false);
+		double curDeltaX = 0;
+		double curT = 0;
 
-		debug.print(DebugLevel.Debug, "shot", "initial pos: " + init_pos);
-		debug.print(DebugLevel.Debug, "shot", "initial v: " + init_v);
+		debug.print(DebugLevel.Debug, "shot", "initial pos: " + initPos);
+		debug.print(DebugLevel.Debug, "shot", "initial v: " + initV);
 		debug.print(DebugLevel.Debug, "shot", "wind: " + acc.x);
 
 		while (true) /* exit with return */
 		{
-			debug.print(DebugLevel.Debug, "current delta_x", cur_delta_x);
-			double t_step = getTStep(cur_delta_x, cur_t,
-					x_step, one_side_clear,
-					init_v, acc);
+			debug.print(DebugLevel.Debug, "current deltaX", curDeltaX);
+			double tStep = getTStep(curDeltaX, curT,
+					xStep, oneSideClear,
+					initV, acc);
 
-			if (t_step != 0)
-			{
-				cur_t += t_step;
-				FloatPair f_pos = Shot.getShotPos(init_pos, init_v, acc, cur_t);
-				debug.print(DebugLevel.Debug, "current x", f_pos.x);
-				debug.print(DebugLevel.Debug, "current y", f_pos.y);
-				MapPosition map_pos = f_pos.round();
-				int map_y;
+			if (tStep == 0 && xStep.get() == 0) {
+					debug.print(DebugLevel.Warn,
+							"shot",
+							"both xStep and tStep = 0. "
+							+ "Something is horribly wrong. "
+							+ "Landing the shell onto the shooter.");
+					return new Impact(player.getPos(), curT);
+			}
+
+			if (tStep != 0) {
+				curT += tStep;
+				FloatPair fPos = Shot.getShotPos(initPos, initV, acc, curT);
+				debug.print(DebugLevel.Debug, "current x", fPos.x);
+				debug.print(DebugLevel.Debug, "current y", fPos.y);
+				MapPosition mapPos = fPos.round();
+				int mapY;
 
 				/* The bullet might return from the edge of the map,
 				 * so stop only when it falls to the bottom */
-				if (!isInside(map_pos))
-					map_y = info.getHeight();
+				if (!isInside(mapPos))
+					mapY = info.getHeight();
 				else
-					map_y = get(map_pos.getX());
+					mapY = get(mapPos.getX());
 
-				if (map_pos.getY() >= map_y)
-				{
-					return new Impact(map_pos, cur_t);
-				}
+				if (mapPos.getY() >= mapY)
+					return new Impact(mapPos, curT);
 			}
-			cur_delta_x += x_step.get();
+			curDeltaX += xStep.get();
 		}
 	}
 
@@ -136,7 +142,7 @@ public class ServerGameMap extends GameMap {
 
 	        debug.print(DebugLevel.Debug, "t step", tStep1);
 	    }
-	    /* t_step1 <= t_step2 */
+	    /* tStep1 <= tStep2 */
 
 	    if (tStep1 >= 0)
 	    {
@@ -148,7 +154,7 @@ public class ServerGameMap extends GameMap {
 	    }
 	    else
 	    {
-	        /* No valid t_step found, turn back */
+	        /* No valid tStep found, turn back */
 	        if (!oneSideClear.get())
 	        {
 	            oneSideClear.set(true);
@@ -157,7 +163,7 @@ public class ServerGameMap extends GameMap {
 	        else
 	        {
 	            debug.print(DebugLevel.Err,
-	            		"wtf", "Haven't found a valid t_step!");
+	            		"wtf", "Haven't found a valid tStep!");
 	        }
             // Arbitrary value, as we need to return something
             return 1;

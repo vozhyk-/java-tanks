@@ -36,6 +36,11 @@ public class MapPosition implements Communicable {
 		return new MapPosition(Int16.recv(comm), Int16.recv(comm));
 	}
 
+	@Override
+	public String toString() {
+		return "(" + x + ", " + y + ")";
+	}
+
 	public FloatPair toFloatPair() {
 		return new FloatPair(this);
 	}
