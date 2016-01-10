@@ -48,11 +48,11 @@ public class PlayersList {
 				switch (loc_player.getState()) {
 					case Active:
 						Main.debug.print(DebugLevel.Debug, "Activate buttons");
-						((GamePanel) Main.GUIframe.Game).activate_shoot_buttons(((GamePanel) Main.GUIframe.Game).buttons);
+						((GamePanel) Main.GUIframe.Game).activate_shoot_buttons();
 						break;
 					case Waiting:
 						Main.debug.print(DebugLevel.Debug, "Deactivate buttons");
-						((GamePanel) Main.GUIframe.Game).deactivate_shoot_buttons(((GamePanel) Main.GUIframe.Game).buttons);
+						((GamePanel) Main.GUIframe.Game).deactivate_shoot_buttons();
 						break;
 					default:
 						Main.debug.print(DebugLevel.Warn, "Unknown state");

@@ -21,7 +21,7 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 	JButton dec_power_b = new JButton("v");
 	JButton inc_ang_b = new JButton("^");
 	JButton dec_ang_b = new JButton("v");
-	JApplet map;
+	JApplet game_a;
 	Timer timer;
 	JLabel timer_l;
 	time t = new time();
@@ -52,19 +52,21 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 		}
 	}
 
-	void deactivate_shoot_buttons(JButton[] buttons) {
+	void deactivate_shoot_buttons() {
 		for (JButton i : buttons) {
 			i.setEnabled(false);
 		}
 	}
 
-	void activate_shoot_buttons(JButton[] buttons) {
+	void activate_shoot_buttons() {
 		for (JButton i : buttons) {
 			i.setEnabled(true);
 		}
 	}
 
 	GamePanel() {
+		setDoubleBuffered(true);
+
 		timer = new Timer(1000, this);
 		timer_l = new JLabel("0:00");
 
@@ -76,18 +78,18 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 		layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
 
-		deactivate_shoot_buttons(buttons);
+		deactivate_shoot_buttons();
 		for (JButton i : buttons) {
 			i.addActionListener(this);
 		}
 
-		map = new GameApplet();
-		map.setPreferredSize(new Dimension(map_x, map_y));
+		game_a = new GameApplet();
+		game_a.setPreferredSize(new Dimension(map_x, map_y));
 
 		layout.setHorizontalGroup(
 				layout.createSequentialGroup()
 					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-						.addComponent(map)
+						.addComponent(game_a)
 						.addGroup(layout.createSequentialGroup()
 								.addComponent(timer_l)
 								.addGroup(layout.createParallelGroup()
@@ -102,7 +104,7 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 					);
 		layout.setVerticalGroup(
 					layout.createSequentialGroup()
-					.addComponent(map)
+					.addComponent(game_a)
 					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 							.addComponent(timer_l)
 							.addGroup(layout.createSequentialGroup()
@@ -131,6 +133,7 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 			t.update();
 		} else if (shoot_b == e.getSource()){
 			Main.con.send_shot(s.power, s.angle);
+			deactivate_shoot_buttons();
 		} else {
 			if (inc_power_b == e.getSource() && s.power < 100) {
 				s.power++;
@@ -143,6 +146,7 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 			}
 			power_l.setText("Power: " + s.power);
 			angle_l.setText("Angle: " + s.angle);
+			game_a.repaint();
 		}
 	}
 

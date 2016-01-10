@@ -121,6 +121,7 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 		((GamePanel) Main.GUIframe.Game).s.angle = angl;
 		((GamePanel) Main.GUIframe.Game).angle_l.setText("Angle: " + ((GamePanel) Main.GUIframe.Game).s.angle);
 		e.consume();
+		repaint();
 	}
 
 	@Override
@@ -152,14 +153,14 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 		Integer angl = ((GamePanel) Main.GUIframe.Game).s.angle;
 		Integer pwr = ((GamePanel) Main.GUIframe.Game).s.power;
 		switch (arg0.getKeyCode()) {
-			case KeyEvent.VK_RIGHT:
+			case KeyEvent.VK_LEFT:
 				if (angl < 180) {
 					angl++;
 					((GamePanel) Main.GUIframe.Game).angle_l.setText("Angle: " + angl);
 					((GamePanel) Main.GUIframe.Game).s.angle = angl;
 				}
 				break;
-			case KeyEvent.VK_LEFT:
+			case KeyEvent.VK_RIGHT:
 				if (angl > 0) {
 					angl--;
 					((GamePanel) Main.GUIframe.Game).angle_l.setText("Angle: " + angl);
@@ -182,6 +183,7 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 				break;
 		}
 		arg0.consume();
+		repaint();
 	}
 
 	@Override
