@@ -24,7 +24,10 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 	final static int mul_h = 10;
 	final static int mul_v = 20;
 	final static int off_v = 14*mul_v;
-	final static int brush_width = 20;
+	final static int brush_width = 10;
+	final static int width = 5*mul_h;
+	final static int height = mul_v;
+	final static int t_len = height;
 	Color grey = Color.lightGray;
 	Color idle_tank_colour = Color.BLUE;
 	Color active_tank_colour = Color.CYAN;
@@ -68,8 +71,6 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 	}
 
 	private void draw_tanks(Graphics2D g, ArrayList<Player> pl) {
-		int width = 5*mul_h;
-		int height = mul_v;
 		for (Player i:pl) {
 			if (Game.players.loc_player == i) {
 				g.setPaint(local_tank_colour);
@@ -90,7 +91,9 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 			int y = i.getPos().getY()*mul_v-off_v;
 			g.fillRoundRect(x, y, width, height, width/2, height);
 			g.setStroke(new BasicStroke(mul_v/2));
-			g.drawLine(x, y-height/2, x+width/2, y+height/2);
+			int tx = x + width/2 + (int) (t_len*Math.cos(Math.toRadians(((GamePanel) Main.GUIframe.Game).s.angle)));
+			int ty = y - (int) (t_len*Math.sin(Math.toRadians(((GamePanel) Main.GUIframe.Game).s.angle)));
+			g.drawLine(x + width/2, y, tx, ty);
 			g.setPaint(fg);
 			g.drawString(i.getNickname(), x, y-height);
 		}
@@ -100,6 +103,8 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 		Graphics2D g = (Graphics2D) gg;
 		GameMap m = Game.map;
 		ArrayList<Player> pl = Game.players.getL();
+		g.setColor(bg);
+		g.fillRect(0, 0, getSize().width, getSize().height);
 		draw_map(g, m);
 		draw_tanks(g, pl);
 	}
