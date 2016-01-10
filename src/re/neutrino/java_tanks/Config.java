@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import re.neutrino.java_tanks.debug.*;
+import re.neutrino.java_tanks.types.FloatPair;
+import re.neutrino.java_tanks.types.Shot;
 import re.neutrino.java_tanks.types.updates.ConfigUpdate;
 
 public class Config {
@@ -60,6 +62,36 @@ public class Config {
 
 	public void update(ConfigUpdate u) {
 		set(u.getOptionName(), u.getOptionValue());
+	}
+
+	public FloatPair getInitialV(Shot shot) {
+		int powerC = get("power_c");
+	    double angleRad = degToRad(shot.getAngle());
+
+	    return new FloatPair(
+	        shot.getPower() * Math.cos(angleRad) / powerC,
+	        -shot.getPower() * Math.sin(angleRad) / powerC);
+	}
+
+	public FloatPair getAcceleration() {
+		return new FloatPair(
+	        (double)get("wind") / 1000,
+	        (double)get("gravity") / 1000);
+	}
+
+	private double degToRad(short deg) {
+		switch (deg)
+	    {
+	        case 0:
+	            return 0;
+	        case 90:
+	            return Math.PI/2;
+	        case 180:
+	            return Math.PI;
+	        default:
+	        	// TODO Use Math.toRadians() instead?
+	            return deg * Math.PI / 180;
+	    }
 	}
 
 	public class Item {

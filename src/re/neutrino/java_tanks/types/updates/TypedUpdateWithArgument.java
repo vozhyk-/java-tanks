@@ -12,7 +12,6 @@ public class TypedUpdateWithArgument<T extends Communicable> extends UpdateWithA
 
 	@Override
 	public Type getType() {
-		// TODO Auto-generated method stub
 		return type;
 	}
 }

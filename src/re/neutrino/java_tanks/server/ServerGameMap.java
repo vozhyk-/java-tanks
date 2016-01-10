@@ -24,19 +24,21 @@ public class ServerGameMap extends GameMap {
 	    debug.print(DebugLevel.Debug, "shot: impact t", impactT);
 
 	    MapPosition d_pos =
-	        roundToMapPos(shotPos(
+	        Shot.getShotPos(
 	        		player.getPos().toFloatPair(),
 	        		config.getInitialV(shot),
 	        		config.getAcceleration(),
-	        		impactT));
+	        		impactT).round();
 	    debug.print(DebugLevel.Debug, "shot", "pos @ impact t:" + d_pos);
 	    debug.print(DebugLevel.Debug, "shot", "impact pos:" + impactPos);
 	    if (isInside(impactPos))
 	        debug.print(DebugLevel.Debug,
-	        		"shot: map y @ impact pos", get(impactPos.x));
+	        		"shot: map y @ impact pos", get(impactPos.getX()));
 	    else
 	    	debug.print(DebugLevel.Debug,
 	    			"shot", "Impact position outside map");
+
+	    return impact;
 	}
 
 	Impact getImpact(Player player, Shot shot)

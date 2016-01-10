@@ -45,7 +45,7 @@ public class Game {
 				rand.nextInt(),
 				config.get("map_width"),
 				config.get("map_height"));
-		map = new ServerGameMap(mapInfo);
+		map = new ServerGameMap(mapInfo, config, debug);
 		started = false;
 	}
 
@@ -269,9 +269,9 @@ public class Game {
 	}
 
 	private MapPosition shotWithoutDamage(Player player, Shot shot) {
-		Impact i = map.shotWithoutDamage(player, shot);
+		ServerGameMap.Impact i = map.shotWithoutDamage(player, shot);
 
-	    allAddUpdate(new ShotImpactUpdate(i.getTime()));
+	    allAddUpdate(new ShotImpactUpdate((short)i.getTime()));
 	    return i.getPos();
 	}
 

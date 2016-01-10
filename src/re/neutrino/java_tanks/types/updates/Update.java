@@ -24,9 +24,9 @@ public abstract class Update implements Communicable {
 		case Empty: return EmptyUpdate.recvRest(comm);
 	    case Config: return ConfigUpdate.recvRest(comm);
 	    //case Ability: return AbilityUpdate.recvRest(comm);
-	    //case Shot: case AbilityUse:
-	    //	return ShotUpdate.recvRest(comm, type);
-	    //case Impact: return ImpactUpdate.recvRest(comm);
+	    case Shot: return ShotUpdate.recvRest(comm);
+	    //case AbilityUse: return AbilityUseUpdate.recvRest(comm);
+	    case ShotImpact: return ShotImpactUpdate.recvRest(comm);
 	    //case Map: return MapUpdate.recvRest(comm);
 	    case Player: case AddPlayer: case DelPlayer:
 	    	return PlayerUpdate.recvRest(comm, type);
@@ -38,7 +38,7 @@ public abstract class Update implements Communicable {
 		Empty,
 	    Config, Ability,
 	    Shot, AbilityUse,
-	    Impact, Map,
+	    ShotImpact, Map,
 	    Player, AddPlayer, DelPlayer;
 
 		static Type[] values = values();

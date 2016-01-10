@@ -39,4 +39,12 @@ public class Shot implements Communicable {
 	public String toString() {
 		return "Shot(angle = " + angle + ", power = " + power + ")";
 	}
+
+	public static FloatPair getShotPos(
+			FloatPair initPos,
+			FloatPair initV, FloatPair acc, double t) {
+		return new FloatPair(
+	         initPos.x + (acc.x != 0 ? initV.x*t + t*t*acc.x/2 : initV.x*t),
+	         initPos.y + initV.y*t + t*t*acc.y/2);
+	}
 }
