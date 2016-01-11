@@ -5,6 +5,7 @@ import java.util.Random;
 
 import re.neutrino.java_tanks.types.basic.Int32;
 import re.neutrino.java_tanks.types.basic.UInt16;
+import re.neutrino.java_tanks.types.updates.MapUpdate;
 
 public class GameMap implements Communicable {
 	public static class Info implements Communicable {
@@ -71,12 +72,24 @@ public class GameMap implements Communicable {
 		return content[x];
 	}
 
+	public short get(int x) {
+		return get((short)x);
+	}
+
 	/**
 	 * @deprecated
 	 */
 	@Deprecated
 	public short[] get() {
 		return content;
+	}
+
+	public void set(short x, short newHeight) {
+		content[x] = newHeight;
+	}
+
+	public void update(MapUpdate u) {
+		set(u.getX(), u.getNewHeight());
 	}
 
 	public boolean isInside(MapPosition pos) {

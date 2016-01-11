@@ -2,8 +2,8 @@ package re.neutrino.java_tanks.types;
 
 public class FloatPair {
 	// Public fields - this is a structure used in computations
-	public final double x;
-	public final double y;
+	public double x;
+	public double y;
 
 	public FloatPair(double x, double y) {
 		this.x = x;

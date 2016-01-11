@@ -48,7 +48,7 @@ public class Game {
 				rand.nextInt(),
 				config.get("map_width"),
 				config.get("map_height"));
-		map = new ServerGameMap(mapInfo, config, debug);
+		map = new ServerGameMap(mapInfo, this, config, debug);
 		started = false;
 	}
 
@@ -339,6 +339,7 @@ public class Game {
 	private void processImpact(MapPosition impactPos) {
 		shotDealDamage(impactPos);
 		map.shotUpdateMap(impactPos);
+		landPlayersFromTheSky();
 
 	    if (!tryEnd()) {
 	        //tanks_map = map_with_tanks();
@@ -398,5 +399,24 @@ public class Game {
 	        		new PlayerUpdate(Update.Type.Player, player));
 	    debug.print(DebugLevel.Info,
 	    		"damage", player + " gets " + damage);
+	}
+
+	private void landPlayersFromTheSky() {
+		/* Place all tanks above ground back onto the ground */
+	    //lock_clients_array();                                        /* {{{ */
+	    for (Client cl : clients)
+	    {
+	        Player player = cl.getPlayer();
+	        MapPosition pos = player.getPos();
+	        short mapY = map.get(pos.getX());
+
+	        if (player.getPos().getY() < mapY - 1) {
+	        	player.setPos(new MapPosition(
+	        			pos.getX(), newPlayerY(pos.getX())));
+	            allAddUpdate(new PlayerUpdate(
+	            		Update.Type.Player, player));
+	        }
+	    }
+	    //unlock_clients_array();                                      /* }}} */
 	}
 }

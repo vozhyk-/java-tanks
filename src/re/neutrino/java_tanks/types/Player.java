@@ -123,6 +123,10 @@ public class Player implements Communicable {
 		return pos;
 	}
 
+	public void setPos(MapPosition pos) {
+		this.pos = pos;
+	}
+
 	public enum State implements CommunicableEnum<State> {
 		NoPlayer, Joined, Ready, Waiting, Active, Dead,
 		Winner, Loser;
