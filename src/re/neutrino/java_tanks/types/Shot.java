@@ -2,6 +2,7 @@ package re.neutrino.java_tanks.types;
 
 import java.io.IOException;
 
+import re.neutrino.java_tanks.Config;
 import re.neutrino.java_tanks.types.basic.*;
 
 public class Shot implements Communicable {
@@ -46,5 +47,13 @@ public class Shot implements Communicable {
 		return new FloatPair(
 	         initPos.x + (acc.x != 0 ? initV.x*t + t*t*acc.x/2 : initV.x*t),
 	         initPos.y + initV.y*t + t*t*acc.y/2);
+	}
+
+	public static FloatPair getShotPos(Player player, Shot shot, short time, Config config) {
+		return getShotPos(
+				player.getPos().toFloatPair(),
+				config.getInitialV(shot),
+				config.getAcceleration(),
+				time);
 	}
 }

@@ -216,22 +216,4 @@ public class ServerGameMap extends GameMap {
 			return 1;
 	    }
 	}
-
-	class Impact {
-		final MapPosition pos;
-		final double time;
-
-		public Impact(MapPosition pos, double time) {
-			this.pos = pos;
-			this.time = time;
-		}
-
-		public MapPosition getPos() {
-			return pos;
-		}
-
-		public double getTime() {
-			return time;
-		}
-	}
 }

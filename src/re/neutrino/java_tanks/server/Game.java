@@ -330,7 +330,7 @@ public class Game {
 	}
 
 	private MapPosition shotWithoutDamage(Player player, Shot shot) {
-		ServerGameMap.Impact i = map.shotWithoutDamage(player, shot);
+		Impact i = map.shotWithoutDamage(player, shot);
 
 	    allAddUpdate(new ShotImpactUpdate((short)i.getTime()));
 	    return i.getPos();
