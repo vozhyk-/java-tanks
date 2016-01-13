@@ -132,7 +132,7 @@ public class Net {
 					Main.debug.print(DebugLevel.Warn, "Unknown state");
 			}
 		}
-		
+
 	}
 
 	public class ChangesThread implements Runnable {
@@ -170,8 +170,9 @@ public class Net {
 							su = (ShotUpdate) i;
 							break;
 						case ShotImpact:
-							shotThread = new Thread(((GameApplet) ((GamePanel) 
-									Main.GUIframe.Game).game_a).create_shot_thread(su, ((ShotImpactUpdate) i).getImpactT()), "");
+							shotThread = new Thread(((GameApplet) ((GamePanel)
+									Main.GUIframe.Game).game_a)
+									.create_shot_thread(su, (ShotImpactUpdate) i));
 							shotThread.start();
 							break;
 						default:
@@ -186,7 +187,7 @@ public class Net {
 
 		@Override
 		public void run() {
-			while (running) {	
+			while (running) {
 				synchronized (comm) {
 					if (!socket.isConnected() || socket.isClosed())
 						break;

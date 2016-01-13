@@ -20,6 +20,7 @@ import re.neutrino.java_tanks.types.FloatPair;
 import re.neutrino.java_tanks.types.GameMap;
 import re.neutrino.java_tanks.types.Player;
 import re.neutrino.java_tanks.types.Shot;
+import re.neutrino.java_tanks.types.updates.ShotImpactUpdate;
 import re.neutrino.java_tanks.types.updates.ShotUpdate;
 
 public class GameApplet extends JApplet implements MouseListener, KeyListener {
@@ -103,6 +104,7 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 		}
 	}
 
+	@Override
 	public void paint(Graphics gg) {
 		Graphics2D g = (Graphics2D) gg;
 		GameMap m = Game.map;
@@ -113,9 +115,9 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 		draw_tanks(g, pl);
 	}
 
-	ShotThread create_shot_thread(ShotUpdate su, short t) {
+	ShotThread create_shot_thread(ShotUpdate su, ShotImpactUpdate siu) {
 		Player sh = Game.players.find_p(su.getPlayerId());
-		return new ShotThread(sh, su.getShot(), t);
+		return new ShotThread(sh, su.getShot(), siu.getImpactT());
 	}
 
 	public class ShotThread implements Runnable {
@@ -125,10 +127,10 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 		final static int r = 10;
 		Shot sh;
 		Player sp;
-		short it;
+		double it;
 		short cur_t = 0;
 
-		ShotThread(Player p, Shot s, short t) {
+		ShotThread(Player p, Shot s, double t) {
 			sp = p;
 			sh = s;
 			it = t;
@@ -178,25 +180,25 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

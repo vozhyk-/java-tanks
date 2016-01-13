@@ -11,16 +11,19 @@ public class ShotImpactUpdate extends UpdateWithArgument<Int16> {
 		return Type.ShotImpact;
 	}
 
-	public ShotImpactUpdate(Int16 impactT) {
+	private static final double impactTNetPrecision = 128;
+
+	private ShotImpactUpdate(Int16 impactT) {
 		super(impactT);
 	}
 
-	public ShotImpactUpdate(short impactT) {
-		this(new Int16(impactT));
+	public ShotImpactUpdate(double impactT) {
+		this(new Int16((short)
+				Math.round(impactT * impactTNetPrecision)));
 	}
 
-	public short getImpactT() {
-		return arg.getValue();
+	public double getImpactT() {
+		return arg.getValue() / impactTNetPrecision;
 	}
 
 	public static ShotImpactUpdate recvRest(CommunicationStream comm) throws IOException {

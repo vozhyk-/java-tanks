@@ -22,7 +22,7 @@ public class Impact {
 
 	public static Impact fromUpdate(
 			ShotImpactUpdate u, Player player, Shot shot, Config config) {
-		short time = u.getImpactT();
+		double time = u.getImpactT();
 		return new Impact(
 				Shot.getShotPos(player, shot, time, config).round(),
 				time);

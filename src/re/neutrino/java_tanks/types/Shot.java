@@ -49,7 +49,8 @@ public class Shot implements Communicable {
 	         initPos.y + initV.y*t + t*t*acc.y/2);
 	}
 
-	public static FloatPair getShotPos(Player player, Shot shot, short time, Config config) {
+	public static FloatPair getShotPos(
+			Player player, Shot shot, double time, Config config) {
 		return getShotPos(
 				player.getPos().toFloatPair(),
 				config.getInitialV(shot),
