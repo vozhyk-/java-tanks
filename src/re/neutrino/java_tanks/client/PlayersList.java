@@ -9,7 +9,7 @@ import re.neutrino.java_tanks.types.updates.PlayerUpdate;
 
 public class PlayersList {
 	private static ArrayList<Player> l = new ArrayList<Player>();
-	Player loc_player = null;
+	public static Player loc_player = null;
 
 	synchronized void update(PlayerUpdate p) {
 		Player pp = p.getPlayer();
@@ -17,7 +17,7 @@ public class PlayersList {
 		if (index < 0) {
 			Main.debug.print(DebugLevel.Debug, "Add player", pp);
 			getL().add(pp);
-			if (pp.getId().equals(Game.PlayerID)) {
+			if (is_loc_player(p)) {
 				loc_player = getL().get(getL().size()-1);
 			}
 			Main.debug.print(DebugLevel.Debug, "ListSize", getL().size());
@@ -31,35 +31,12 @@ public class PlayersList {
 			}
 		}
 		if (loc_player != null) {
-			Main.debug.print(DebugLevel.Debug, "State", loc_player.getState());
-			if (Main.GUIframe.cur_panel == Main.GUIframe.Lobby) {
-				switch (loc_player.getState()) {
-					case Active:
-					case Waiting:
-						Main.debug.print(DebugLevel.Debug, "Game start");
-						Main.GUIframe.changePane(Main.GUIframe.Game);
-						((GamePanel) Main.GUIframe.Game).timer.start();
-						break;
-					default:
-						Main.debug.print(DebugLevel.Warn, "Unknown state");
-				}
-			}
-			if (Main.GUIframe.cur_panel == Main.GUIframe.Game) {
-				switch (loc_player.getState()) {
-					case Active:
-						Main.debug.print(DebugLevel.Debug, "Activate buttons");
-						((GamePanel) Main.GUIframe.Game).activate_shoot_buttons();
-						break;
-					case Waiting:
-						Main.debug.print(DebugLevel.Debug, "Deactivate buttons");
-						((GamePanel) Main.GUIframe.Game).deactivate_shoot_buttons();
-						break;
-					default:
-						Main.debug.print(DebugLevel.Warn, "Unknown state");
-				}
-			}
-			((LobbyPanel) Main.GUIframe.Lobby).update_player_list();
+			
 		}
+	}
+
+	synchronized boolean is_loc_player(PlayerUpdate p) {
+		return p.getPlayer().getId().equals(Game.PlayerID);
 	}
 
 	synchronized void delete(PlayerUpdate p) {
@@ -76,6 +53,15 @@ public class PlayersList {
 				((LobbyPanel) Main.GUIframe.Lobby).update_player_list();
 			}
 		}
+	}
+
+	Player find_p(Int16 id) {
+		for (Player i:getL()) {
+			if (i.getId().equals(id)) {
+				return i;
+			}
+		}
+		return null;
 	}
 
 	int find(Int16 id) {

@@ -9,14 +9,18 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 
 import javax.swing.JApplet;
 
 import re.neutrino.java_tanks.debug.DebugLevel;
+import re.neutrino.java_tanks.types.FloatPair;
 import re.neutrino.java_tanks.types.GameMap;
 import re.neutrino.java_tanks.types.Player;
+import re.neutrino.java_tanks.types.Shot;
+import re.neutrino.java_tanks.types.updates.ShotUpdate;
 
 public class GameApplet extends JApplet implements MouseListener, KeyListener {
 	final static Color bg = Color.white;
@@ -72,7 +76,7 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 
 	private void draw_tanks(Graphics2D g, ArrayList<Player> pl) {
 		for (Player i:pl) {
-			if (Game.players.loc_player == i) {
+			if (PlayersList.loc_player == i) {
 				g.setPaint(local_tank_colour);
 			} else {
 				switch (i.getState()) {
@@ -109,10 +113,57 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 		draw_tanks(g, pl);
 	}
 
+	ShotThread create_shot_thread(ShotUpdate su, short t) {
+		Player sh = Game.players.find_p(su.getPlayerId());
+		return new ShotThread(sh, su.getShot(), t);
+	}
+
+	public class ShotThread implements Runnable {
+		private volatile boolean running = true;
+		Color shot_colour = Color.ORANGE;
+		final static short fps = 5;
+		final static int r = 10;
+		Shot sh;
+		Player sp;
+		short it;
+		short cur_t = 0;
+
+		ShotThread(Player p, Shot s, short t) {
+			sp = p;
+			sh = s;
+			it = t;
+		}
+
+		void draw_shot(Graphics2D g, FloatPair floatPair, Color col) {
+			g.setPaint(col);
+			double x = floatPair.getX()*mul_h;
+			double y = floatPair.getY()*mul_v - off_v;
+			g.fill(new Ellipse2D.Double(x, y, r, r));
+			g.setPaint(fg);
+		}
+
+		@Override
+		public void run() {
+			while (cur_t < it && running) {
+				Main.debug.print(DebugLevel.Debug, "shot_render", cur_t);
+				FloatPair fp = Shot.getShotPos(sp, sh, ++cur_t, Game.conf);
+				draw_shot((Graphics2D) getGraphics(), fp, shot_colour);
+				try {
+					Thread.sleep(1000/fps);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					running=false;
+				}
+				draw_shot((Graphics2D) getGraphics(), fp, bg);
+			}
+		}
+	}
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		int px = Game.players.loc_player.getPos().getX()*mul_h;
-		int py = Game.players.loc_player.getPos().getY()*mul_v-off_v;
+		int px = PlayersList.loc_player.getPos().getX()*mul_h;
+		int py = PlayersList.loc_player.getPos().getY()*mul_v-off_v;
 		int dx = px-e.getX();
 		int dy = py-e.getY();
 		Integer angl = 90 + (int) Math.toDegrees(Math.atan2(dx, dy));
@@ -152,6 +203,7 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 	public void keyPressed(KeyEvent arg0) {
 		Integer angl = ((GamePanel) Main.GUIframe.Game).s.angle;
 		Integer pwr = ((GamePanel) Main.GUIframe.Game).s.power;
+		boolean a=true;
 		switch (arg0.getKeyCode()) {
 			case KeyEvent.VK_LEFT:
 				if (angl < 180) {
@@ -181,9 +233,11 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 					((GamePanel) Main.GUIframe.Game).s.power = pwr;
 				}
 				break;
+			default:
+				a=false;
 		}
 		arg0.consume();
-		repaint();
+		if (a) repaint();
 	}
 
 	@Override

@@ -7,9 +7,7 @@ import java.net.UnknownHostException;
 import re.neutrino.java_tanks.debug.DebugLevel;
 import re.neutrino.java_tanks.types.*;
 import re.neutrino.java_tanks.types.commands.*;
-import re.neutrino.java_tanks.types.updates.ConfigUpdate;
-import re.neutrino.java_tanks.types.updates.PlayerUpdate;
-import re.neutrino.java_tanks.types.updates.Update;
+import re.neutrino.java_tanks.types.updates.*;
 
 public class Net {
 	Socket socket;
@@ -106,8 +104,41 @@ public class Net {
 		}
 	}
 
+	void after_loc_player_update() {
+		Main.debug.print(DebugLevel.Debug, "State", PlayersList.loc_player.getState());
+		if (Main.GUIframe.cur_panel == Main.GUIframe.Lobby) {
+			switch (PlayersList.loc_player.getState()) {
+				case Active:
+				case Waiting:
+					Main.debug.print(DebugLevel.Debug, "Game start");
+					Main.GUIframe.changePane(Main.GUIframe.Game);
+					((GamePanel) Main.GUIframe.Game).timer.start();
+					break;
+				default:
+					((LobbyPanel) Main.GUIframe.Lobby).update_player_list();
+			}
+		}
+		if (Main.GUIframe.cur_panel == Main.GUIframe.Game) {
+			switch (PlayersList.loc_player.getState()) {
+				case Active:
+					Main.debug.print(DebugLevel.Debug, "Activate buttons");
+					((GamePanel) Main.GUIframe.Game).set_shoot_buttons(true);
+					break;
+				case Waiting:
+					Main.debug.print(DebugLevel.Debug, "Deactivate buttons");
+					((GamePanel) Main.GUIframe.Game).set_shoot_buttons(false);
+					break;
+				default:
+					Main.debug.print(DebugLevel.Warn, "Unknown state");
+			}
+		}
+		
+	}
+
 	public class ChangesThread implements Runnable {
 		private volatile boolean running = true;
+		Thread shotThread;
+		ShotUpdate su;
 
 		void terminate() {
 			running=false;
@@ -128,9 +159,20 @@ public class Net {
 						case AddPlayer:
 						case Player:
 							Game.players.update((PlayerUpdate) i);
+							if (Game.players.is_loc_player((PlayerUpdate) i)) {
+								after_loc_player_update();
+							}
 							break;
 						case DelPlayer:
 							Game.players.delete((PlayerUpdate) i);
+							break;
+						case Shot:
+							su = (ShotUpdate) i;
+							break;
+						case ShotImpact:
+							shotThread = new Thread(((GameApplet) ((GamePanel) 
+									Main.GUIframe.Game).game_a).create_shot_thread(su, ((ShotImpactUpdate) i).getImpactT()), "");
+							shotThread.start();
 							break;
 						default:
 							Main.debug.print(DebugLevel.Warn, "Received unknown update", i.getType());
@@ -144,7 +186,12 @@ public class Net {
 
 		@Override
 		public void run() {
-			while (running) {
+			while (running) {	
+				synchronized (comm) {
+					if (!socket.isConnected() || socket.isClosed())
+						break;
+					fetch_changes();
+				}
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -152,17 +199,12 @@ public class Net {
 					e.printStackTrace();
 					running=false;
 				}
-				synchronized (comm) {
-					if (!socket.isConnected() || socket.isClosed() || !running)
-						break;
-					fetch_changes();
-				}
 			}
 		}
 	}
 
 	public void send_shot(Integer power, Integer angle) {
-		Shot s = new Shot((short) power.intValue(), (short) angle.intValue());
+		Shot s = new Shot((short) angle.intValue(), (short) power.intValue());
 		synchronized (comm) {
 			send_command(new ShootCommand(s));
 		}

@@ -52,15 +52,9 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 		}
 	}
 
-	void deactivate_shoot_buttons() {
+	void set_shoot_buttons(boolean b) {
 		for (JButton i : buttons) {
-			i.setEnabled(false);
-		}
-	}
-
-	void activate_shoot_buttons() {
-		for (JButton i : buttons) {
-			i.setEnabled(true);
+			i.setEnabled(b);
 		}
 	}
 
@@ -78,7 +72,7 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 		layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
 
-		deactivate_shoot_buttons();
+		set_shoot_buttons(false);
 		for (JButton i : buttons) {
 			i.addActionListener(this);
 		}
@@ -133,7 +127,7 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 			t.update();
 		} else if (shoot_b == e.getSource()){
 			Main.con.send_shot(s.power, s.angle);
-			deactivate_shoot_buttons();
+			set_shoot_buttons(false);
 		} else {
 			if (inc_power_b == e.getSource() && s.power < 100) {
 				s.power++;
