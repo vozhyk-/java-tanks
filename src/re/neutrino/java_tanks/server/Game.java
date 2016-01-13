@@ -332,7 +332,7 @@ public class Game {
 	private MapPosition shotWithoutDamage(Player player, Shot shot) {
 		Impact i = map.shotWithoutDamage(player, shot);
 
-	    allAddUpdate(new ShotImpactUpdate((short)i.getTime()));
+	    allAddUpdate(new ShotImpactUpdate(i.getTime()));
 	    return i.getPos();
 	}
 
