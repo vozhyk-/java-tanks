@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -115,6 +116,21 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 		draw_tanks(g, pl);
 	}
 
+	@Override
+	public void update(Graphics g) {
+		Image image = createImage(this.getWidth(), this.getHeight());
+	    Graphics graphics = image.getGraphics();
+	    graphics.setColor(getBackground());
+	    graphics.fillRect(0,  0,  this.getWidth(),  this.getHeight());
+	    graphics.setColor(getForeground());
+	    paint(graphics);
+	    g.drawImage(image, 0, 0, this);
+	}
+
+	public GameApplet getOuter() {
+	    return GameApplet.this;
+	}
+
 	ShotThread create_shot_thread(ShotUpdate su, ShotImpactUpdate siu) {
 		Player sh = Game.players.find_p(su.getPlayerId());
 		return new ShotThread(sh, su.getShot(), siu.getImpactT());
@@ -123,17 +139,24 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 	public class ShotThread implements Runnable {
 		private volatile boolean running = true;
 		Color shot_colour = Color.ORANGE;
-		final static short fps = 5;
+		final static short fps = 20;
 		final static int r = 10;
+		static final double inc = (double) r/fps;
 		Shot sh;
 		Player sp;
 		double it;
-		short cur_t = 0;
+		double cur_t = 0;
+		Image image = createImage(getWidth(), getHeight());
+		Graphics graphics = image.getGraphics();
 
 		ShotThread(Player p, Shot s, double t) {
 			sp = p;
 			sh = s;
 			it = t;
+			graphics.setColor(getBackground());
+		    graphics.fillRect(0,  0,  getOuter().getWidth(),  getOuter().getHeight());
+		    graphics.setColor(getForeground());
+		    paint(graphics);
 		}
 
 		void draw_shot(Graphics2D g, FloatPair floatPair, Color col) {
@@ -147,9 +170,11 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 		@Override
 		public void run() {
 			while (cur_t < it && running) {
-				Main.debug.print(DebugLevel.Debug, "shot_render", cur_t);
-				FloatPair fp = Shot.getShotPos(sp, sh, ++cur_t, Game.conf);
-				draw_shot((Graphics2D) getGraphics(), fp, shot_colour);
+				cur_t+=inc;
+				Main.debug.print(DebugLevel.Debug, "shot_render", cur_t + " " + inc);
+				FloatPair fp = Shot.getShotPos(sp, sh, cur_t, Game.conf);
+				draw_shot((Graphics2D) graphics, fp, shot_colour);
+				getGraphics().drawImage(image, 0, 0, getOuter());
 				try {
 					Thread.sleep(1000/fps);
 				} catch (InterruptedException e) {
@@ -157,7 +182,8 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 					e.printStackTrace();
 					running=false;
 				}
-				draw_shot((Graphics2D) getGraphics(), fp, bg);
+				draw_shot((Graphics2D) graphics, fp, bg);
+				getGraphics().drawImage(image, 0, 0, getOuter());
 			}
 		}
 	}
