@@ -1,0 +1,41 @@
+
+1: client can selects a game with a new command
+  client: connect to server
+    -> Join(nickname)   // try to join a *random* game
+    <- JoinReply        // everything as usual, but the server assigns
+                        // the client to the game it has joined
+    ...
+
+  choosing a particular game (to be implemented later):
+  client: connect to server
+    -> GetGames
+    <- list(GameDesc)
+    -> SetGame(gameId)
+    -> Join(nickname)
+    <- JoinReply
+    ...
+
++ simpler to implement
+- legacy clients can't choose a game
+
+
+2: a directory-server directs clients to the appropriate game-server
+  client: connect to dir-server
+    -> GetGame(0)   // ask for a *random* game that is not already in progress
+    <- GameAddr(address, port)
+  client: connect to game-server at (address, port)
+    ...
+
+  choosing a particular game:
+  client: connect to dir-server
+    -> GetGames
+    <- list(GameDesc)
+    -> GetGame(gameId)
+    <- GameAddr(address, port)
+  ...
+
++ choosing a game with a legacy client is possible by trying different
+  ports
++ a directory-server client can be a separate program (for non-Java
+  implementations)
+- takes longer to implement
