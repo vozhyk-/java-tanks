@@ -198,7 +198,16 @@ public class Game {
 
 		// TODO add ability updates
 
-		return JoinReply.ok(cl);
+		return JoinReply.ok(cl, this);
+	}
+
+	public boolean clientCanRejoin(String nickname) {
+		Optional<Client> disconnectedClient = clients.stream()
+				.filter(c -> c.getPlayer().getNickname().equals(nickname)
+						&& !c.getPlayer().isConnected())
+				.findAny();
+
+		return disconnectedClient.isPresent();
 	}
 
 	public void tryStart() {

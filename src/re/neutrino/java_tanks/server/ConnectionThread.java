@@ -3,12 +3,12 @@ package re.neutrino.java_tanks.server;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
-
 import re.neutrino.java_tanks.debug.*;
 import re.neutrino.java_tanks.types.*;
 import re.neutrino.java_tanks.types.commands.*;
 
 public class ConnectionThread implements Runnable {
+	GameList games;
 	Game game;
 	Socket socket;
 	CommunicationStream comm;
@@ -16,8 +16,8 @@ public class ConnectionThread implements Runnable {
 
 	Client client;
 
-	public ConnectionThread(Game game, Socket socket, DebugStream debug) {
-		this.game = game;
+	public ConnectionThread(GameList games, Socket socket, DebugStream debug) {
+		this.games = games;
 		this.socket = socket;
 		this.debug = debug;
 	}
@@ -90,10 +90,13 @@ public class ConnectionThread implements Runnable {
 
 	private void processCommand(JoinCommand cmd) throws IOException {
 		String nickname = cmd.getNickname();
-		JoinReply jr = game.tryJoin(nickname);
 
-		if (jr.getType() == JoinReply.Type.Ok)
+		JoinReply jr = games.tryJoin(nickname);
+
+		if (jr.getType() == JoinReply.Type.Ok) {
 			client = jr.getClient();
+			game = jr.getGame();
+		}
 
 		jr.send(comm);
 	}

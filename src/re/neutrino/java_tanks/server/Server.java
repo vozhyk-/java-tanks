@@ -4,13 +4,11 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-
 import re.neutrino.java_tanks.Config;
 import re.neutrino.java_tanks.debug.*;
 
 public class Server {
-	ArrayList<Game> games = new ArrayList<Game>();
+	GameList games = new GameList();
 	private Config config;
 	private DebugStream debug;
 
@@ -48,7 +46,7 @@ public class Server {
 		    	debug.print(DebugLevel.Info,
 		    			"incoming connection", socket.getRemoteSocketAddress());
 
-		    	new Thread(new ConnectionThread(game, socket, debug)).start();
+		    	new Thread(new ConnectionThread(games, socket, debug)).start();
 		    }
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
