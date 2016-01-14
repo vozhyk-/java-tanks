@@ -1,3 +1,4 @@
+Variant 1 chosen as the simpler and more extensible one.
 
 1: client can selects a game with a new command
   client: connect to server
@@ -16,26 +17,26 @@
     ...
 
 + simpler to implement
-- legacy clients can't choose a game
+- legacy clients can only join a random game
 
 
 2: a directory-server directs clients to the appropriate game-server
   client: connect to dir-server
-    -> GetGame(0)   // ask for a *random* game that is not already in progress
-    <- GameAddr(address, port)
-  client: connect to game-server at (address, port)
-    ...
-
-  choosing a particular game:
-  client: connect to dir-server
     -> GetGames
     <- list(GameDesc)
-    -> GetGame(gameId)
-    <- GameAddr(address, port)
-  ...
+  client: connect to game-server at
+  (the chosen game's) gameDesc.(address, port)
+    ...
 
 + choosing a game with a legacy client is possible by trying different
   ports
 + a directory-server client can be a separate program (for non-Java
   implementations)
+- more ports used on the server
+  - hard to add support for having games on the same port as the
+    directory-server while allowing clients with the directory-client
+    and game-client as separate programs to join them (it would
+    require the game-client to reuse the dir-server connection or to
+    use something like the SetGame command, which would be the same as
+    using variant 1 anyway)
 - takes longer to implement
