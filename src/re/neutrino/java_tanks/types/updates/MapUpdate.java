@@ -43,7 +43,6 @@ public class MapUpdate extends Update {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Map(x=" + getX() + ", height=" + getNewHeight() + ")";
 	}
 }

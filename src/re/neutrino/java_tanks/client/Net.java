@@ -176,6 +176,9 @@ public class Net {
 									.create_shot_thread(su, (ShotImpactUpdate) i));
 							shotThread.start();
 							break;
+						case Map:
+							Game.map.update((MapUpdate) i);
+							break;
 						default:
 							Main.debug.print(DebugLevel.Warn, "Received unknown update", i.getType());
 					}

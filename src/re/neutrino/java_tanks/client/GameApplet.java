@@ -190,6 +190,7 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 				}
 				draw_shot((Graphics2D) graphics, fp, bg);
 			}
+			repaint();
 		}
 	}
 
@@ -236,7 +237,7 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 	public void keyPressed(KeyEvent arg0) {
 		Integer angl = ((GamePanel) Main.GUIframe.Game).s.angle;
 		Integer pwr = ((GamePanel) Main.GUIframe.Game).s.power;
-		boolean a=true;
+		boolean a=false;
 		switch (arg0.getKeyCode()) {
 			case KeyEvent.VK_LEFT:
 				if (angl < 180) {
@@ -244,6 +245,7 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 					((GamePanel) Main.GUIframe.Game).angle_l.setText("Angle: " + angl);
 					((GamePanel) Main.GUIframe.Game).s.angle = angl;
 				}
+				a=true;
 				break;
 			case KeyEvent.VK_RIGHT:
 				if (angl > 0) {
@@ -251,6 +253,7 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 					((GamePanel) Main.GUIframe.Game).angle_l.setText("Angle: " + angl);
 					((GamePanel) Main.GUIframe.Game).s.angle = angl;
 				}
+				a=true;
 				break;
 			case KeyEvent.VK_UP:
 				if (pwr < 100) {
@@ -266,8 +269,9 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 					((GamePanel) Main.GUIframe.Game).s.power = pwr;
 				}
 				break;
-			default:
-				a=false;
+			case KeyEvent.VK_ENTER:
+				Main.con.send_shot(((GamePanel) Main.GUIframe.Game).s.power, ((GamePanel) Main.GUIframe.Game).s.angle);
+				((GamePanel) Main.GUIframe.Game).set_shoot_buttons(false);
 		}
 		arg0.consume();
 		if (a) repaint();
