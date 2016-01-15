@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -84,8 +83,10 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 			} else {
 				switch (i.getState()) {
 					case Waiting:
-					case Dead:
 						g.setPaint(idle_tank_colour);
+						break;
+					case Dead:
+						g.setPaint(bg);
 						break;
 					case Active:
 						g.setPaint(active_tank_colour);
@@ -98,8 +99,12 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 			int y = i.getPos().getY()*mul_v-off_v;
 			g.fillRoundRect(x, y, width, height, width/2, height);
 			g.setStroke(new BasicStroke(mul_v/2));
-			int tx = x + width/2 + (int) (t_len*Math.cos(Math.toRadians(((GamePanel) Main.GUIframe.Game).s.angle)));
-			int ty = y - (int) (t_len*Math.sin(Math.toRadians(((GamePanel) Main.GUIframe.Game).s.angle)));
+			int tx = x;
+			int ty = y;
+			if (i == PlayersList.loc_player) {
+				tx += width/2 + (int) (t_len*Math.cos(Math.toRadians(((GamePanel) Main.GUIframe.Game).s.angle)));
+				ty -= (int) (t_len*Math.sin(Math.toRadians(((GamePanel) Main.GUIframe.Game).s.angle)));
+			}
 			g.drawLine(x + width/2, y, tx, ty);
 			g.setPaint(fg);
 			g.drawString(i.getNickname(), x, y-height);
