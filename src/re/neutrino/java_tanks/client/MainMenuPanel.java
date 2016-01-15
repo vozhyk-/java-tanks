@@ -88,7 +88,7 @@ public class MainMenuPanel extends JPanel implements ActionListener, ItemListene
 	public void actionPerformed(ActionEvent arg0) {
 		if (ip_entry == arg0.getSource()) {
 			tryConnect();
-		} else if (new_game == arg0.getSource()) {
+		} else if (random_game == arg0.getSource()) {
 			Main.game = new Game(name_entry.getText());
 		}
 	}
@@ -99,9 +99,11 @@ public class MainMenuPanel extends JPanel implements ActionListener, ItemListene
 				Main.con.close();
 			}
 			Main.con = new Net(ip_entry.getText());
-			new_game.setEnabled(true);
+			//new_game.setEnabled(true);
+			random_game.setEnabled(true);
 		} catch (Exception e) {
 			new_game.setEnabled(false);
+			random_game.setEnabled(false);
 		}
 	}
 }

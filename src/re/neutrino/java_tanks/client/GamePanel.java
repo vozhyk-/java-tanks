@@ -6,12 +6,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+
+import re.neutrino.java_tanks.types.Player;
 
 public class GamePanel extends JPanel implements ActionListener, ItemListener {
 	final static int map_x = 127*GameApplet.mul_h;
@@ -29,6 +33,8 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 	JLabel power_l = new JLabel();
 	JLabel angle_l = new JLabel();
 	shot s = new shot();
+	DefaultListModel<String> s_listModel = new DefaultListModel<String>();
+	JList<String> s_list = new JList<String>(s_listModel);
 
 	class shot {
 		Integer angle = 90;
@@ -94,7 +100,8 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 									.addComponent(inc_ang_b)
 									.addComponent(angle_l)
 									.addComponent(dec_ang_b))
-								.addComponent(shoot_b)))
+								.addComponent(shoot_b)
+								.addComponent(s_list)))
 					);
 		layout.setVerticalGroup(
 					layout.createSequentialGroup()
@@ -109,8 +116,21 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 								.addComponent(inc_ang_b)
 								.addComponent(angle_l)
 								.addComponent(dec_ang_b))
-							.addComponent(shoot_b))
+							.addComponent(shoot_b)
+							.addComponent(s_list))
 					);
+	}
+
+	void update_scoreboard() {
+		s_listModel.removeAllElements();
+		Game.players.getL().sort(new PlayerHitpointsComparator());
+		for (Player i:Game.players.getL()) {
+			s_listModel.addElement(i.getNickname() + ", hitpoints: " + i.getHitpoints());
+		}
+		s_list = new JList<String>(s_listModel);
+		s_list.setPreferredSize(new Dimension(100, 40*Game.players.getL().size()));
+		revalidate();
+		Main.GUIframe.pack();
 	}
 
 	@Override

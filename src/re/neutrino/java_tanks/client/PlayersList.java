@@ -1,7 +1,6 @@
 package re.neutrino.java_tanks.client;
 
 import java.util.ArrayList;
-
 import re.neutrino.java_tanks.debug.DebugLevel;
 import re.neutrino.java_tanks.types.Player;
 import re.neutrino.java_tanks.types.basic.Int16;
@@ -29,9 +28,6 @@ public class PlayersList {
 			} else {
 				getL().set(index, pp);
 			}
-		}
-		if (loc_player != null) {
-			
 		}
 	}
 
@@ -88,5 +84,9 @@ public class PlayersList {
 
 	synchronized public ArrayList<Player> getL() {
 		return l;
+	}
+
+	public int compare(Player a, Player b) {
+		return a.getHitpoints() - b.getHitpoints();
 	}
 }

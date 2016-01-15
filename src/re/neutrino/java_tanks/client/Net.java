@@ -119,6 +119,7 @@ public class Net {
 			}
 		}
 		if (Main.GUIframe.cur_panel == Main.GUIframe.Game) {
+			((GamePanel) Main.GUIframe.Game).update_scoreboard();
 			switch (PlayersList.loc_player.getState()) {
 				case Active:
 					Main.debug.print(DebugLevel.Debug, "Activate buttons");
