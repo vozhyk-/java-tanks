@@ -292,10 +292,6 @@ public class Game {
 	 */
 	public void disconnectClient(Client cl)
 	{
-		/* calling thread has no client, nothing to do */
-	    if (cl == null)
-	        return;
-
 	    if (!started) // still in lobby, can delete players
 	    {
 	        deleteClient(cl);
