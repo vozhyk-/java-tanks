@@ -23,7 +23,8 @@ public class GameList extends ArrayList<Game> {
 		Stream<Game> s = stream();
 
 		return
-				s.filter(g -> g.clientCanRejoin(nickname)).findAny()
+				s.filter(g -> g.findClientByNickname(nickname).isPresent())
+				.findAny()
 			.map(Optional::of).orElse(
 				findRandom(g -> !g.isStarted()))
 			.map(g -> g.tryJoin(nickname))
@@ -32,6 +33,9 @@ public class GameList extends ArrayList<Game> {
 
 	Optional<Game> findRandom(Predicate<Game> pred) {
 		long count = stream().filter(pred).count();
+		if (count == 0)
+			return Optional.empty();
+
 		long i = rand.longs(1, 0, count).findAny().getAsLong();
 
 		// Searching a second time?

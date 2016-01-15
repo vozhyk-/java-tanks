@@ -128,9 +128,7 @@ public class Game {
 	*/
 
 	public JoinReply tryJoin(String nickname) {
-		Optional<Client> found = clients.stream()
-				.filter(c -> c.getPlayer().getNickname().equals(nickname))
-				.findAny();
+		Optional<Client> found = findClientByNickname(nickname);
 		boolean nicknameFound = found.isPresent();
 		Client cl = nicknameFound ? found.get() : null;
 
@@ -201,13 +199,10 @@ public class Game {
 		return JoinReply.ok(cl, this);
 	}
 
-	public boolean clientCanRejoin(String nickname) {
-		Optional<Client> disconnectedClient = clients.stream()
-				.filter(c -> c.getPlayer().getNickname().equals(nickname)
-						&& !c.getPlayer().isConnected())
+	public Optional<Client> findClientByNickname(String nickname) {
+		return clients.stream()
+				.filter(c -> c.getPlayer().getNickname().equals(nickname))
 				.findAny();
-
-		return disconnectedClient.isPresent();
 	}
 
 	public void tryStart() {
