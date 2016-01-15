@@ -27,6 +27,7 @@ public abstract class Command implements Communicable {
 		case Join:       return JoinCommand.recvRest(comm);
 		case NewGame:    return NewGameCommand.recvRest(comm);
 		case Ready:      return ReadyCommand.recvRest(comm);
+		case SetConfig:  return SetConfigCommand.recvRest(comm);
 		case SetAbility: return SetAbilityCommand.recvRest(comm);
 		case GetMap:     return GetMapCommand.recvRest(comm);
 		case GetChanges: return GetChangesCommand.recvRest(comm);
@@ -62,6 +63,7 @@ public abstract class Command implements Communicable {
 
 		Ready('R'),
 
+		SetConfig('c'),
 		SetAbility('a'),
 
 	    GetMap('M'),
@@ -89,6 +91,7 @@ public abstract class Command implements Communicable {
 			case 'J': return Join;
 			case 'N': return NewGame;
 			case 'R': return Ready;
+			case 'c': return SetConfig;
 			case 'a': return SetAbility;
 			case 'M': return GetMap;
 			case 'C': return GetChanges;
