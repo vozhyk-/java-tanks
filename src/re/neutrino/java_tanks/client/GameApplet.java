@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -163,7 +164,13 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 			g.setPaint(col);
 			double x = floatPair.getX()*mul_h;
 			double y = floatPair.getY()*mul_v - off_v;
-			g.fill(new Ellipse2D.Double(x, y, r, r));
+			if (y < mul_v) {
+				int[] xx = {((int) x) - r, (int) (x) + r, (int) x};
+				int[] yy = {mul_v, mul_v, mul_v/2};
+				g.fillPolygon(xx, yy, 3);
+			} else {
+				g.fill(new Ellipse2D.Double(x, y, r, r));
+			}
 			g.setPaint(fg);
 		}
 
@@ -171,7 +178,6 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 		public void run() {
 			while (cur_t < it && running) {
 				cur_t+=inc;
-				Main.debug.print(DebugLevel.Debug, "shot_render", cur_t + " " + inc);
 				FloatPair fp = Shot.getShotPos(sp, sh, cur_t, Game.conf);
 				draw_shot((Graphics2D) graphics, fp, shot_colour);
 				getGraphics().drawImage(image, 0, 0, getOuter());
@@ -183,7 +189,6 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 					running=false;
 				}
 				draw_shot((Graphics2D) graphics, fp, bg);
-				getGraphics().drawImage(image, 0, 0, getOuter());
 			}
 		}
 	}
