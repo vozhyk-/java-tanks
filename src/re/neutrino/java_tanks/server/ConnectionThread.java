@@ -111,10 +111,8 @@ public class ConnectionThread implements Runnable {
 		reply.send(comm);
 	}
 
-	private void processCommand(NewGameCommand cmd) throws IOException {
+	private void processCommand(NewGameCommand cmd) {
 		game = games.addNewGame();
-
-		processCommand(new JoinCommand(cmd.getNickname()));
 	}
 
 	private void processCommand(ReadyCommand cmd) {

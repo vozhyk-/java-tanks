@@ -38,11 +38,12 @@ public abstract class Command implements Communicable {
 		}
 	}
 
-	/*
+	/**
 	 * command         args                 reply
 	 *   \- requirements
-	 * Join            NetString nickname   JoinReply[, int16_t id]
+	 * Join            NetString nickname   JoinReply[, Int16 id]
 	 *   sends id only if JoinReply is JR_OK
+	 * NewGame
 	 * SetAbility      Int16 ability_id
 	 * Ready
 	 * GetMap                               MapInfo
