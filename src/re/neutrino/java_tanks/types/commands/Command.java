@@ -25,6 +25,7 @@ public abstract class Command implements Communicable {
 
 		switch(type) {
 		case Join:       return JoinCommand.recvRest(comm);
+		case NewGame:    return NewGameCommand.recvRest(comm);
 		case Ready:      return ReadyCommand.recvRest(comm);
 		case SetAbility: return SetAbilityCommand.recvRest(comm);
 		case GetMap:     return GetMapCommand.recvRest(comm);
@@ -56,6 +57,8 @@ public abstract class Command implements Communicable {
 	 */
 	public enum Type implements Communicable {
 		Join('J'),
+		NewGame('N'),
+
 		Ready('R'),
 
 		SetAbility('a'),
@@ -83,6 +86,7 @@ public abstract class Command implements Communicable {
 		public static Type valueOf(char realValue) {
 			switch(realValue) {
 			case 'J': return Join;
+			case 'N': return NewGame;
 			case 'R': return Ready;
 			case 'a': return SetAbility;
 			case 'M': return GetMap;
