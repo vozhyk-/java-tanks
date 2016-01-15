@@ -29,8 +29,7 @@ public class ConnectionThread implements Runnable {
 					socket.getInputStream(),
 					socket.getOutputStream());
 
-			/* receive command */
-			/* process commands until disconnect */
+			/* receive and process commands until disconnect */
 			while (true) {
 				Command cmd;
 				try {
@@ -67,6 +66,9 @@ public class ConnectionThread implements Runnable {
 			processCommand((JoinCommand)cmd);
 			break;
 
+		case NewGame:
+			processCommand((NewGameCommand)cmd);
+
 		case Ready:
 			processCommand((ReadyCommand)cmd);
 			break;
@@ -85,21 +87,34 @@ public class ConnectionThread implements Runnable {
 
 		// TODO access real value
 		case Unknown: default:
-			debug.print(DebugLevel.Err, "unrecognized command", cmd.getType());
+			debug.print(DebugLevel.Err, "unrecognized command", cmd);
 		}
 	}
 
 	private void processCommand(JoinCommand cmd) throws IOException {
 		String nickname = cmd.getNickname();
 
-		JoinReply jr = games.tryJoin(nickname);
+		JoinReply reply;
 
-		if (jr.getType() == JoinReply.Type.Ok) {
-			client = jr.getClient();
-			game = jr.getGame();
+		if (game != null)
+			// join the chosen game
+			reply = game.tryJoin(nickname);
+		else
+			// join a default suitable game
+			reply = games.tryJoin(nickname);
+
+		if (reply.getType() == JoinReply.Type.Ok) {
+			client = reply.getClient();
+			game = reply.getGame();
 		}
 
-		jr.send(comm);
+		reply.send(comm);
+	}
+
+	private void processCommand(NewGameCommand cmd) throws IOException {
+		game = games.addNewGame();
+
+		processCommand(new JoinCommand(cmd.getNickname()));
 	}
 
 	private void processCommand(ReadyCommand cmd) {

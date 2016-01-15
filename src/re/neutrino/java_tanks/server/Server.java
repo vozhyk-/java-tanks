@@ -8,13 +8,14 @@ import re.neutrino.java_tanks.Config;
 import re.neutrino.java_tanks.debug.*;
 
 public class Server {
-	GameList games = new GameList();
 	private Config config;
 	private DebugStream debug;
+	GameList games;
 
 	public Server(Config config, DebugStream debug) {
 		this.config = config;
 		this.debug = debug;
+		games = new GameList(config, debug);
 	}
 
 	public void listen() {

@@ -6,6 +6,8 @@ import java.util.Random;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import re.neutrino.java_tanks.Config;
+import re.neutrino.java_tanks.debug.DebugStream;
 import re.neutrino.java_tanks.types.JoinReply;
 
 public class GameList extends ArrayList<Game> {
@@ -14,7 +16,15 @@ public class GameList extends ArrayList<Game> {
 	 */
 	private static final long serialVersionUID = 3356190216841107810L;
 
+	private Config config;
+	private DebugStream debug;
+
 	Random rand = new Random();
+
+	public GameList(Config config, DebugStream debug) {
+		this.config = config;
+		this.debug = debug;
+	}
 
 	public JoinReply tryJoin(String nickname) {
 		if (isEmpty())
@@ -40,5 +50,12 @@ public class GameList extends ArrayList<Game> {
 
 		// Searching a second time?
 		return stream().filter(pred).skip(i).findFirst();
+	}
+
+	public Game addNewGame() {
+		Game result = new Game(config, debug);
+
+		add(result);
+		return result;
 	}
 }
