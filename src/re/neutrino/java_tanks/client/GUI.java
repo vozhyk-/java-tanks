@@ -14,8 +14,12 @@ public class GUI extends JFrame {
 	JPanel game;
 	JPanel endGame;
 
-	void dialog(String msg) {
+	void join_dialog(String msg) {
 		JOptionPane.showMessageDialog(this, msg, "Join: Warning", JOptionPane.WARNING_MESSAGE);
+	}
+
+	void conf_dialog(String msg) {
+		JOptionPane.showMessageDialog(this, msg, "Config: Warning", JOptionPane.WARNING_MESSAGE);
 	}
 
 	public GUI() throws HeadlessException {

@@ -45,6 +45,16 @@ public class Config {
 			return 0; /* If nothing found. Not the best way to show it */
 	}
 
+	synchronized public Item getItem(String name) {
+		/* TODO Do something about the search. Use a hash table? */
+		Optional<Item> found = find(name);
+
+		if (found.isPresent())
+			return found.get();
+		else
+			return null; /* If nothing found. Not the best way to show it */
+	}
+
 	synchronized public void set(String name, int value) {
 		/* find a config item whose name matches this name
 	     * and place the value there */

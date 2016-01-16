@@ -14,9 +14,13 @@ public class Game {
 	Game(String nick) {
 		if (Main.con.joinServer(nick)) {
 			Main.con.fetch_map();
-			changesThread = new Thread(Main.con.ct, "");
+			changesThread = new Thread(Main.con.ct);
 			changesThread.start();
 			Main.GUIframe.changePane(Main.GUIframe.lobby);
 		}
+	}
+
+	public Game() {
+		// TODO Auto-generated constructor stub
 	}
 }

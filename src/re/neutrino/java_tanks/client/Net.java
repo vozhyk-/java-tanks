@@ -71,15 +71,15 @@ public class Net {
 					break;
 				case GameInProgress:
 					Main.debug.print(DebugLevel.Debug, "Game in progress");
-					Main.GUIframe.dialog("Game in progress");
+					Main.GUIframe.join_dialog("Game in progress");
 					break;
 				case NicknameTaken:
 					Main.debug.print(DebugLevel.Debug, "Nickname is taken");
-					Main.GUIframe.dialog("Nickname is already taken");
+					Main.GUIframe.join_dialog("Nickname is already taken");
 					break;
 				case NoGames:
 					Main.debug.print(DebugLevel.Debug, "No games available");
-					Main.GUIframe.dialog("No games are currently available");
+					Main.GUIframe.join_dialog("No games are currently available");
 					break;
 				default:
 					Main.debug.print(DebugLevel.Warn, "Invalid JoinReply");
