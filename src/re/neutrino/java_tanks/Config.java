@@ -14,6 +14,7 @@ public class Config {
 	List<Item> items = Arrays.asList(
 		new Item("map_width", 128, 48, 1024),
 	    new Item("map_height", 64, 48, 512),
+	    new Item("map_type", 0, 0, 2),
 	    new Item("tank_hp", 100, 1, 1000),
 	    new Item("dmg_radius", 4, 2, 16),
 	    new Item("dmg_cap", 50, 1, 1000),

@@ -50,6 +50,12 @@ public class Net {
 		}
 	}
 
+	void send_setConf(NetConfigOption nco) {
+		synchronized (comm) {
+			send_command(new SetConfigCommand(nco));
+		}
+	}
+
 	@SuppressWarnings("finally")
 	boolean joinServer(String nick) {
 		synchronized (comm) {

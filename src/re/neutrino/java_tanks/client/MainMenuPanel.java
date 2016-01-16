@@ -9,14 +9,21 @@ import java.awt.event.ItemListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import re.neutrino.java_tanks.types.NetConfigOption;
 
 public class MainMenuPanel extends JPanel implements ActionListener, ItemListener {
 	JTextField ip_entry;
 	JTextField name_entry;
 	JButton new_game;
 	JButton random_game;
+	JLabel conf_map_la;
+	String[] conf_map_types = {"flat", "hill", "valley"};
+	JComboBox<String> conf_map_cb;
 
 	public MainMenuPanel() {
 		GroupLayout layout = new GroupLayout(this);
@@ -42,23 +49,34 @@ public class MainMenuPanel extends JPanel implements ActionListener, ItemListene
 		random_game.setEnabled(false);
 		random_game.addActionListener(this);
 
+		conf_map_la = new JLabel("Map type:");
+
+		conf_map_cb = new JComboBox<String>(conf_map_types);
+		conf_map_cb.addActionListener(this);
+
 		layout.setHorizontalGroup(
-				   layout.createSequentialGroup()
-				   	.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-					   	.addComponent(ip_entry)
-					   	.addComponent(name_entry)
-					   	.addGroup(layout.createSequentialGroup()
-					   			.addComponent(new_game)
-					   			.addComponent(random_game)))
-				   	);
+				layout.createSequentialGroup()
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addComponent(ip_entry)
+						.addComponent(name_entry)
+						.addGroup(layout.createSequentialGroup()
+								.addComponent(conf_map_la)
+								.addComponent(conf_map_cb))
+						.addGroup(layout.createSequentialGroup()
+								.addComponent(new_game)
+								.addComponent(random_game)))
+				);
 		layout.setVerticalGroup(
-				   layout.createSequentialGroup()
-				   	.addComponent(ip_entry)
-				   	.addComponent(name_entry)
-				   	.addGroup(layout.createParallelGroup()
-				   			.addComponent(new_game)
-				   			.addComponent(random_game))
-				   	);
+				layout.createSequentialGroup()
+				.addComponent(ip_entry)
+				.addComponent(name_entry)
+				.addGroup(layout.createParallelGroup()
+						.addComponent(conf_map_la)
+						.addComponent(conf_map_cb))
+				.addGroup(layout.createParallelGroup()
+						.addComponent(new_game)
+						.addComponent(random_game))
+				);
 
         tryConnect();
 	}
@@ -93,6 +111,8 @@ public class MainMenuPanel extends JPanel implements ActionListener, ItemListene
 			Main.game = new Game(name_entry.getText());
 		} else if (random_game == arg0.getSource()) {
 			Main.game = new Game(name_entry.getText());
+		} else if (conf_map_cb == arg0.getSource()) {
+			Main.con.send_setConf(new NetConfigOption("map_type", conf_map_cb.getSelectedIndex()));
 		}
 	}
 
