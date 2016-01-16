@@ -68,6 +68,7 @@ public class ConnectionThread implements Runnable {
 
 		case NewGame:
 			processCommand((NewGameCommand)cmd);
+			break;
 
 		case Ready:
 			processCommand((ReadyCommand)cmd);
