@@ -102,8 +102,8 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 			int tx = x;
 			int ty = y;
 			if (i == PlayersList.loc_player) {
-				tx += width/2 + (int) (t_len*Math.cos(Math.toRadians(((GamePanel) Main.GUIframe.Game).s.angle)));
-				ty -= (int) (t_len*Math.sin(Math.toRadians(((GamePanel) Main.GUIframe.Game).s.angle)));
+				tx += width/2 + (int) (t_len*Math.cos(Math.toRadians(((GamePanel) Main.GUIframe.game).s.angle)));
+				ty -= (int) (t_len*Math.sin(Math.toRadians(((GamePanel) Main.GUIframe.game).s.angle)));
 			}
 			g.drawLine(x + width/2, y, tx, ty);
 			g.setPaint(fg);
@@ -208,8 +208,8 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 		Integer angl = 90 + (int) Math.toDegrees(Math.atan2(dx, dy));
 		if (angl > 180) angl = 180;
 		else if (angl < 0) angl = 0;
-		((GamePanel) Main.GUIframe.Game).s.angle = angl;
-		((GamePanel) Main.GUIframe.Game).angle_l.setText("Angle: " + ((GamePanel) Main.GUIframe.Game).s.angle);
+		((GamePanel) Main.GUIframe.game).s.angle = angl;
+		((GamePanel) Main.GUIframe.game).angle_l.setText("Angle: " + ((GamePanel) Main.GUIframe.game).s.angle);
 		e.consume();
 		repaint();
 	}
@@ -240,43 +240,43 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {
-		Integer angl = ((GamePanel) Main.GUIframe.Game).s.angle;
-		Integer pwr = ((GamePanel) Main.GUIframe.Game).s.power;
+		Integer angl = ((GamePanel) Main.GUIframe.game).s.angle;
+		Integer pwr = ((GamePanel) Main.GUIframe.game).s.power;
 		boolean a=false;
 		switch (arg0.getKeyCode()) {
 			case KeyEvent.VK_LEFT:
 				if (angl < 180) {
 					angl++;
-					((GamePanel) Main.GUIframe.Game).angle_l.setText("Angle: " + angl);
-					((GamePanel) Main.GUIframe.Game).s.angle = angl;
+					((GamePanel) Main.GUIframe.game).angle_l.setText("Angle: " + angl);
+					((GamePanel) Main.GUIframe.game).s.angle = angl;
 				}
 				a=true;
 				break;
 			case KeyEvent.VK_RIGHT:
 				if (angl > 0) {
 					angl--;
-					((GamePanel) Main.GUIframe.Game).angle_l.setText("Angle: " + angl);
-					((GamePanel) Main.GUIframe.Game).s.angle = angl;
+					((GamePanel) Main.GUIframe.game).angle_l.setText("Angle: " + angl);
+					((GamePanel) Main.GUIframe.game).s.angle = angl;
 				}
 				a=true;
 				break;
 			case KeyEvent.VK_UP:
 				if (pwr < 100) {
 					pwr++;
-					((GamePanel) Main.GUIframe.Game).power_l.setText("Power: " + pwr);
-					((GamePanel) Main.GUIframe.Game).s.power = pwr;
+					((GamePanel) Main.GUIframe.game).power_l.setText("Power: " + pwr);
+					((GamePanel) Main.GUIframe.game).s.power = pwr;
 				}
 				break;
 			case KeyEvent.VK_DOWN:
 				if (pwr > 0) {
 					pwr--;
-					((GamePanel) Main.GUIframe.Game).power_l.setText("Power: " + pwr);
-					((GamePanel) Main.GUIframe.Game).s.power = pwr;
+					((GamePanel) Main.GUIframe.game).power_l.setText("Power: " + pwr);
+					((GamePanel) Main.GUIframe.game).s.power = pwr;
 				}
 				break;
 			case KeyEvent.VK_ENTER:
-				Main.con.send_shot(((GamePanel) Main.GUIframe.Game).s.power, ((GamePanel) Main.GUIframe.Game).s.angle);
-				((GamePanel) Main.GUIframe.Game).set_shoot_buttons(false);
+				Main.con.send_shot(((GamePanel) Main.GUIframe.game).s.power, ((GamePanel) Main.GUIframe.game).s.angle);
+				((GamePanel) Main.GUIframe.game).set_shoot_buttons(false);
 		}
 		arg0.consume();
 		if (a) repaint();

@@ -8,18 +8,19 @@ import javax.swing.JPanel;
 
 public class GUI extends JFrame {
 	JPanel cur_panel = null;
-	JPanel MainMenu;
-	JPanel Lobby;
-	JPanel Game;
+	JPanel mainMenu;
+	JPanel lobby;
+	JPanel game;
+	JPanel endGame;
 
 	public GUI() throws HeadlessException {
-		// TODO Auto-generated constructor stub
 		super();
-		MainMenu = new MainMenuPanel();
-		Lobby = new LobbyPanel();
-		Game = new GamePanel();
+		mainMenu = new MainMenuPanel();
+		lobby = new LobbyPanel();
+		game = new GamePanel();
+		endGame = new EndGamePanel();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		changePane(MainMenu);
+		changePane(mainMenu);
 	}
 
 	void changePane(JPanel new_panel) {

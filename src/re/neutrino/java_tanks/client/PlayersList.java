@@ -46,7 +46,7 @@ public class PlayersList {
 				Main.debug.print(DebugLevel.Err, "Trying to delete loc_player");
 			} else {
 				getL().remove(index);
-				((LobbyPanel) Main.GUIframe.Lobby).update_player_list();
+				((LobbyPanel) Main.GUIframe.lobby).update_player_list();
 			}
 		}
 	}

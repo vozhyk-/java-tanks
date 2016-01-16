@@ -16,7 +16,7 @@ public class Game {
 			Main.con.fetch_map();
 			changesThread = new Thread(Main.con.ct, "");
 			changesThread.start();
-			Main.GUIframe.changePane(Main.GUIframe.Lobby);
+			Main.GUIframe.changePane(Main.GUIframe.lobby);
 		}
 	}
 }

@@ -14,6 +14,7 @@ public class Net {
 	CommunicationStream comm;
 	private Exception iOException;
 	ChangesThread ct = new ChangesThread();
+	Thread shotThread;
 
 	public Net(String ip) throws Exception {
 		iOException = null;
@@ -112,28 +113,39 @@ public class Net {
 
 	void after_loc_player_update() {
 		Main.debug.print(DebugLevel.Debug, "State", PlayersList.loc_player.getState());
-		if (Main.GUIframe.cur_panel == Main.GUIframe.Lobby) {
+		if (Main.GUIframe.cur_panel == Main.GUIframe.lobby) {
 			switch (PlayersList.loc_player.getState()) {
 				case Active:
 				case Waiting:
 					Main.debug.print(DebugLevel.Debug, "Game start");
-					Main.GUIframe.changePane(Main.GUIframe.Game);
-					((GamePanel) Main.GUIframe.Game).timer.start();
+					Main.GUIframe.changePane(Main.GUIframe.game);
+					((GamePanel) Main.GUIframe.game).timer.start();
 					break;
 				default:
-					((LobbyPanel) Main.GUIframe.Lobby).update_player_list();
+					((LobbyPanel) Main.GUIframe.lobby).update_player_list();
 			}
 		}
-		if (Main.GUIframe.cur_panel == Main.GUIframe.Game) {
-			((GamePanel) Main.GUIframe.Game).update_scoreboard();
+		if (Main.GUIframe.cur_panel == Main.GUIframe.game) {
+			((GamePanel) Main.GUIframe.game).update_scoreboard();
 			switch (PlayersList.loc_player.getState()) {
 				case Active:
 					Main.debug.print(DebugLevel.Debug, "Activate buttons");
-					((GamePanel) Main.GUIframe.Game).set_shoot_buttons(true);
+					((GamePanel) Main.GUIframe.game).set_shoot_buttons(true);
 					break;
 				case Waiting:
 					Main.debug.print(DebugLevel.Debug, "Deactivate buttons");
-					((GamePanel) Main.GUIframe.Game).set_shoot_buttons(false);
+					((GamePanel) Main.GUIframe.game).set_shoot_buttons(false);
+					break;
+				case Winner:
+				case Loser:
+					try {
+						shotThread.join();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					((EndGamePanel) Main.GUIframe.endGame).update_player_list();
+					Main.GUIframe.changePane(Main.GUIframe.endGame);
 					break;
 				default:
 					Main.debug.print(DebugLevel.Warn, "Unknown state");
@@ -144,7 +156,6 @@ public class Net {
 
 	public class ChangesThread implements Runnable {
 		private volatile boolean running = true;
-		Thread shotThread;
 		ShotUpdate su;
 
 		void terminate() {
@@ -183,7 +194,7 @@ public class Net {
 							break;
 						case ShotImpact:
 							shotThread = new Thread(((GameApplet) ((GamePanel)
-									Main.GUIframe.Game).game_a)
+									Main.GUIframe.game).game_a)
 									.create_shot_thread(su, (ShotImpactUpdate) i));
 							shotThread.start();
 							break;
