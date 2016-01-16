@@ -163,12 +163,10 @@ public class Net {
 		}
 
 		void fetch_changes() {
-			synchronized(comm) {
-				send_command(new GetChangesCommand());
-			}
 			try {
 				UpdateQueue uq;
 				synchronized(comm) {
+					send_command(new GetChangesCommand());
 					uq = UpdateQueue.recv(comm);
 				}
 				for (Update i:uq) {
@@ -214,11 +212,9 @@ public class Net {
 		@Override
 		public void run() {
 			while (running) {
-				synchronized (comm) {
 					if (!socket.isConnected() || socket.isClosed())
 						break;
 					fetch_changes();
-				}
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
