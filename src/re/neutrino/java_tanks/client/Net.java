@@ -125,8 +125,6 @@ public class Net {
 					Main.GUIframe.changePane(Main.GUIframe.game);
 					((GamePanel) Main.GUIframe.game).timer.start();
 					break;
-				default:
-					((LobbyPanel) Main.GUIframe.lobby).update_player_list();
 			}
 		}
 		if (Main.GUIframe.cur_panel == Main.GUIframe.game) {
@@ -184,9 +182,10 @@ public class Net {
 						case AddPlayer:
 						case Player:
 							Game.players.update((PlayerUpdate) i);
-							if (Game.players.is_loc_player((PlayerUpdate) i)) {
+							if (Main.GUIframe.cur_panel == Main.GUIframe.lobby)
+								((LobbyPanel) Main.GUIframe.lobby).update_player_list();
+							if (Game.players.is_loc_player((PlayerUpdate) i))
 								after_loc_player_update();
-							}
 							break;
 						case DelPlayer:
 							Game.players.delete((PlayerUpdate) i);
