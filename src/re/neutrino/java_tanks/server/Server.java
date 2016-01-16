@@ -19,9 +19,6 @@ public class Server {
 	}
 
 	public void listen() {
-		Game game = new Game(config, debug);
-		games.add(game);
-
 		// TODO specify port
 		int port = 7979;
 
