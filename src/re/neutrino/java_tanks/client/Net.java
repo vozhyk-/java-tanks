@@ -54,25 +54,29 @@ public class Net {
 	boolean joinServer(String nick) {
 		synchronized (comm) {
 			send_command(new JoinCommand(nick));
-			Boolean ret=true;
+			Boolean ret=false;
 			try {
 				JoinReply jr = JoinReply.recv(comm);
 				switch (jr.getType()) {
 				case Ok:
 					Game.PlayerID = jr.getPlayerId();
 					Main.debug.print(DebugLevel.Debug, "Join");
+					ret=true;
 					break;
 				case GameInProgress:
-					ret=false;
 					Main.debug.print(DebugLevel.Debug, "Game in progress");
+					Main.GUIframe.dialog("Game in progress");
 					break;
 				case NicknameTaken:
 					Main.debug.print(DebugLevel.Debug, "Nickname is taken");
-					ret=false;
+					Main.GUIframe.dialog("Nickname is already taken");
+					break;
+				case NoGames:
+					Main.debug.print(DebugLevel.Debug, "No games available");
+					Main.GUIframe.dialog("No games are currently available");
 					break;
 				default:
 					Main.debug.print(DebugLevel.Warn, "Invalid JoinReply");
-					ret=false;
 					break;
 				}
 			} catch (IOException e) {

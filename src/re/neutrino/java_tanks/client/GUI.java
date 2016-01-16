@@ -4,6 +4,7 @@ import java.awt.GraphicsConfiguration;
 import java.awt.HeadlessException;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class GUI extends JFrame {
@@ -12,6 +13,10 @@ public class GUI extends JFrame {
 	JPanel lobby;
 	JPanel game;
 	JPanel endGame;
+
+	void dialog(String msg) {
+		JOptionPane.showMessageDialog(this, msg, "Join: Warning", JOptionPane.WARNING_MESSAGE);
+	}
 
 	public GUI() throws HeadlessException {
 		super();
