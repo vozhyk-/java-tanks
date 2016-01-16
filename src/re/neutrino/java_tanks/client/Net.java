@@ -43,6 +43,12 @@ public class Net {
 		}
 	}
 
+	void send_newGame() {
+		synchronized (comm) {
+			send_command(new NewGameCommand());
+		}
+	}
+
 	@SuppressWarnings("finally")
 	boolean joinServer(String nick) {
 		synchronized (comm) {
@@ -146,9 +152,14 @@ public class Net {
 		}
 
 		void fetch_changes() {
-			send_command(new GetChangesCommand());
+			synchronized(comm) {
+				send_command(new GetChangesCommand());
+			}
 			try {
-				UpdateQueue uq = UpdateQueue.recv(comm);
+				UpdateQueue uq;
+				synchronized(comm) {
+					uq = UpdateQueue.recv(comm);
+				}
 				for (Update i:uq) {
 					Main.debug.print(DebugLevel.Debug, "recv update", i);
 					switch (i.getType()) {
