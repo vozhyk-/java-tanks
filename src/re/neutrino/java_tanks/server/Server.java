@@ -44,7 +44,7 @@ public class Server {
 		    	debug.print(DebugLevel.Info,
 		    			"incoming connection", socket.getRemoteSocketAddress());
 
-		    	new Thread(new ConnectionThread(games, socket, debug)).start();
+		    	new Thread(new ConnectionThread(games, socket, config, debug)).start();
 		    }
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

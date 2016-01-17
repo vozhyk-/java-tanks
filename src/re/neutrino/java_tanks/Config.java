@@ -8,6 +8,7 @@ import re.neutrino.java_tanks.debug.*;
 import re.neutrino.java_tanks.types.FloatPair;
 import re.neutrino.java_tanks.types.NetConfigOption;
 import re.neutrino.java_tanks.types.Shot;
+import re.neutrino.java_tanks.types.commands.SetConfigCommand;
 import re.neutrino.java_tanks.types.updates.ConfigUpdate;
 
 public class Config {
@@ -75,6 +76,11 @@ public class Config {
 	public void update(ConfigUpdate u) {
 		set(u.getOption().getName(),
 			u.getOption().getValue());
+	}
+
+	public void update(SetConfigCommand cmd) {
+		set(cmd.getOption().getName(),
+			cmd.getOption().getValue());
 	}
 
 	public FloatPair getInitialV(Shot shot) {

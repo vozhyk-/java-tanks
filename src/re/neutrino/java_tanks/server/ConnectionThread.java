@@ -3,6 +3,8 @@ package re.neutrino.java_tanks.server;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
+
+import re.neutrino.java_tanks.Config;
 import re.neutrino.java_tanks.debug.*;
 import re.neutrino.java_tanks.types.*;
 import re.neutrino.java_tanks.types.commands.*;
@@ -12,13 +14,16 @@ public class ConnectionThread implements Runnable {
 	Game game;
 	Socket socket;
 	CommunicationStream comm;
+	Config config;
 	DebugStream debug;
 
 	Client client;
 
-	public ConnectionThread(GameList games, Socket socket, DebugStream debug) {
+	public ConnectionThread(GameList games, Socket socket,
+			Config config, DebugStream debug) {
 		this.games = games;
 		this.socket = socket;
+		this.config = config;
 		this.debug = debug;
 	}
 
@@ -70,6 +75,10 @@ public class ConnectionThread implements Runnable {
 			processCommand((NewGameCommand)cmd);
 			break;
 
+		case SetConfig:
+			processCommand((SetConfigCommand)cmd);
+			break;
+
 		case Ready:
 			processCommand((ReadyCommand)cmd);
 			break;
@@ -114,6 +123,11 @@ public class ConnectionThread implements Runnable {
 
 	private void processCommand(NewGameCommand cmd) {
 		game = games.addNewGame();
+	}
+
+	private void processCommand(SetConfigCommand cmd) {
+		config.update(cmd);
+		game.processConfigUpdate(cmd);
 	}
 
 	private void processCommand(ReadyCommand cmd) {

@@ -11,6 +11,7 @@ import re.neutrino.java_tanks.types.*;
 import re.neutrino.java_tanks.types.updates.*;
 
 import re.neutrino.java_tanks.types.Player.State;
+import re.neutrino.java_tanks.types.commands.SetConfigCommand;
 
 public class Game {
 	ArrayList<Client> clients = new ArrayList<>();
@@ -44,11 +45,7 @@ public class Game {
 		this.debug = debug;
 
 		rand = new Random();
-		GameMap.Info mapInfo = new GameMap.Info(
-				rand.nextInt(),
-				config.get("map_width"),
-				config.get("map_height"));
-		map = new ServerGameMap(mapInfo, this, config, debug);
+		generateNewMap();
 		started = false;
 	}
 
@@ -107,16 +104,24 @@ public class Game {
 		return new MapPosition(x, newPlayerY(x));
 	}
 
-	public Player newPlayer(String nickname) {
+	private Player newPlayer(String nickname, short id) {
 		return new Player(
 				State.Joined,
 				true,
-				nextPlayerId(),
+				id,
 				nickname,
 				(short)config.get("tank_hp"),
 				newPlayerPos(),
 				(short)0,
 				(short)0);
+	}
+
+	private Player newPlayer(String nickname) {
+		return newPlayer(nickname, nextPlayerId());
+	}
+
+	private Player newPlayer(Player old) {
+		return newPlayer(old.getNickname(), old.getId().getValue());
 	}
 
 	/*
@@ -155,7 +160,7 @@ public class Game {
 			if (nicknameFound) {
 				return joinNicknameTaken(nickname);
 			} else {
-				cl = new Client(nickname, this);
+				cl = new Client(newPlayer(nickname), this);
 				debug.print(DebugLevel.Info,
 						"join", "New player: " + cl.getPlayer());
 
@@ -418,5 +423,33 @@ public class Game {
 	        }
 	    }
 	    //unlock_clients_array();                                      /* }}} */
+	}
+
+	public void processConfigUpdate(SetConfigCommand cmd) {
+		String optName = cmd.getOption().getName();
+
+		if (optName.startsWith("map_")) {
+			generateNewMap();
+			regeneratePlayers();
+			// TODO Regenerate all players' positions
+		} else if (optName.startsWith("tank_")) {
+			regeneratePlayers();
+		}
+	}
+
+	private void regeneratePlayers() {
+		for (Client cl : clients) {
+			cl.setPlayer(newPlayer(cl.getPlayer()));
+			allAddUpdate(new PlayerUpdate(
+					Update.Type.Player, cl.getPlayer()));
+		}
+	}
+
+	private void generateNewMap() {
+		GameMap.Info mapInfo = new GameMap.Info(
+				rand.nextInt(),
+				config.get("map_width"),
+				config.get("map_height"));
+		map = new ServerGameMap(mapInfo, this, config, debug);
 	}
 }

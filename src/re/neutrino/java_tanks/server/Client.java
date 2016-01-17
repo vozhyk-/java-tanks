@@ -4,7 +4,7 @@ import re.neutrino.java_tanks.types.*;
 import re.neutrino.java_tanks.types.updates.*;
 
 public class Client {
-	final Player player;
+	Player player;
     final UpdateQueue updates = new UpdateQueue();
 
 	//pthread_mutex_t updates_mutex;
@@ -16,15 +16,15 @@ public class Client {
 		this.game = game;
 	}
 
-    public Client(String nickname, Game game) {
-    	this(game.newPlayer(nickname), game);
-    }
-
     public Player getPlayer() {
 		return player;
 	}
 
-    public UpdateQueue getUpdates() {
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+
+	public UpdateQueue getUpdates() {
 		return updates;
 	}
 
