@@ -50,8 +50,8 @@ public class LobbyPanel extends JPanel implements ActionListener, ItemListener {
 		conf_map_la = new JLabel("Map type:");
 
 		conf_map_cb = new JComboBox<String>(conf_map_types);
-		conf_map_cb.addActionListener(this);
 		conf_map_cb.setSelectedIndex(Game.conf.get("map_type"));
+		conf_map_cb.addActionListener(this);
 
 		conf_size_la = new JLabel("Map size: ");
 
@@ -132,8 +132,7 @@ public class LobbyPanel extends JPanel implements ActionListener, ItemListener {
 			Main.GUIframe.changePane(Main.GUIframe.mainMenu);
 			((MainMenuPanel) Main.GUIframe.mainMenu).tryConnect();
 		} else if (conf_map_cb == e.getSource()) {
-			if (Main.con != null && !Main.con.socket.isClosed())
-				Main.con.send_setConf(new NetConfigOption("map_type", conf_map_cb.getSelectedIndex()));
+			Main.con.send_setConf(new NetConfigOption("map_type", conf_map_cb.getSelectedIndex()));
 		} else if (conf_size_b == e.getSource() || conf_size_tf == e.getSource()) {
 			setSize();
 		}

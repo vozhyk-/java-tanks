@@ -128,6 +128,7 @@ public class Net {
 				case Active:
 				case Waiting:
 					Main.debug.print(DebugLevel.Debug, "Game start");
+					fetch_map();
 					Main.GUIframe.changePane(Main.GUIframe.game);
 					((GamePanel) Main.GUIframe.game).timer.start();
 					break;
