@@ -30,6 +30,7 @@ public abstract class Update implements Communicable {
 	    case Map: return MapUpdate.recvRest(comm);
 	    case Player: case AddPlayer: case DelPlayer:
 	    	return PlayerUpdate.recvRest(comm, type);
+	    case Log: return LogUpdate.recvRest(comm);
 		}
 		return null;
 	}
@@ -39,7 +40,8 @@ public abstract class Update implements Communicable {
 	    Config, Ability,
 	    Shot, AbilityUse,
 	    ShotImpact, Map,
-	    Player, AddPlayer, DelPlayer;
+	    Player, AddPlayer, DelPlayer,
+	    Log;
 
 		static Type[] values = values();
 

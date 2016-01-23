@@ -22,8 +22,7 @@ public class DebugStream {
 
 	public void print(DebugLevel level, String title, Object value) {
 		if (level.compareTo(minDebugLevel) >= 0) {
-			printTitle(level, title);
-			out.println(" " + value);
+			out.println(format(title, value));
 
 			out.flush();
 		}
@@ -31,17 +30,20 @@ public class DebugStream {
 
 	public void print(DebugLevel level, String title) {
 		if (level.compareTo(minDebugLevel) >= 0) {
-			printTitle(level, title);
-			out.println();
+			out.println(format(title));
 
 			out.flush();
 		}
 	}
 
-	void printTitle(DebugLevel level, String title) {
+	public String format(String title, Object value) {
+		return format(title) + " " + value;
+	}
+
+	public String format(String title) {
 		String date = LocalDateTime.now().format(dateFormat);
 
-		out.print(date + " [" + title + "]");
+		return date + " [" + title + "]";
 	}
 
 	public void close() {

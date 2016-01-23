@@ -144,6 +144,8 @@ public class Game {
 				if (!cl.getPlayer().isConnected()) {
 					debug.print(DebugLevel.Info,
 							"join", cl.getPlayer() + " rejoins");
+					publicLog("join",
+							cl.getPlayer().getNickname() + " rejoins");
 					cl.getPlayer().setConnected(true);
 
 					return joinOk(cl);
@@ -163,6 +165,8 @@ public class Game {
 				cl = new Client(newPlayer(nickname), this);
 				debug.print(DebugLevel.Info,
 						"join", "New player: " + cl.getPlayer());
+				publicLog("join", "New player: "
+						+ cl.getPlayer().getNickname());
 
 				/* Notify all other clients of the new player
 	             * and then add the new client to the array */
@@ -216,6 +220,7 @@ public class Game {
 		{
 			debug.print(DebugLevel.Info,
 					"starting game", "All players ready");
+			publicLog("starting game", "All players ready");
 			start();
 		}
 	}
@@ -308,6 +313,7 @@ public class Game {
 
 	        debug.print(DebugLevel.Info,
 	        		"player disconnected", player);
+	        publicLog("player disconnected", player.getNickname());
 
 	        player.setConnected(false);
 	    }
@@ -318,6 +324,7 @@ public class Game {
 		/* Notify clients of the player being deleted */
         debug.print(DebugLevel.Info,
         		"removing player", cl.getPlayer());
+        publicLog("player left", cl.getPlayer().getNickname());
         allAddUpdate(new PlayerUpdate(
         		Update.Type.DelPlayer, cl.getPlayer()));
 
@@ -452,5 +459,9 @@ public class Game {
 				config.get("map_height"),
 				config.getMapType());
 		map = new ServerGameMap(mapInfo, this, config, debug);
+	}
+
+	private void publicLog(String title, Object value) {
+		allAddUpdate(new LogUpdate(debug.format(title, value)));
 	}
 }
