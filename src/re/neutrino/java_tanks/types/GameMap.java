@@ -98,16 +98,54 @@ public class GameMap implements Communicable {
 	}
 
 	private void generate() {
-		// TODO map terrain types, for now just flat terrain
-	    int cur_height = info.getHeight() / 2;
+		// TODO get type from config
+		int type = 0;
+		if (type == 0) {
+			generate_flat();
+		} else if (type == 1) {
+			generate_with_slope(true);
+		} else if (type == 2) {
+			generate_with_slope(false);
+		}
+	}
 
-	    Random rand = new Random(info.getSeed());
+	private void generate_flat() {
+		int cur_height = info.getHeight() / 2;
 
-	    for (int i = 0; i < info.getLength(); i++)
-	    {
-	        content[i] = (short) (cur_height + (rand.nextInt() % 2));
-	        cur_height = content[i];
-	    }
+		Random rand = new Random(info.getSeed());
+
+		for (int i = 0; i < info.getLength(); i++)
+		{
+			content[i] = (short) (cur_height + (rand.nextInt() % 2));
+			cur_height = content[i];
+		}
+	}
+
+	private void generate_with_slope(boolean up) {
+		int cur_height = info.getHeight() / 2;
+		int change_start;
+		int change_end;
+		if (up) {
+			change_start = info.getLength() / 3;
+			change_end =  info.getLength() - change_start;
+		} else {
+			change_end =  info.getLength() / 3;
+			change_start = info.getLength() - change_end;
+		}
+		int slope = info.getLength() / 10;
+
+		Random rand = new Random(info.getSeed());
+
+		for (int i = 0; i < info.getLength(); i++)
+		{
+			if (i > change_start && i < change_start+slope) {
+				content[i] = (short) (cur_height - Math.abs((rand.nextInt() % 3)));
+			} else if (i > change_end-slope && i < change_end) {
+				content[i] = (short) (cur_height + Math.abs((rand.nextInt() % 3)));
+			} else
+				content[i] = (short) (cur_height + (rand.nextInt() % 2));
+			cur_height = content[i];
+		}
 	}
 
 	@Override
