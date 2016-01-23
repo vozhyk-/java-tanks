@@ -87,6 +87,10 @@ public class ConnectionThread implements Runnable {
 			processCommand((ShootCommand)cmd);
 			break;
 
+		case SendChatMsg:
+			processCommand((SendChatMsgCommand)cmd);
+			break;
+
 		case GetChanges:
 			processCommand((GetChangesCommand)cmd);
 			break;
@@ -138,6 +142,10 @@ public class ConnectionThread implements Runnable {
 
 	private void processCommand(ShootCommand cmd) {
 		game.shoot(client, cmd.getShot());
+	}
+
+	private void processCommand(SendChatMsgCommand cmd) {
+		game.sendChat(client, cmd.getMsg());
 	}
 
 	private void processCommand(GetMapCommand cmd) throws IOException {

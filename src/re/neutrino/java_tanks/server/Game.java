@@ -432,13 +432,17 @@ public class Game {
 	    //unlock_clients_array();                                      /* }}} */
 	}
 
+	public void sendChat(Client cl, String msg) {
+		publicLog("chat",
+				String.format("%25s: %s", cl.getPlayer().getNickname(), msg));
+	}
+
 	public void processConfigUpdate(SetConfigCommand cmd) {
 		String optName = cmd.getOption().getName();
 
 		if (optName.startsWith("map_")) {
 			generateNewMap();
 			regeneratePlayers();
-			// TODO Regenerate all players' positions
 		} else if (optName.startsWith("tank_")) {
 			regeneratePlayers();
 		}

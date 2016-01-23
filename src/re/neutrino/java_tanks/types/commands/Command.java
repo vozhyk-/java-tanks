@@ -24,18 +24,19 @@ public abstract class Command implements Communicable {
 		Type type = Type.recv(comm);
 
 		switch(type) {
-		case Join:       return JoinCommand.recvRest(comm);
-		case NewGame:    return NewGameCommand.recvRest(comm);
-		case Ready:      return ReadyCommand.recvRest(comm);
-		case SetConfig:  return SetConfigCommand.recvRest(comm);
-		case SetAbility: return SetAbilityCommand.recvRest(comm);
-		case GetMap:     return GetMapCommand.recvRest(comm);
-		case GetChanges: return GetChangesCommand.recvRest(comm);
-		case Shoot:      return ShootCommand.recvRest(comm);
-		case UseAbility: return UseAbilityCommand.recvRest(comm);
-		case GetImpact:  return GetImpactCommand.recvRest(comm);
-		case Unknown:    return UnknownCommand.recvRest(comm);
-		default:         return new UnknownCommand();
+		case Join:        return JoinCommand.recvRest(comm);
+		case NewGame:     return NewGameCommand.recvRest(comm);
+		case Ready:       return ReadyCommand.recvRest(comm);
+		case SetConfig:   return SetConfigCommand.recvRest(comm);
+		case SetAbility:  return SetAbilityCommand.recvRest(comm);
+		case GetMap:      return GetMapCommand.recvRest(comm);
+		case GetChanges:  return GetChangesCommand.recvRest(comm);
+		case Shoot:       return ShootCommand.recvRest(comm);
+		case UseAbility:  return UseAbilityCommand.recvRest(comm);
+		case SendChatMsg: return SendChatMsgCommand.recvRest(comm);
+		case GetImpact:   return GetImpactCommand.recvRest(comm);
+		case Unknown:     return UnknownCommand.recvRest(comm);
+		default:          return new UnknownCommand();
 		}
 	}
 
@@ -53,6 +54,7 @@ public abstract class Command implements Communicable {
 	 * Shoot           Shot
 	 *   \- game started, state == PS_ACTIVE
 	 * UseAbility      Shot
+	 * SendChatMsg     NetString msg
 	 * GetImpact       Shot                 Int16 impactX
 	 *
 	 * list(X) means sending / receiving a series of X with an empty X in the end.
@@ -71,6 +73,7 @@ public abstract class Command implements Communicable {
 
 	    Shoot('F'),
 	    UseAbility('A'),
+	    SendChatMsg('m'),
 
 	    GetImpact('i'), /* used only by bots */
 
@@ -97,6 +100,7 @@ public abstract class Command implements Communicable {
 			case 'C': return GetChanges;
 			case 'F': return Shoot;
 			case 'A': return UseAbility;
+			case 'm': return SendChatMsg;
 			case 'i': return GetImpact;
 			default: return Unknown;
 			}
