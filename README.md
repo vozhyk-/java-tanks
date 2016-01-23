@@ -27,6 +27,33 @@ In lobby player may set number of bots that will be added to game, map width and
 
 When it's player's turn to shoot the buttons are enabled. To choose angle one can use `up` and
 `down` arrow keys, buttons or simply by clicking on the map. Power of the shot is set by `left`
-and `right` arrow keys or buttons. `shoot` button or `enter` key makes tank shoot.
+and `right` arrow keys or buttons. `shoot` button or `enter` key makes tank shoot. When there is
+only one tank left the game ends and [scoreboard](#scoreboard) is displayed.
+
+####Scoreboard
+
+List of all players is displayed with information who won and lost. Here the user can return to
+[main menu](#main-menu) using `return` button.
 
 ##Protocol
+
+* `'N' NewGame`
+    Creates new game on the server.
+* `'J' Join`
+    Joins previously created game or randomly choosen by server.
+* `'R'  Ready`
+    Sets player state to ready.
+* `'c'  SetConfig`
+    Sets config to given value.
+* `'a'  SetAbility`
+    Sets chosen ability.
+* `'M'  GetMap`
+    Asks server to send a map.
+* `'C'  GetChanges`
+    Asks server to send updates.
+* `'F'  Shoot`
+    Sends shot to be processed by server.
+* `'A'  UseAbility`
+    Sends ability event to be processed by server.
+* `'i'  GetImpact`
+    Asks server to return impact for given values. Used by C bot only.
