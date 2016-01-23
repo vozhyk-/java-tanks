@@ -37,10 +37,14 @@ List of all players is displayed with information who won and lost. Here the use
 
 ##Protocol
 
+###Commands
+
+Command does not take arguments or return anything unless specified otherwise.
+
 * `'N' NewGame`
     Creates new game on the server.
 * `'J' Join`
-    Joins previously created game or randomly choosen by server.
+    Joins previously created game or randomly choosen by server. Returns `joinreply`.
 * `'R'  Ready`
     Sets player state to ready.
 * `'c'  SetConfig`
@@ -48,12 +52,13 @@ List of all players is displayed with information who won and lost. Here the use
 * `'a'  SetAbility`
     Sets chosen ability.
 * `'M'  GetMap`
-    Asks server to send a map.
+    Asks server to send a map. Returns `struct map_info`.
 * `'C'  GetChanges`
-    Asks server to send updates.
+    Asks server to send updates. Returns `struct update`
 * `'F'  Shoot`
-    Sends shot to be processed by server.
+    Sends shot to be processed by server. Takes `struct shot`.
 * `'A'  UseAbility`
-    Sends ability event to be processed by server.
+    Sends ability event to be processed by server. Takes `struct shot`.
 * `'i'  GetImpact`
-    Asks server to return impact for given values. Used by C bot only.
+    Asks server to return impact for given values. Used by C bot only. Takes `struct shot`. Returns
+    time of imapct `impact_t`.
