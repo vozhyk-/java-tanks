@@ -23,7 +23,8 @@ public class Config {
 	    new Item("wind", 0, -10000, 10000),
 	    new Item("power_c", 40, 20, 100),
 	    new Item("map_margin", 4, 2, 128),
-	    new Item("tank_distance", 10, 1, 128)
+	    new Item("tank_distance", 10, 1, 128),
+	    new Item("bot_nr", 0, 0, 8)
 	);
 
 	DebugStream debug;

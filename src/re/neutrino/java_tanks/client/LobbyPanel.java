@@ -29,9 +29,25 @@ public class LobbyPanel extends JPanel implements ActionListener, ItemListener {
 	JLabel conf_map_la;
 	String[] conf_map_types = {"flat", "hill", "valley"};
 	JComboBox<String> conf_map_cb;
-	JLabel conf_size_la;
-	JTextField conf_size_tf;
-	JButton conf_size_b;
+	setting map_size = new setting("Map size: ", "map_width");
+	setting bot_nr = new setting("Number of bots: ", "bot_nr");
+
+	class setting {
+		JLabel conf_la;
+		JTextField conf_tf;
+		JButton conf_b;
+
+		setting(String label_name, String conf_name) {
+			conf_la = new JLabel(label_name);
+
+			conf_tf = new JTextField(((Integer) Game.conf.get(conf_name)).toString());
+			conf_tf.setHorizontalAlignment(JTextField.CENTER);
+			conf_tf.setPreferredSize(new Dimension(40,20));
+
+			conf_b = new JButton("set");
+			conf_b.setEnabled(true);
+		}
+	}
 
 	public LobbyPanel() {
 		GroupLayout layout = new GroupLayout(this);
@@ -53,16 +69,11 @@ public class LobbyPanel extends JPanel implements ActionListener, ItemListener {
 		conf_map_cb.setSelectedIndex(Game.conf.get("map_type"));
 		conf_map_cb.addActionListener(this);
 
-		conf_size_la = new JLabel("Map size: ");
+		map_size.conf_tf.addActionListener(this);
+		map_size.conf_b.addActionListener(this);
 
-		conf_size_tf = new JTextField(((Integer) Game.conf.get("map_width")).toString());
-		conf_size_tf.addActionListener(this);
-		conf_size_tf.setHorizontalAlignment(JTextField.CENTER);
-		conf_size_tf.setPreferredSize(new Dimension(40,20));
-
-		conf_size_b = new JButton("set");
-		conf_size_b.setEnabled(true);
-		conf_size_b.addActionListener(this);
+		bot_nr.conf_tf.addActionListener(this);
+		bot_nr.conf_b.addActionListener(this);
 
 		layout.setHorizontalGroup(
 			layout.createSequentialGroup()
@@ -72,9 +83,13 @@ public class LobbyPanel extends JPanel implements ActionListener, ItemListener {
 							.addComponent(conf_map_la)
 							.addComponent(conf_map_cb))
 					.addGroup(layout.createSequentialGroup()
-							.addComponent(conf_size_la)
-							.addComponent(conf_size_tf)
-							.addComponent(conf_size_b))
+							.addComponent(map_size.conf_la)
+							.addComponent(map_size.conf_tf)
+							.addComponent(map_size.conf_b))
+					.addGroup(layout.createSequentialGroup()
+							.addComponent(bot_nr.conf_la)
+							.addComponent(bot_nr.conf_tf)
+							.addComponent(bot_nr.conf_b))
 					.addGroup(layout.createSequentialGroup()
 							.addComponent(return_b)
 							.addComponent(ready_b)))
@@ -86,9 +101,13 @@ public class LobbyPanel extends JPanel implements ActionListener, ItemListener {
 					.addComponent(conf_map_la)
 					.addComponent(conf_map_cb))
 			.addGroup(layout.createParallelGroup()
-					.addComponent(conf_size_la)
-					.addComponent(conf_size_tf)
-					.addComponent(conf_size_b))
+					.addComponent(map_size.conf_la)
+					.addComponent(map_size.conf_tf)
+					.addComponent(map_size.conf_b))
+			.addGroup(layout.createParallelGroup()
+					.addComponent(bot_nr.conf_la)
+					.addComponent(bot_nr.conf_tf)
+					.addComponent(bot_nr.conf_b))
 			.addGroup(layout.createParallelGroup()
 					.addComponent(return_b)
 					.addComponent(ready_b))
@@ -105,22 +124,22 @@ public class LobbyPanel extends JPanel implements ActionListener, ItemListener {
 		ready_b.setEnabled(state);
 	}
 
-	void setSize() {
+	void setConf(String conf, JTextField tf) {
 		Integer val = null;
 		try {
-			val = new Integer(conf_size_tf.getText());
+			val = new Integer(tf.getText());
 		} catch (NumberFormatException nfe) {
-			Main.debug.print(DebugLevel.Debug, "wrong_input", conf_size_tf.getText());
+			Main.debug.print(DebugLevel.Debug, "wrong_input", tf.getText());
 			Main.GUIframe.conf_dialog("Input must be a number");
 			return;
 		}
-		Config.Item it = Game.conf.getItem("map_width");
+		Config.Item it = Game.conf.getItem(conf);
 		if (it == null) {
-			Main.debug.print(DebugLevel.Warn, "Item not found");
+			Main.debug.print(DebugLevel.Warn, "Item not found", conf);
 			return;
 		}
 		if (val.intValue() < it.getMax() && val.intValue() > it.getMin())
-			Main.con.send_setConf(new NetConfigOption("map_width", val));
+			Main.con.send_setConf(new NetConfigOption(conf, val));
 		else
 			Main.GUIframe.conf_dialog("Input out of bounds (" + it.getMin() + ", " + it.getMax() + ")");
 	}
@@ -137,8 +156,10 @@ public class LobbyPanel extends JPanel implements ActionListener, ItemListener {
 			((MainMenuPanel) Main.GUIframe.mainMenu).tryConnect();
 		} else if (conf_map_cb == e.getSource()) {
 			Main.con.send_setConf(new NetConfigOption("map_type", conf_map_cb.getSelectedIndex()));
-		} else if (conf_size_b == e.getSource() || conf_size_tf == e.getSource()) {
-			setSize();
+		} else if (map_size.conf_b == e.getSource() || map_size.conf_tf == e.getSource()) {
+			setConf("map_width", map_size.conf_tf);
+		} else if (bot_nr.conf_b == e.getSource() || bot_nr.conf_tf == e.getSource()) {
+			setConf("bot_nr", bot_nr.conf_tf);
 		}
 	}
 
