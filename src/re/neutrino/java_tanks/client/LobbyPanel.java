@@ -101,6 +101,10 @@ public class LobbyPanel extends JPanel implements ActionListener, ItemListener {
 
 	}
 
+	public void enableReady(boolean state) {
+		ready_b.setEnabled(state);
+	}
+
 	void setSize() {
 		Integer val = null;
 		try {
@@ -125,7 +129,7 @@ public class LobbyPanel extends JPanel implements ActionListener, ItemListener {
 	public void actionPerformed(ActionEvent e) {
 		if (ready_b == e.getSource()) {
 			Main.con.send_ready();
-			ready_b.setEnabled(false);
+			enableReady(false);
 		} else if (return_b == e.getSource()) {
 			Main.con.close();
 			Game.players.clear_l();

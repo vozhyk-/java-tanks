@@ -16,6 +16,7 @@ public class Game {
 			changesThread = new Thread(Main.con.ct);
 			changesThread.start();
 			Main.GUIframe.changePane(Main.GUIframe.lobby);
+			((LobbyPanel) Main.GUIframe.lobby).enableReady(true);
 		}
 	}
 
