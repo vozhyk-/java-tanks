@@ -13,6 +13,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.Timer;
 
 import re.neutrino.java_tanks.types.Player;
@@ -33,8 +35,17 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 	JLabel power_l = new JLabel();
 	JLabel angle_l = new JLabel();
 	shot s = new shot();
+	chat c = new chat();
 	DefaultListModel<String> s_listModel = new DefaultListModel<String>();
 	JList<String> s_list = new JList<String>(s_listModel);
+
+	class chat {
+		JTextField f = new JTextField();
+		JButton b = new JButton("send");
+		DefaultListModel<String> lm = new DefaultListModel<String>();
+		JList<String> l = new JList<String>(lm);
+		JScrollPane sp = new JScrollPane(l);
+	}
 
 	class shot {
 		Integer angle = 90;
@@ -86,12 +97,23 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 		game_a = new GameApplet();
 		game_a.setPreferredSize(new Dimension(map_x, map_y));
 
+		c.b.addActionListener(this);
+		c.f.addActionListener(this);
+		c.f.setHorizontalAlignment(JTextField.CENTER);
+		c.f.setPreferredSize(new Dimension(80,20));
+		c.sp.setPreferredSize(new Dimension(80,60));
+
 		layout.setHorizontalGroup(
 				layout.createSequentialGroup()
 					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						.addComponent(game_a)
 						.addGroup(layout.createSequentialGroup()
 								.addComponent(timer_l)
+								.addGroup(layout.createParallelGroup()
+										.addComponent(c.sp)
+										.addGroup(layout.createSequentialGroup()
+												.addComponent(c.f)
+												.addComponent(c.b)))
 								.addGroup(layout.createParallelGroup()
 									.addComponent(inc_power_b)
 									.addComponent(power_l)
@@ -108,6 +130,11 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 					.addComponent(game_a)
 					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 							.addComponent(timer_l)
+							.addGroup(layout.createSequentialGroup()
+									.addComponent(c.sp)
+									.addGroup(layout.createParallelGroup()
+											.addComponent(c.f)
+											.addComponent(c.b)))
 							.addGroup(layout.createSequentialGroup()
 								.addComponent(inc_power_b)
 								.addComponent(power_l)
