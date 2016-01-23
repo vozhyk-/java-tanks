@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import re.neutrino.java_tanks.debug.*;
 import re.neutrino.java_tanks.types.FloatPair;
+import re.neutrino.java_tanks.types.GameMap;
 import re.neutrino.java_tanks.types.NetConfigOption;
 import re.neutrino.java_tanks.types.Shot;
 import re.neutrino.java_tanks.types.commands.SetConfigCommand;
@@ -97,6 +98,10 @@ public class Config {
 		return new FloatPair(
 	        (double)get("wind") / 1000,
 	        (double)get("gravity") / 1000);
+	}
+
+	public GameMap.Info.Type getMapType() {
+		return GameMap.Info.Type.values()[get("map_type")];
 	}
 
 	private double degToRad(short deg) {

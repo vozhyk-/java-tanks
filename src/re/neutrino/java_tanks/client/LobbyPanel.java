@@ -5,12 +5,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import re.neutrino.java_tanks.Config;
 import re.neutrino.java_tanks.debug.DebugLevel;
+import re.neutrino.java_tanks.types.GameMap;
 import re.neutrino.java_tanks.types.NetConfigOption;
 import re.neutrino.java_tanks.types.Player;
 
@@ -27,8 +27,7 @@ public class LobbyPanel extends JPanel implements ActionListener, ItemListener {
 	DefaultListModel<String> p_listModel = new DefaultListModel<String>();
 	JList<String> p_list = new JList<String>(p_listModel);
 	JLabel conf_map_la;
-	String[] conf_map_types = {"flat", "hill", "valley"};
-	JComboBox<String> conf_map_cb;
+	JComboBox<GameMap.Info.Type> conf_map_cb;
 	setting map_size = new setting("Map size: ", "map_width");
 	setting bot_nr = new setting("Number of bots: ", "bot_nr");
 
@@ -65,7 +64,7 @@ public class LobbyPanel extends JPanel implements ActionListener, ItemListener {
 
 		conf_map_la = new JLabel("Map type:");
 
-		conf_map_cb = new JComboBox<String>(conf_map_types);
+		conf_map_cb = new JComboBox<GameMap.Info.Type>(GameMap.Info.Type.values());
 		conf_map_cb.setSelectedIndex(Game.conf.get("map_type"));
 		conf_map_cb.addActionListener(this);
 

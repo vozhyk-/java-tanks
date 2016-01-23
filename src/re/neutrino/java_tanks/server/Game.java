@@ -449,7 +449,8 @@ public class Game {
 		GameMap.Info mapInfo = new GameMap.Info(
 				rand.nextInt(),
 				config.get("map_width"),
-				config.get("map_height"));
+				config.get("map_height"),
+				config.getMapType());
 		map = new ServerGameMap(mapInfo, this, config, debug);
 	}
 }
