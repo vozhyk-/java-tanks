@@ -48,7 +48,7 @@ Command does not take arguments or return anything unless specified otherwise.
 * `'R'  Ready`
     Sets player state to ready.
 * `'c'  SetConfig`
-    Sets config to given value.
+    Sets config to given value. Takes `config_item` as argument.
 * `'a'  SetAbility`
     Sets chosen ability.
 * `'M'  GetMap`
@@ -59,6 +59,67 @@ Command does not take arguments or return anything unless specified otherwise.
     Sends shot to be processed by server. Takes `struct shot`.
 * `'A'  UseAbility`
     Sends ability event to be processed by server. Takes `struct shot`.
+* `'m' SendChatMsg`
+    Sends chat message to server. Takes string as argument.
 * `'i'  GetImpact`
     Asks server to return impact for given values. Used by C bot only. Takes `struct shot`. Returns
     time of imapct `impact_t`.
+
+###Communication
+
+`->` means sending, `<-` denotes receiving
+
+
+`New game` button:
+
+    -> 'N'
+    -> 'J'
+    <- `joinreply`
+
+`Random Game` button:
+
+    -> 'J'
+    <- `joinreply`
+
+`Ready` button:
+
+    -> 'R'
+
+`Set` button or ComboBox event:
+
+    -> 'c'
+    -> `config_item`
+
+`send` button:
+
+    -> 'm'
+    -> string
+
+`shoot` button:
+
+    -> 'F'
+    -> `struct shot`
+
+
+####Fetch changes
+
+In java version separate thread is receiving and processing updates every second.
+
+    -> 'C'
+    <- `struct update`
+    <- `struct update`
+    …
+    <- `struct update` = `Empty`
+
+where `struct update` is one of the types:
+* `ConfigUpdate`
+* `EmptyUpdate`
+* `LogUpdate`
+* `MapUpdate`
+* `PlayerUpdate`
+* `ShotImpactUpdate`
+* `ShotUpdate`
+* `TypedUpdateWithArgument`
+* `Update`
+* `UpdateWithArgument`
+
