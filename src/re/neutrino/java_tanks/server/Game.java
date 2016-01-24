@@ -325,7 +325,6 @@ public class Game {
 		if (next.getPlayer().getNickname().startsWith("bot")) {
 			allAddUpdate(new PlayerUpdate(Update.Type.Player, next.getPlayer()));
 			((Bot) next).shoot();
-			nextTurn();
 		}
 	}
 
