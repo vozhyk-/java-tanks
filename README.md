@@ -113,13 +113,16 @@ In java version separate thread is receiving and processing updates every second
 
 where `struct update` is one of the types:
 * `ConfigUpdate`
+    Updates specified item in `Config`. Default values are preset for server and client.
 * `EmptyUpdate`
+    For compatibility with C client/server. It is the last update in queue.
 * `LogUpdate`
+    Adds line to log/chat.
 * `MapUpdate`
+    Changes height in previously generated map.
 * `PlayerUpdate`
+    Updates properties of a player.
 * `ShotImpactUpdate`
+    Specifies `impact_t` of shot.
 * `ShotUpdate`
-* `TypedUpdateWithArgument`
-* `Update`
-* `UpdateWithArgument`
-
+    Specifies `struct shot`. Thread rendering shot is started.
