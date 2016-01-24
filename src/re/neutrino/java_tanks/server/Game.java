@@ -44,6 +44,10 @@ public class Game {
 		this.config = config;
 		this.debug = debug;
 
+		init();
+	}
+
+	private void init() {
 		rand = new Random();
 		generateNewMap();
 		started = false;
@@ -299,7 +303,14 @@ public class Game {
 	    //unlock_clients_array();                                      /* }}} 2 */
 
 	    //game_cleanup();
-	    //reset_game();
+	    reset();
+	}
+
+	private void reset() {
+		init();
+
+		for (Client cl : clients)
+			cl.changeState(State.Joined);
 	}
 
 	/* Advances turn to the next player */
@@ -470,6 +481,8 @@ public class Game {
 	}
 
 	public void processConfigUpdate(SetConfigCommand cmd) {
+		allAddUpdate(new ConfigUpdate(cmd.getOption()));
+		
 		String optName = cmd.getOption().getName();
 
 		if (optName.startsWith("map_")) {
@@ -487,7 +500,7 @@ public class Game {
 		// TODO: Remove all bots
 		for (Client cl : clients) {
 			if (cl.getPlayer().getNickname().startsWith("bot")) {
-				clients.remove(cl);
+				deleteClient(cl);
 			}
 		}
 		// Add new bots
