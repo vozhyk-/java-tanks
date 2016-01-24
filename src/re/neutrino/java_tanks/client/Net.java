@@ -56,6 +56,12 @@ public class Net {
 		}
 	}
 
+	void send_chatmsg(String msg) {
+		synchronized (comm) {
+			send_command(new SendChatMsgCommand(msg));
+		}
+	}
+
 	@SuppressWarnings("finally")
 	boolean joinServer(String nick) {
 		synchronized (comm) {
@@ -208,6 +214,9 @@ public class Net {
 							break;
 						case Map:
 							Game.map.update((MapUpdate) i);
+							break;
+						case Log:
+							((GamePanel) Main.GUIframe.game).c.add_msg((LogUpdate) i);
 							break;
 						default:
 							Main.debug.print(DebugLevel.Warn, "Received unknown update", i.getType());

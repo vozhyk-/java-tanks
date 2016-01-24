@@ -18,6 +18,7 @@ import javax.swing.JTextField;
 import javax.swing.Timer;
 
 import re.neutrino.java_tanks.types.Player;
+import re.neutrino.java_tanks.types.updates.LogUpdate;
 
 public class GamePanel extends JPanel implements ActionListener, ItemListener {
 	final static int map_x = 127*GameApplet.mul_h;
@@ -45,6 +46,11 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 		DefaultListModel<String> lm = new DefaultListModel<String>();
 		JList<String> l = new JList<String>(lm);
 		JScrollPane sp = new JScrollPane(l);
+
+		void add_msg(LogUpdate lu) {
+			lm.addElement(lu.getLine());
+			l.ensureIndexIsVisible(lm.getSize()-1);
+		}
 	}
 
 	class shot {
@@ -101,7 +107,7 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 		c.f.addActionListener(this);
 		c.f.setHorizontalAlignment(JTextField.CENTER);
 		c.f.setPreferredSize(new Dimension(80,20));
-		c.sp.setPreferredSize(new Dimension(80,60));
+		c.sp.setPreferredSize(new Dimension(80,40));
 
 		layout.setHorizontalGroup(
 				layout.createSequentialGroup()
@@ -175,6 +181,9 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 		} else if (shoot_b == e.getSource()){
 			Main.con.send_shot(s.power, s.angle);
 			set_shoot_buttons(false);
+		} else if (c.f == e.getSource() || c.b == e.getSource()) {
+			Main.con.send_chatmsg(c.f.getText());
+			c.f.setText("");
 		} else {
 			if (inc_power_b == e.getSource() && s.power < 100) {
 				s.power++;
