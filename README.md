@@ -2,7 +2,9 @@
 
 Java implementation of [ncursed-tanks](https://github.com/AwesomePatrol/ncursed-tanks).
 
+
 ##Build
+
 
 ##User Guide
 
@@ -34,6 +36,7 @@ only one tank left the game ends and [scoreboard](#scoreboard) is displayed.
 
 List of all players is displayed with information who won and lost. Here the user can return to
 [main menu](#main-menu) using `return` button.
+
 
 ##Protocol
 
@@ -117,6 +120,7 @@ In java version separate thread is receiving and processing updates every second
     <- `struct update` = `Empty`
 
 where `struct update` is one of the types:
+
 * `ConfigUpdate`
     Updates specified item in `Config`. Default values are preset for server and client.
 * `EmptyUpdate`
@@ -131,3 +135,45 @@ where `struct update` is one of the types:
     Specifies `impact_t` of shot.
 * `ShotUpdate`
     Specifies `struct shot`. Thread rendering shot is started.
+
+
+##Java structure
+
+###Client
+
+Structure of the Java client.
+
+Main
+* GUI
+  * MainMenuPanel
+  * LobbyPanel
+  * GamePanel
+  * EndGamePanel
+  * changePane(JPanel new\_panel): Method replacing current JPanel with new\_panel
+* Net
+  * Socket
+  * CommunicationStream: every send-receive pair is in block synchronized on it
+  * ChangesThread: Described in [fetch-changes](#fetch-changes)
+    * fetch\_changes()
+  * joinServer(String nick): returns true on success
+  * send\_command(Command cmd)
+* DebugStream
+* Game: constructor takes nickname to call joinServer(); starts ChangesThread(); switches to
+LobbyPanel; enables `Ready` button in it
+  * GameMap
+    * Info
+      * seed
+      * length
+      * height
+      * Type
+    * short[]: array of heights, `y=[x]`
+    * generate(): fill array with heights generated from function and `Info`
+  * Config
+    * Item[]
+      * name
+      * value
+      * min
+      * max
+  * PlayersList
+    * delete(PlayerUpdate p)
+    * update(PlayerUpdate p): replaces `p` occurence with an update; adds to the list otherwise
