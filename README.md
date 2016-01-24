@@ -100,6 +100,11 @@ Command does not take arguments or return anything unless specified otherwise.
     -> 'F'
     -> `struct shot`
 
+fetch map:
+
+    -> 'M'
+    <- `struct map_info`
+
 
 ####Fetch changes
 
