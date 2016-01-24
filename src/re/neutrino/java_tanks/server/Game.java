@@ -305,18 +305,28 @@ public class Game {
 	/* Advances turn to the next player */
 	void nextTurn()
 	{
-	    // TODO locking
-	    int activeI = IntStream.range(0, clients.size())
-	    		.filter(i -> clients.get(i).getPlayer().getState()
-	    				== State.Active)
-	    		.findAny().getAsInt();
+		// TODO locking
+		int activeI = IntStream.range(0, clients.size())
+				.filter(i -> clients.get(i).getPlayer().getState()
+						== State.Active)
+				.findAny().getAsInt();
 
-	    clients.get(activeI).changeState(State.Waiting);
+		clients.get(activeI).changeState(State.Waiting);
 
-	    if (activeI == clients.size() - 1)
-	    	clients.get(0).changeState(State.Active);
-	    else
-	    	clients.get(activeI + 1).changeState(State.Active);
+		Client next;
+
+		if (activeI == clients.size() - 1)
+			next = clients.get(0);
+		else
+			next = clients.get(activeI + 1);
+
+		next.changeState(State.Active);
+
+		if (next.getPlayer().getNickname().startsWith("bot")) {
+			allAddUpdate(new PlayerUpdate(Update.Type.Player, next.getPlayer()));
+			((Bot) next).shoot();
+			nextTurn();
+		}
 	}
 
 	/**

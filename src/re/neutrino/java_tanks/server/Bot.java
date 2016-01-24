@@ -9,4 +9,7 @@ public class Bot extends Client {
 		// TODO Auto-generated constructor stub
 	}
 
+	public void shoot() {
+		// TODO shoot
+	}
 }
