@@ -143,10 +143,14 @@ public class Game {
          * and then add the new client to the array */
         /* In that way only clients that have already joined
          * are going to receive the notification */
+		bot.changeState(Player.State.Ready);
+
 		allAddUpdate(new PlayerUpdate(
 				Update.Type.AddPlayer, bot.getPlayer()));
 
 		clients.add(bot);
+
+		tryStart();
 
 		return bot;
 	}
