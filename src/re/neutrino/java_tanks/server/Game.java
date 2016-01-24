@@ -132,6 +132,25 @@ public class Game {
 	}
 	*/
 
+	public Bot newBot(String nickname) {
+		Bot bot = new Bot(newPlayer(nickname), this);
+		debug.print(DebugLevel.Info,
+				"join", "New Bot: " + bot.getPlayer());
+		publicLog("join", "New Bot: "
+				+ bot.getPlayer().getNickname());
+
+		/* Notify all other clients of the new player
+         * and then add the new client to the array */
+        /* In that way only clients that have already joined
+         * are going to receive the notification */
+		allAddUpdate(new PlayerUpdate(
+				Update.Type.AddPlayer, bot.getPlayer()));
+
+		clients.add(bot);
+
+		return bot;
+	}
+
 	public JoinReply tryJoin(String nickname) {
 		Optional<Client> found = findClientByNickname(nickname);
 		boolean nicknameFound = found.isPresent();
@@ -445,6 +464,22 @@ public class Game {
 			regeneratePlayers();
 		} else if (optName.startsWith("tank_")) {
 			regeneratePlayers();
+		} else if (optName.equals("bot_nr")) {
+			debug.print(DebugLevel.Info, "Regenerate bots");
+			regenerateBots();
+		}
+	}
+
+	private void regenerateBots() {
+		// TODO: Remove all bots
+		for (Client cl : clients) {
+			if (cl.getPlayer().getNickname().startsWith("bot")) {
+				clients.remove(cl);
+			}
+		}
+		// Add new bots
+		for (Integer i=0; i<config.get("bot_nr"); i++) {
+			newBot("bot" + i);
 		}
 	}
 
