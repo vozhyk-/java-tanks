@@ -27,8 +27,8 @@ import re.neutrino.java_tanks.types.updates.ShotUpdate;
 public class GameApplet extends JApplet implements MouseListener, KeyListener {
 	final static Color bg = Color.white;
 	final static Color fg = Color.black;
-	final static int mul_h = 10;
-	final static int mul_v = 20;
+	final static int mul_h = 8;
+	final static int mul_v = 16;
 	final static int off_v = 14*mul_v;
 	final static int brush_width = 10;
 	final static int width = 5*mul_h;
@@ -87,7 +87,7 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 							g.setPaint(idle_tank_colour);
 							break;
 						case Dead:
-							g.setPaint(bg);
+							g.setPaint(grey);
 							break;
 						case Active:
 							g.setPaint(active_tank_colour);
