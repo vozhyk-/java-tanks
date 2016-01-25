@@ -2,6 +2,7 @@ package re.neutrino.java_tanks.server;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -257,7 +258,7 @@ public class Game {
 	    long numLivingPlayers = clients.stream().filter(
 	    		cl -> cl.getPlayer().getState() != State.Dead)
 	    		.count();
-	    if (numLivingPlayers > 1)
+	    if (numLivingPlayers >= 2)
 	    	return false;
 
 	    /* At this point, only one living player remains */
@@ -314,15 +315,16 @@ public class Game {
 	}
 
 	/* Advances turn to the next player */
-	void nextTurn()
+	void nextTurn(int activeI)
 	{
 		// TODO locking
-		int activeI = IntStream.range(0, clients.size())
-				.filter(i -> clients.get(i).getPlayer().getState()
-						== State.Active)
-				.findAny().getAsInt();
 
-		clients.get(activeI).changeState(State.Waiting);
+		Client activeClient = clients.get(activeI);
+
+		// No need to take the turn away from e.g. a Dead player
+		if (activeClient.getPlayer().getState() == State.Active) {
+			activeClient.changeState(State.Waiting);
+		}
 
 		Client next;
 
@@ -392,15 +394,19 @@ public class Game {
 	}
 
 	private void processImpact(MapPosition impactPos) {
-		shotDealDamage(impactPos);
 		map.shotUpdateMap(impactPos);
 		landPlayersFromTheSky();
 
-	    if (!tryEnd()) {
-	        //tanks_map = map_with_tanks();
+		// Save the active player's index before killing anybody
+		int activePlayerI = IntStream.range(0, clients.size())
+				.filter(i -> clients.get(i).getPlayer().getState()
+						== State.Active)
+				.findAny().getAsInt();
 
-	        nextTurn();
-	    }
+		shotDealDamage(impactPos);
+
+		if (!tryEnd())
+			nextTurn(activePlayerI);
 	}
 
 	private void shotDealDamage(MapPosition impactPos) {
