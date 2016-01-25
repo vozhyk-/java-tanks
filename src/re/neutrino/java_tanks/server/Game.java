@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Random;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 import re.neutrino.java_tanks.Config;
@@ -294,6 +295,7 @@ public class Game {
 	}
 
 	void end() {
+		publicLog("game over");
 		/* Mark dead players as Loser and living players as Winner */
 	    //lock_clients_array();                                        /* {{{ */
 	    for (Client cl : clients)
@@ -310,8 +312,11 @@ public class Game {
 	private void reset() {
 		init();
 
+		// TODO Is done by C server, but isn't understood here
+		/*
 		for (Client cl : clients)
 			cl.changeState(State.Joined);
+		*/
 	}
 
 	/* Advances turn to the next player */
@@ -326,18 +331,36 @@ public class Game {
 			activeClient.changeState(State.Waiting);
 		}
 
-		Client next;
+		Predicate<Client> isWaiting =
+				(Client cl) -> cl.getPlayer().getState() == State.Waiting;
 
-		if (activeI == clients.size() - 1)
-			next = clients.get(0);
-		else
-			next = clients.get(activeI + 1);
+		Optional<Client> next = clients.stream()
+				.skip(activeI + 1)
+				.filter(isWaiting)
+				.findFirst();
 
-		next.changeState(State.Active);
+		if (!next.isPresent())
+			// Search again from the beginning
+			next = clients.stream().filter(isWaiting).findFirst();
 
-		if (next.getPlayer().getNickname().startsWith("bot")) {
-			allAddUpdate(new PlayerUpdate(Update.Type.Player, next.getPlayer()));
-			((Bot) next).shoot();
+		if (!next.isPresent()) {
+			debug.print(DebugLevel.Err,
+					"next turn", "No waiting player found!");
+			end();
+		}
+
+		Client nextC = next.get();
+		debug.print(DebugLevel.Info,
+				"next turn", nextC.getPlayer() + " gets turn");
+		if (nextC.getPlayer().getState() == State.Dead)
+			debug.print(DebugLevel.Err, "next turn",
+					nextC.getPlayer() + "is dead and shouldn't get one!");
+		nextC.changeState(State.Active);
+
+		if (nextC.getPlayer().getNickname().startsWith("bot")) {
+			allAddUpdate(new PlayerUpdate(
+					Update.Type.Player, nextC.getPlayer()));
+			((Bot) nextC).shoot();
 		}
 	}
 
@@ -398,15 +421,20 @@ public class Game {
 		landPlayersFromTheSky();
 
 		// Save the active player's index before killing anybody
-		int activePlayerI = IntStream.range(0, clients.size())
+		OptionalInt activeClientI = IntStream.range(0, clients.size())
 				.filter(i -> clients.get(i).getPlayer().getState()
 						== State.Active)
-				.findAny().getAsInt();
+				.findAny();
+		if (!activeClientI.isPresent()) {
+			debug.print(DebugLevel.Err,
+					"impact", "No active player before dealing damage!");
+			return;
+		}
 
 		shotDealDamage(impactPos);
 
 		if (!tryEnd())
-			nextTurn(activePlayerI);
+			nextTurn(activeClientI.getAsInt());
 	}
 
 	private void shotDealDamage(MapPosition impactPos) {
@@ -530,6 +558,10 @@ public class Game {
 				config.get("map_height"),
 				config.getMapType());
 		map = new ServerGameMap(mapInfo, this, config, debug);
+	}
+
+	private void publicLog(String title) {
+		allAddUpdate(new LogUpdate(debug.format(title)));
 	}
 
 	private void publicLog(String title, Object value) {
