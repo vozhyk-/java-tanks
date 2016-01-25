@@ -137,7 +137,7 @@ public class LobbyPanel extends JPanel implements ActionListener, ItemListener {
 			Main.debug.print(DebugLevel.Warn, "Item not found", conf);
 			return;
 		}
-		if (val.intValue() < it.getMax() && val.intValue() > it.getMin())
+		if (val.intValue() <= it.getMax() && val.intValue() >= it.getMin())
 			Main.con.send_setConf(new NetConfigOption(conf, val));
 		else
 			Main.GUIframe.conf_dialog("Input out of bounds (" + it.getMin() + ", " + it.getMax() + ")");
