@@ -77,37 +77,39 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 	}
 
 	private void draw_tanks(Graphics2D g, ArrayList<Player> pl) {
-		for (Player i:pl) {
-			if (PlayersList.loc_player == i) {
-				g.setPaint(local_tank_colour);
-			} else {
-				switch (i.getState()) {
-					case Waiting:
-						g.setPaint(idle_tank_colour);
-						break;
-					case Dead:
-						g.setPaint(bg);
-						break;
-					case Active:
-						g.setPaint(active_tank_colour);
-						break;
-					default:
-						Main.debug.print(DebugLevel.Warn, "Unknown state", i.getState());
+		synchronized (pl) {
+			for (Player i:pl) {
+				if (PlayersList.loc_player == i) {
+					g.setPaint(local_tank_colour);
+				} else {
+					switch (i.getState()) {
+						case Waiting:
+							g.setPaint(idle_tank_colour);
+							break;
+						case Dead:
+							g.setPaint(bg);
+							break;
+						case Active:
+							g.setPaint(active_tank_colour);
+							break;
+						default:
+							Main.debug.print(DebugLevel.Warn, "Unknown state", i.getState());
+					}
 				}
+				int x = i.getPos().getX()*mul_h-width/2;
+				int y = i.getPos().getY()*mul_v-off_v;
+				g.fillRoundRect(x, y, width, height, width/2, height);
+				g.setStroke(new BasicStroke(mul_v/2));
+				int tx = x;
+				int ty = y;
+				if (i == PlayersList.loc_player) {
+					tx += width/2 + (int) (t_len*Math.cos(Math.toRadians(((GamePanel) Main.GUIframe.game).s.angle)));
+					ty -= (int) (t_len*Math.sin(Math.toRadians(((GamePanel) Main.GUIframe.game).s.angle)));
+				}
+				g.drawLine(x + width/2, y, tx, ty);
+				g.setPaint(fg);
+				g.drawString(i.getNickname(), x, y-height);
 			}
-			int x = i.getPos().getX()*mul_h-width/2;
-			int y = i.getPos().getY()*mul_v-off_v;
-			g.fillRoundRect(x, y, width, height, width/2, height);
-			g.setStroke(new BasicStroke(mul_v/2));
-			int tx = x;
-			int ty = y;
-			if (i == PlayersList.loc_player) {
-				tx += width/2 + (int) (t_len*Math.cos(Math.toRadians(((GamePanel) Main.GUIframe.game).s.angle)));
-				ty -= (int) (t_len*Math.sin(Math.toRadians(((GamePanel) Main.GUIframe.game).s.angle)));
-			}
-			g.drawLine(x + width/2, y, tx, ty);
-			g.setPaint(fg);
-			g.drawString(i.getNickname(), x, y-height);
 		}
 	}
 
@@ -117,9 +119,7 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 		g.setColor(bg);
 		g.fillRect(0, 0, getSize().width, getSize().height);
 		draw_map(g, Game.map);
-		synchronized (Game.players.getL()) {
-			draw_tanks(g, Game.players.getL());
-		}
+		draw_tanks(g, Game.players.getL());
 	}
 
 	@Override
