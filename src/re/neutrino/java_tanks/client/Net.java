@@ -110,6 +110,7 @@ public class Net {
 				e.printStackTrace();
 			}
 		}
+		((GamePanel) Main.GUIframe.game).update_game_applet_size();
 	}
 
 	void send_ready() {

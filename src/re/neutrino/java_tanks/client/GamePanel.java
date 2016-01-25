@@ -21,8 +21,8 @@ import re.neutrino.java_tanks.types.Player;
 import re.neutrino.java_tanks.types.updates.LogUpdate;
 
 public class GamePanel extends JPanel implements ActionListener, ItemListener {
-	final static int map_x = 127*GameApplet.mul_h;
-	final static int map_y = 32*GameApplet.mul_v;
+	static int map_x;
+	static int map_y;
 	JButton shoot_b = new JButton("shoot");
 	JButton inc_power_b = new JButton("^");
 	JButton dec_power_b = new JButton("v");
@@ -81,6 +81,12 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 		}
 	}
 
+	public void update_game_applet_size() {
+		map_x = Game.conf.get("map_width")*GameApplet.mul_h;
+		map_y = Game.conf.get("map_height")*GameApplet.mul_h;
+		game_a.setPreferredSize(new Dimension(map_x, map_y));
+	}
+
 	GamePanel() {
 		setDoubleBuffered(true);
 
@@ -101,7 +107,7 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 		}
 
 		game_a = new GameApplet();
-		game_a.setPreferredSize(new Dimension(map_x, map_y));
+		update_game_applet_size();
 
 		c.b.addActionListener(this);
 		c.f.addActionListener(this);
