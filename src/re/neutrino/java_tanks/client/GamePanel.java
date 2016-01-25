@@ -83,8 +83,9 @@ public class GamePanel extends JPanel implements ActionListener, ItemListener {
 
 	public void update_game_applet_size() {
 		map_x = Game.conf.get("map_width")*GameApplet.mul_h;
-		map_y = Game.conf.get("map_height")*GameApplet.mul_h;
+		map_y = Game.conf.get("map_height")*GameApplet.mul_v/2;
 		game_a.setPreferredSize(new Dimension(map_x, map_y));
+		((GameApplet) game_a).off_v = GamePanel.map_y/2;
 	}
 
 	GamePanel() {

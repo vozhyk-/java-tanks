@@ -29,7 +29,7 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 	final static Color fg = Color.black;
 	final static int mul_h = 8;
 	final static int mul_v = 16;
-	final static int off_v = 14*mul_v;
+	int off_v = GamePanel.map_y/2;
 	final static int brush_width = 10;
 	final static int width = 5*mul_h;
 	final static int height = mul_v;
