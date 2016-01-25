@@ -45,96 +45,93 @@ List of all players is displayed with information who won and lost. Here the use
 Command does not take arguments or return anything unless specified otherwise.
 
 * `'N' NewGame`
-    Creates new game on the server.
+    Creates a new game on the server.
 * `'J' Join`
-    Joins previously created game or randomly choosen by server. Returns `joinreply`.
+    Joins previously created game or randomly choosen by server. Returns `JoinReply`.
 * `'R'  Ready`
     Sets player state to ready.
 * `'c'  SetConfig`
-    Sets config to given value. Takes `config_item` as argument.
+    Sets a config option to a given value. Takes `ConfigOption` as argument.
 * `'a'  SetAbility`
-    Sets chosen ability.
+    Selects chosen ability.
 * `'M'  GetMap`
-    Asks server to send a map. Returns `struct map_info`.
+    Asks server to send a map. Returns `GameMap`.
 * `'C'  GetChanges`
-    Asks server to send updates. Returns `struct update`
+    Asks server to send updates. Returns `list(Update)`
 * `'F'  Shoot`
-    Sends shot to be processed by server. Takes `struct shot`.
+    Sends shot to be processed by server. Takes `Shot`.
 * `'A'  UseAbility`
-    Sends ability event to be processed by server. Takes `struct shot`.
+    Sends ability event to be processed by server. Takes `Shot`.
 * `'m' SendChatMsg`
-    Sends chat message to server. Takes string as argument.
+    Sends chat message to server. Takes `String` as argument.
 * `'i'  GetImpact`
-    Asks server to return impact for given values. Used by C bot only. Takes `struct shot`. Returns
-    time of imapct `impact_t`.
+    Asks server to return impact for given values. Used by C bot only. Takes `Shot`. Returns
+    time of impact `impactT`.
 
 ###Communication
 
-`->` means sending, `<-` denotes receiving
+`->` means sending a command, `<-` denotes receiving
 
 
 `New game` button:
 
-    -> 'N'
-    -> 'J'
-    <- `joinreply`
+    -> NewGame
+    -> Join(nickname)
+    <- `JoinReply`
 
 `Random Game` button:
 
-    -> 'J'
-    <- `joinreply`
+    -> Join(nickname)
+    <- `JoinReply`
 
 `Ready` button:
 
-    -> 'R'
+    -> Ready
 
 `Set` button or ComboBox event:
 
-    -> 'c'
-    -> `config_item`
+    -> SetConfig(ConfigOption)
 
 `send` button:
 
-    -> 'm'
-    -> string
+    -> SendChatMsg(message)
 
 `shoot` button:
 
-    -> 'F'
-    -> `struct shot`
+    -> Shoot(Shot)
 
 fetch map:
 
-    -> 'M'
-    <- `struct map_info`
+    -> GetMap
+    <- Map
 
 
 ####Fetch changes
 
-In java version separate thread is receiving and processing updates every second.
+In Java version a separate thread is receiving and processing updates every second.
 
-    -> 'C'
-    <- `struct update`
-    <- `struct update`
+    -> GetChanges
+    <- Update
+    <- Update
     …
-    <- `struct update` = `Empty`
+    <- Update (.type == Empty)
 
-where `struct update` is one of the types:
+where `Update` is one of the types:
 
 * `ConfigUpdate`
     Updates specified item in `Config`. Default values are preset for server and client.
 * `EmptyUpdate`
-    For compatibility with C client/server. It is the last update in queue.
+    For sending a list of updates. It is the last update in a queue.
 * `LogUpdate`
     Adds line to log/chat.
 * `MapUpdate`
-    Changes height in previously generated map.
+    Changes height at a point in previously generated map.
 * `PlayerUpdate`
-    Updates properties of a player.
+    Adds / removes a player or updates properties of one.
 * `ShotImpactUpdate`
-    Specifies `impact_t` of shot.
+    Specifies `impactT` (from which the impact position can be derived) of a shot.
 * `ShotUpdate`
-    Specifies `struct shot`. Thread rendering shot is started.
+    Specifies `Shot`. A shot rendering thread is started.
 
 
 ##Java structure
@@ -143,37 +140,63 @@ where `struct update` is one of the types:
 
 Structure of the Java client.
 
-Main
-* GUI
-  * MainMenuPanel
-  * LobbyPanel
-  * GamePanel
-  * EndGamePanel
-  * changePane(JPanel new\_panel): Method replacing current JPanel with new\_panel
-* Net
-  * Socket
-  * CommunicationStream: every send-receive pair is in block synchronized on it
-  * ChangesThread: Described in [fetch-changes](#fetch-changes)
-    * fetch\_changes()
-  * joinServer(String nick): returns true on success
-  * send\_command(Command cmd)
-* DebugStream
-* Game: constructor takes nickname to call joinServer(); starts ChangesThread(); switches to
-LobbyPanel; enables `Ready` button in it
-  * GameMap
-    * Info
-      * seed
-      * length
-      * height
-      * Type
-    * short[]: array of heights, `y=[x]`
-    * generate(): fill array with heights generated from function and `Info`
-  * Config
-    * Item[]
-      * name
-      * value
-      * min
-      * max
-  * PlayersList
-    * delete(PlayerUpdate p)
-    * update(PlayerUpdate p): replaces `p` occurence with an update; adds to the list otherwise
+`Main`
+* `GUI`
+  * `MainMenuPanel`
+  * `LobbyPanel`
+  * `GamePanel`
+  * `EndGamePanel`
+  * `changePane(JPanel new_panel)`: Method replacing current JPanel with `new_panel`
+* `Net`
+  * `Socket`
+  * `CommunicationStream`: every send-receive pair is in a block synchronized on it
+  * `ChangesThread`: Described in [fetch-changes](#fetch-changes)
+    * `fetch_changes()`
+  * `joinServer(String nick)`: returns true on success
+  * `send_command(Command cmd)`
+* `DebugStream`
+  * `print(DebugLevel, String title, &optional Object value)`
+* `Game`: constructor takes `nickname` to call `joinServer()`; starts `ChangesThread()`; switches to
+`LobbyPanel`; enables `Ready` button in it
+  * `GameMap` (common to client and server)
+    * `Info` (common to client and server)
+      * `seed`
+      * `length`
+      * `height`
+      * `Type`
+    * `short[]`: array of heights, `y=[x]`
+    * `generate()`: fill array with heights generated from function and `Info`
+  * `Config`
+    * `Item[]`
+      * `name`
+      * `value`
+      * `min`
+      * `max`
+  * `PlayersList`
+    * `delete(PlayerUpdate p)`
+    * `update(PlayerUpdate p)`: updates player in `p` if it is already present; adds it to the list otherwise
+
+### Server
+
+Structure of the Java server.
+
+`Main`
+* A `ClientThread` for every client
+  * Receives commands in a loop
+  * `processCommand(cmd)` overloaded methods for command types. Usually call corresponding methods in `Game`
+* `GameList`
+  * `Game`: contains most of the game logic
+    * `clients`
+      * `Client`: describes every client; can be a `Bot`
+        * `Player` (common to client and server)
+          * `State`
+            * `Joined`, `Ready`, `Waiting`, ...
+	      * `isConnected`
+	      * `id`
+	      * `nickname`
+	      * `hitpoints`
+	      * `pos`: a `MapPosition`
+	      * `abilityId`
+	      * `abilityCooldown`
+        * `UpdateQueue`: updates for the client; can be sent and emptied or added to
+    * `ServerGameMap`: a `GameMap` that can be changed by impacts
