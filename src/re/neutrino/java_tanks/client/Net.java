@@ -184,6 +184,7 @@ public class Net {
 					send_command(new GetChangesCommand());
 					uq = UpdateQueue.recv(comm);
 				}
+				boolean shot = false;
 				for (Update i:uq) {
 					Main.debug.print(DebugLevel.Debug, "recv update", i);
 					switch (i.getType()) {
@@ -211,6 +212,7 @@ public class Net {
 									Main.GUIframe.game).game_a)
 									.create_shot_thread(su, (ShotImpactUpdate) i));
 							shotThread.start();
+							shot = true;
 							break;
 						case Map:
 							Game.map.update((MapUpdate) i);
@@ -220,6 +222,14 @@ public class Net {
 							break;
 						default:
 							Main.debug.print(DebugLevel.Warn, "Received unknown update", i.getType());
+					}
+					if (shot) {
+						try {
+							shotThread.join();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
 			} catch (IOException e) {
