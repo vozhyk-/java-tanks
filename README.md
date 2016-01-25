@@ -5,37 +5,50 @@ Java implementation of [ncursed-tanks](https://github.com/AwesomePatrol/ncursed-
 
 ##Build
 
+To build, you have to import the project in Eclipse and clean/rebuild it.
 
 ##User Guide
 
 ###run server
 
+Start it from the command line with
+```
+% CLASSPATH=bin java re.neutrino.java_tanks.server.Main
+```
+or from Eclipse by running `server.Main` (in the latter case, to stop the server you will have to kill it manually if you run anything else in Eclipse afterwards).
+
 ###run client
+
+Start it from the command line with
+```
+CLASSPATH=bin java re.neutrino.java_tanks.client.Main
+```
+or from Eclipse by running `client.Main`.
 
 ####Main menu
 
-In main menu player should connect to game server. By default IP is set up to `127.0.0.1`. Hostname
-may be used instead of IP address. To connect, one should press return. If connection is successful
-`New game` and `Random game` buttons will be enabled. `Random game` finds random game available on
-the server and joins it, otherwise returns an error. `New game` creates new game on the server and
-joins to it.
+In main menu player should connect to game server. By default IP is set up to `127.0.0.1`. A hostname
+may be used instead of an IP address. To connect, one should press the return key. If connection is successful
+`New game` and `Random game` buttons will be enabled. `Random game` finds a random game available on
+the server and joins it, otherwise shows an error message. `New game` creates a new game on the server and
+joins it.
 
 ####Lobby
 
-In lobby player may set number of bots that will be added to game, map width and map type. Pressing
-`ready` button sets `Ready` state. When all players in the lobby are ready the game starts.
+In lobby player may set the number of bots that will be added to game, map width and map type. Pressing
+the `ready` button sets `Ready` state. When all players in the lobby are ready the game starts.
 
 ####Game
 
-When it's player's turn to shoot the buttons are enabled. To choose angle one can use `up` and
-`down` arrow keys, buttons or simply by clicking on the map. Power of the shot is set by `left`
-and `right` arrow keys or buttons. `shoot` button or `enter` key makes tank shoot. When there is
-only one tank left the game ends and [scoreboard](#scoreboard) is displayed.
+When it's the player's turn to shoot the buttons are enabled. To choose angle one can use `up` and
+`down` arrow keys, buttons or simply click on the map. Power of the shot is set by `left`
+and `right` arrow keys or buttons. `shoot` button or `enter` key makes the tank shoot. When there is
+only one tank left the game ends and the [scoreboard](#scoreboard) is displayed.
 
 ####Scoreboard
 
-List of all players is displayed with information who won and lost. Here the user can return to
-[main menu](#main-menu) using `return` button.
+List of all players is displayed with information on who won and lost. Here the user can return to
+the [main menu](#main-menu) using the `return` button.
 
 
 ##Protocol
@@ -165,7 +178,7 @@ Structure of the Java client.
       * `height`
       * `Type`
     * `short[]`: array of heights, `y=[x]`
-    * `generate()`: fill array with heights generated from function and `Info`
+    * `generate()`: fills array with heights generated from function and `Info`
   * `Config`
     * `Item[]`
       * `name`
@@ -176,7 +189,7 @@ Structure of the Java client.
     * `delete(PlayerUpdate p)`
     * `update(PlayerUpdate p)`: updates player in `p` if it is already present; adds it to the list otherwise
 
-### Server
+###Server
 
 Structure of the Java server.
 
@@ -198,5 +211,5 @@ Structure of the Java server.
 	      * `pos`: a `MapPosition`
 	      * `abilityId`
 	      * `abilityCooldown`
-        * `UpdateQueue`: updates for the client; can be sent and emptied or added to
+        * `UpdateQueue` (common to client and server): updates for the client; can be sent and emptied or added to
     * `ServerGameMap`: a `GameMap` that can be changed by impacts
