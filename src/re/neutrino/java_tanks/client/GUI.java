@@ -15,11 +15,19 @@ public class GUI extends JFrame {
 	JPanel endGame;
 
 	void join_dialog(String msg) {
-		JOptionPane.showMessageDialog(this, msg, "Join: Warning", JOptionPane.WARNING_MESSAGE);
+		dialog("Join: Warning", msg);
 	}
 
 	void conf_dialog(String msg) {
-		JOptionPane.showMessageDialog(this, msg, "Config: Warning", JOptionPane.WARNING_MESSAGE);
+		dialog("Config: Warning", msg);
+	}
+
+	void err_dialog(String msg) {
+		dialog("Error:", msg);
+	}
+
+	private void dialog(String header, String msg) {
+		JOptionPane.showMessageDialog(this, msg, header, JOptionPane.WARNING_MESSAGE);
 	}
 
 	public GUI() throws HeadlessException {

@@ -160,6 +160,7 @@ public class Net {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					ct.terminate();
 					((EndGamePanel) Main.GUIframe.endGame).update_player_list();
 					Main.GUIframe.changePane(Main.GUIframe.endGame);
 					break;
@@ -234,8 +235,10 @@ public class Net {
 					}
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				terminate();
+				Main.GUIframe.err_dialog(e.getMessage());
+				Main.GUIframe.changePane(Main.GUIframe.mainMenu);
+				((MainMenuPanel) Main.GUIframe.mainMenu).tryConnect();
 			}
 		}
 
