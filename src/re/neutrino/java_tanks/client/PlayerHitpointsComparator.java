@@ -8,6 +8,6 @@ public class PlayerHitpointsComparator implements Comparator<Player> {
 
 	@Override
 	public int compare(Player o1, Player o2) {
-		return o1.getHitpoints() - o2.getHitpoints();
+		return o2.getHitpoints() - o1.getHitpoints();
 	}
 }
