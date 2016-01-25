@@ -114,12 +114,12 @@ public class GameApplet extends JApplet implements MouseListener, KeyListener {
 	@Override
 	public void paint(Graphics gg) {
 		Graphics2D g = (Graphics2D) gg;
-		GameMap m = Game.map;
-		ArrayList<Player> pl = Game.players.getL();
 		g.setColor(bg);
 		g.fillRect(0, 0, getSize().width, getSize().height);
-		draw_map(g, m);
-		draw_tanks(g, pl);
+		draw_map(g, Game.map);
+		synchronized (Game.players.getL()) {
+			draw_tanks(g, Game.players.getL());
+		}
 	}
 
 	@Override

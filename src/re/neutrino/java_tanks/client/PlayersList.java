@@ -10,23 +10,25 @@ public class PlayersList {
 	private static ArrayList<Player> l = new ArrayList<Player>();
 	public static Player loc_player = null;
 
-	synchronized void update(PlayerUpdate p) {
-		Player pp = p.getPlayer();
-		int index = find(pp.getId());
-		if (index < 0) {
-			Main.debug.print(DebugLevel.Debug, "Add player", pp);
-			getL().add(pp);
-			if (is_loc_player(p)) {
-				loc_player = getL().get(getL().size()-1);
-			}
-			Main.debug.print(DebugLevel.Debug, "ListSize", getL().size());
-		} else {
-			Main.debug.print(DebugLevel.Debug, "Update player", pp);
-			if (loc_player == getL().get(index)) {
-				getL().set(index, pp);
-				loc_player = getL().get(index);
+	void update(PlayerUpdate p) {
+		synchronized (l) {
+			Player pp = p.getPlayer();
+			int index = find(pp.getId());
+			if (index < 0) {
+				Main.debug.print(DebugLevel.Debug, "Add player", pp);
+				l.add(pp);
+				if (is_loc_player(p)) {
+					loc_player = l.get(l.size()-1);
+				}
+				Main.debug.print(DebugLevel.Debug, "ListSize", l.size());
 			} else {
-				getL().set(index, pp);
+				Main.debug.print(DebugLevel.Debug, "Update player", pp);
+				if (loc_player == l.get(index)) {
+					l.set(index, pp);
+					loc_player = l.get(index);
+				} else {
+					l.set(index, pp);
+				}
 			}
 		}
 	}
@@ -35,24 +37,30 @@ public class PlayersList {
 		return p.getPlayer().getId().equals(Game.PlayerID);
 	}
 
-	synchronized void delete(PlayerUpdate p) {
-		Player pp = p.getPlayer();
-		int index = find(pp.getId());
-		if (index < 0) {
-			Main.debug.print(DebugLevel.Warn, "DelPlayer not found", pp);
-		} else {
-			Main.debug.print(DebugLevel.Debug, "Delete player", pp);
-			if (loc_player == getL().get(index)) {
-				Main.debug.print(DebugLevel.Err, "Trying to delete loc_player");
+	synchronized boolean is_loc_player(Player p) {
+		return p.getId().equals(Game.PlayerID);
+	}
+
+	void delete(PlayerUpdate p) {
+		synchronized (l) {
+			Player pp = p.getPlayer();
+			int index = find(pp.getId());
+			if (index < 0) {
+				Main.debug.print(DebugLevel.Warn, "DelPlayer not found", pp);
 			} else {
-				getL().remove(index);
-				((LobbyPanel) Main.GUIframe.lobby).update_player_list();
+				Main.debug.print(DebugLevel.Debug, "Delete player", pp);
+				if (is_loc_player(l.get(index))) {
+					Main.debug.print(DebugLevel.Err, "Trying to delete loc_player");
+				} else {
+					l.remove(index);
+					((LobbyPanel) Main.GUIframe.lobby).update_player_list();
+				}
 			}
 		}
 	}
 
-	Player find_p(Int16 id) {
-		for (Player i:getL()) {
+	synchronized Player find_p(Int16 id) {
+		for (Player i:l) {
 			if (i.getId().equals(id)) {
 				return i;
 			}
@@ -60,10 +68,10 @@ public class PlayersList {
 		return null;
 	}
 
-	int find(Int16 id) {
-		for (Player i:getL()) {
+	synchronized int find(Int16 id) {
+		for (Player i:l) {
 			if (i.getId().equals(id)) {
-				return getL().indexOf(i);
+				return l.indexOf(i);
 			}
 		}
 		return -1;
@@ -74,19 +82,15 @@ public class PlayersList {
 		if (index < 0) {
 			return null;
 		} else {
-			return getL().get(index);
+			return l.get(index);
 		}
 	}
 
 	synchronized void clear_l() {
-		getL().clear();
+		l.clear();
 	}
 
 	synchronized public ArrayList<Player> getL() {
 		return l;
-	}
-
-	public int compare(Player a, Player b) {
-		return a.getHitpoints() - b.getHitpoints();
 	}
 }
